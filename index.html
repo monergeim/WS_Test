@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+
+<body bgcolor="#242424">
+    <meta charset="utf-8" />
+    <title>WebSocket Test</title>
+
+    <script language="javascript" type="text/javascript" src="Test1.js"></script>
+    <script language="javascript" type="text/javascript" src="Massages.js"></script>
+    <script language="javascript" type="text/javascript" src="Drawing.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+
+    <button type="button" id="ConnectButton" onclick="ReConnect()" class="button button1">Connect</button>
+    <button type="button" id="DisConnectButton" onclick="Disconnect()" class="button button3">Disconnect</button>
+
+    <select id="SelectEnv" type="selectBox" class="button selectBox" onChange="OpenURL()" ;>
+        <option value="Dev">Dev</option>
+        <option value="Master">Master</option>
+        <option value="Other">Enter Manually</option>
+		<option value="Configuration">Configuration</option>
+    </select>
+
+    <a id="myTextareaURL" class="a"><span class="a" contenteditable="true" style="color: #9A7FD5;">place the ws endpoint here</span></a>
+ 
+	<div id="chart_div1" class="book"></div>
+    <div id="output" class="wrap"></div>
+	 <select id="SelectMessage" type="selectBox" class="button selectBox" onChange="ChangeMessage()" ;>
+                <option value="" selected >Select Message</option>
+
+		<option value="Place Orders">Place Orders</option>
+        <option value="Streams">Streams</option>
+        <option value="Fill Order">Fill Order</option>
+		<option value="Send Cancellation">Send Cancellation</option>
+    </select>
+
+    <span class="a">InstrumentID: </span>
+    <span id="dynamicinstrumentid" class="a" contenteditable="true" style="color: #9A7FD5;">1</span>
+    <!-- <span class="a">. UserID: </span>
+    <span id="dynamicuserid" class="a" contenteditable="true" style="color: #9A7FD5;">2</span> -->
+    <span class="a">. Manage Book? </span>
+    <label>
+        <input type='checkbox' id="ManageBook" >
+        <span></span>
+    </label>
+    <span class="a">. Draw Rate Chart? </span>
+    <label>
+        <input type='checkbox' id="DrawRateChart">
+        <span></span>
+    </label>
+    <span class="a">. Write to screen? </span>
+
+    <label>
+        <input type='checkbox' id="WritetoScr" checked>
+        <span></span>
+    </label>
+	 <span class="a">. Draw orderEvent Table? </span>
+    <label>
+        <input type='checkbox' id="DrawEventTable" >
+        <span></span>
+    </label>
+  <a href="https://docs.google.com/spreadsheets/d/1MxgtupJXyrRvSwtb-VHM8cS_0edSMd5P03c34kJ5094/edit#gid=0" target="_blank" class="a">. multi prices builder</a>
+	
+    <br>
+    <div id="inputdata" class="wrapTextBox">
+        <textarea id="myTextarea" rows="6" cols="175" class="form-control"></textarea>
+    </div>
+	
+    <button type="button" onclick="Send()" class="button button5">Send</button>
+      <span id="myTextareaMax" class="a" contenteditable="true" style="color: #9A7FD5;">1</span>
+    <span class="a">times.</span>
+    <!-- </div> -->
+    <!--button type="button" onclick="ToFile()"style="width:100px">Download File</button>  -->
+    <button type="button" onclick="setupDownloadLink()" class="button button4">console log</button>
+    <button type="button" onclick="Clear()" class="button button4">Clear</button>
+
+
+    <div id="chart_div2" class="a" style="width: 50%;"></div>
+
+	  <div id="chart_div3" class="wrapTextBox" style="height: 130px;"></div>
+	 
+    <div> <span style="color: #878787;" class="a">request </span>
+        <span style="color: #5DB0CC;" class="a">regular responses</span>
+        <!-- <span style="color: #D18B40;" class="a">user data response </span> -->
+        <span style="color: #C93F3B;" class="a">errors response </span>
+		<span style="color: #D2C057;" class="a">signals </span>
+		<span style="color: #9A7FD5;" class="a">editable </span>
+    </div>
+	 
+    <div id="outputDetails" class="a"> </div>
+
+</body>
+
+</html>
