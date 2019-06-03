@@ -1,0 +1,13 @@
+# Introduction
+The OM2 exchange API offers real time market data as well as the ability to trade with the exchange.
+
+The underlying technology used is [Scalecube](http://scalecube.io/) a Novel Open-source application-platform that addresses inherent challenges involved in the development of distributed computing.
+# Trading API
+## placeOrder
+
+The placeOrder API lets you place a new order into exchange. 
+
+If you send a valid order, you should receive a response with "Pending" status, this means that order was validated and accepted. The response contains the exchange orderId which should be stored and used for later status changes, notified via the orderBookDepth stream. 
+
+Non-valid order will be responded with the error message. 
+In case of timeout TBD
