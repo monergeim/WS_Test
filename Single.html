@@ -331,7 +331,7 @@ function Send() {
     if (timestosend == 1) {
         for (var i = 0; i < lines.length; i++) {
             //console.log (lines[i]);
-			
+			 var now = Date.now(); 
             doSend(lines[i].replace('nonce',now+i).replace('nonce',now+i));
         }
     } else {
@@ -395,9 +395,13 @@ async function testWebSocket() {
 }
 
 async function doSend(message) { //d=new Date();
+ var now = Date.now(); 
 if (message.length<=1) return;
     try {
         JSON.parse(message);
+		
+        message=message.replace('nonce',now).replace('nonce',now);
+   
         websocket.send(message);
         if (WriteResponse) writeToScreenNice(message, "#878787");
         else FileContent = FileContent + "    " + ":" + message + '\n';
@@ -478,6 +482,7 @@ async function writeToScreenNice(message, color) {
 
 window.addEventListener("load", init, false);
 
+	    
 function ManageBookFunc() {
     var len1 = book1.length;
 	if (CurrentInstrument != obj.d.instrument) return;
