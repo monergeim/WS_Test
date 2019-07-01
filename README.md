@@ -1,6 +1,8 @@
-## Table of Contents
+<img src="https://www.google.com/a/cpanel/om2.com/images/logo.gif" width="80">
+
+
 - [Introduction](#Introduction)
-  - [Request and Response General Specifications](#GeneralSpecs)
+  - [General Specifications](#GeneralSpecs)
 - [Trading API](#TradingAPI)
   - [placeOrder](#placeOrder)
   - [cancelOrder](#cancelOrder)
@@ -25,8 +27,9 @@ Within the valid JSON please be aware that:
 * Click on the Settings button then set Sandbox endpoint `wss://master-ws.genesis.om2.com`, click on the Connect button
 * Enter the message body in text area and click Send.
 * Note: You can import few samples by clicking on Import icon and paste this sample [Json file](https://raw.githubusercontent.com/jivygroup/api-sandbox-data/master/basicTrade) url
+ 
+<details><summary><a name="GeneralSpecs"></a><b>General Specifications</b></summary>
 
-## <a name="GeneralSpecs"></a>Request and Response General Specifications
 **Request Parameters**  
 
 Parameter|	Type|	Description
@@ -115,6 +118,7 @@ sig|Description
 1|Stream closed with success
 2|Stream closed with failure
 3|Stream was closed due to consumer request
+</details>
 
 
 # <a name="TradingAPI"></a>Trading API
@@ -126,10 +130,11 @@ If you send a valid order, you should receive a response with "Pending" status, 
 
 Non-valid order will be responded with the error message. 
 In case of timeout TBD
+`brokerOrder`Id Uniqueness TBD 
 
-Order types: 
-**Limit**: Order is being sent with a specific price. A buy order will be executed with the requested price or lower price a sell order will be executed with the requested price or higher price. 
-**Market**: Order is attempted filled at the best price in the market. Partial filled is allowed. In case not all the amount can be filled, the residual amount will be cancelled.
+Order types:  
+* **Limit**: Order is being sent with a specific price. A buy order will be executed with the requested price or lower price a sell order will be executed with the requested price or higher price. 
+* **Market**: Order is attempted filled at the best price in the market. Partial filled is allowed. In case not all the amount can be filled, the residual amount will be cancelled.
 
 Endpoint: `/om2.exchange.orders/placeOrder`
 
@@ -138,25 +143,31 @@ Endpoint: `/om2.exchange.orders/placeOrder`
 Parameter|	Type|	Description
 ---|---|---
 userId|	String|	Reference data only which is not being used in the exchange
-OrderType|	Enum|	Order type Limit or Market
-OrderSide|	Enum|	Order side Buy or Sell
-instrument|	String|	Instrument identifier
-quantity|	Long|	Order quantity
-price `optional`|	Long|	The price of the Limit order. For Market order this will not be sent.
+OrderType|Enum|Order type Limit or Market
+OrderSide|Enum|Order side Buy or Sell
+instrument|String|Instrument identifier
+quantity|Decimal|Order quantity
+price `optional`|Decimal|The price of the Limit order. For Market order this will not be sent.
 
 **Response Parameters**
 
 Parameter|	Type|	Description
 ---|---|---
-orderId|String|	Exchange Order ID
+orderId|Long|	Exchange Order ID
 orderStatus|String|Order status: Pending
 
 **Error Codes**
 
-Code|Description
+Code|Message
 ---|---
-1000	|Not all the required fields were sent
-1001	|Invalid data was sent. More details are shown in the error message, for example "Wrong side"
+1000|`Missing fields: [Fieldname]`
+1001|`Order must contain a positive quantity` or   <br>`Market order must not specify price` or <br>`Limit order must contain a positive price` or<br>`Wrong orderType` or<br>`Wrong side` or<br>`Wrong brokerOrderId`
+1002|`brokerOrderId is already in use`
+1003|`Market is closed`
+1004|`Instrument trading is not allowed` 
+1005|`Price precision is[PricePrecision]` or<br> `Quantity precision is[QuantityPrecision]`
+1006|`Minimum order quantity is [MinOrderQuantity]` or<br>`Maximum order quantity is [MaxOrderQuantity]`
+1010|`Instrument [Instrument] not found`
 
 
 <details>
@@ -169,7 +180,8 @@ Code|Description
 	"q":"/om2.exchange.orders/placeOrder",
 	"sid": 1,
 	"d":{
-		   "userId": "1",
+		   "brokerOrderId": "1abc",   
+                   "userId": "1",
 		   "orderType": "Limit",
 		   "side": "Buy",
 		   "instrument": "BTC",
@@ -219,23 +231,25 @@ Endpoint: `/om2.exchange.orders/cancelOrder`
 
 Parameter|	Type|	Description
 ---|----|----
-userId|	String|	Reference data only which is not being used in the exchange
-orderId|String|	Exchange Order ID
-
+userId|String|Reference data only which is not being used in the exchange
+orderId `optional`|Long|Exchange Order ID. Not mandatory if `brokerOrderId` was sent
+brokerOrderId `optional`|String|Broker order ID. Not mandatory if `orderId` was sent
+instrument|String|Instrument identifier
 
 
 **Response Parameters**
 
 Parameter|	Type|	Description
 ---|---|---
-orderId|String|	Exchange Order ID
+orderId|Long|	Exchange Order ID
 
 **Error Codes**
 
-Code|Description
+Code|Message
 ---|---
-1100|System can’t find open order with that ID
-1103|userId is not specified
+1100|`orderId not found` 
+1103|`Missing fields: [Fieldname]`
+1104|`Please use only one from orderId or brokerOrderId` 
 
 <details>
 <summary><b>Samples</b></summary>  
@@ -248,8 +262,9 @@ Code|Description
         "q":"/om2.exchange.orders/cancelOrder",
         "sid": 1,
         "d":{
-               "id":"aca1bdf9-60ec-497a-91e2-3c858a7e70a8",
-               "userId": "1"
+               "orderId":"aca1bdf9-60ec-497a-91e2-3c858a7e70a8",
+               "userId": "1",
+               "instrument": "BTC"
         }
 }
 ```
@@ -260,7 +275,7 @@ Code|Description
         "q":"/om2.exchange.orders/cancelOrder",
         "sid":1,
         "d":{
-               "id":"aca1bdf9-60ec-497a-91e2-3c858a7e70a8"
+               "orderId":"aca1bdf9-60ec-497a-91e2-3c858a7e70a8"
         }
 }
 ```
@@ -284,57 +299,57 @@ Code|Description
 # <a name="MarketDataAPI"></a>Market Data API
 ## orderBookDepth
 
-The orderBookDepth stream lets you get all the updated data on the order book (raw data and not aggregated) in real-time stream.
-Stream is public to all exchange consumer - but only the authorized broker know that a specific order belongs to him.
+The `orderBookDepth` stream provide the full order book depth data.
+This stream is public and anonymous, only the broker that placed the order knows the order origin. (As the orderId was provided within `placeOrder` response).
 
-There are **3 available messages** in that stream:
+The `orderBookDepth` publish only raw data without any aggregation, hence in order to determine the current state of an order, the subscriber needs to maintain the updated order state as per all the messages for that order.
 
-* **Add:** when a new order is captured in the book
-* **Execute:** when there is a match
-* **Cancel:** when order is cancelled
+There are 3 message types:
+
+* **Add**
+* **Cancelled**
+* **Executed**
 
 Endpoint: `/om2.exchange.market/orderBookDepth`
 
-**Request Parameters**
+Note: No subscription parameters are required to subscribe the stream. 
 
-Parameter|	Type|	Description
----|---|---
-emptyObject {}|	String|	subscription to infinite events stream
+**Add Order Message** indicates that a new order has been accepted by the exchange and was added to the
+book. 
 
-**Add Order Message**
+Field|Description
+---|---
+messageType| **Add**
+orderId|Exchange OrderId
+eventTimestamp|Event timestamp (in microseconds)
+side|Buy / Sell
+instrument|Instrument symbol
+quantity|Order quantity 
+price|Order price
 
-Parameter| Type| Description
----|---|---
-messageType|String| **Add** - order is captured in the order book
-orderId|String|	Exchange Order ID
-eventTimestamp|Long| Event timestamp (in microseconds)
-side|String| Buy / Sell
-instrument|String| Instrument symbol
-quantity|BigDecimal| Order quantity 
-price|BigDecimal| Order price
+**Order Executed Message** indicates that an order on the book is matched with a new coming order in whole or in part. It is possible to receive several Order Executed Messages for a single orderId.  
 
-**Order Executed Message**
+Field|Description
+---|---
+messageType|**Executed** 
+mathchId|Unique ID for the match
+eventTimestamp|Event timestamp (in microseconds)
+makerOrderId|Resting `orderId`
+takerOrderId|Aggressive `orderId`
+instrument|Instrument symbol
+executedQuantity|Matched quantity
+executedPrice|Matched price (maker order price). 
 
-Parameter| Type| Description
----|---|---
-messageType|String| **Executed** - orders (resting&aggressive) were matched
-orderId|String|	Exchange Orders' Match ID
-eventTimestamp|Long| Event timestamp (in microseconds)
-makerOrderId|String| Resting Order ID
-takerOrderId|String| Aggressive order ID
-instrument|String| Instrument symbol
-executedQuantity|BigDecimal| Order matched quantity
-executedPrice|BigDecimal| Order matched price 
+**Order Cancel Message** indicates that an order on the book is being cancelled. 
+This message also sent in case of market order that was not fully filled.  
 
-**Order Cancel Message**
-
-Parameter| Type| Description
----|---|---
-messageType|String| **Cancelled** - `resting` order's quantity was removed from the order book either `Market` order's quantity wasn't matched  
-orderId|String|	Exchange Orders' Match ID
-eventTimestamp|Long| Event timestamp (in microseconds)
-instrument|String| Instrument symbol
-cancelledQuantity|BigDecimal| Order's cancelled quantity
+Field|Description
+---|---
+messageType|**Cancelled** 
+orderId|Exchange `OrderId`
+eventTimestamp|Event timestamp (in microseconds)
+instrument|Instrument symbol
+cancelledQuantity|Order cancelled quantity
  
 
 <details>
@@ -361,8 +376,8 @@ cancelledQuantity|BigDecimal| Order's cancelled quantity
                "instrument": "BTCUSD",
                "orderId": "92f9b6eb-3c73-4192-9896-9db81b1045e5",
                "side": "Buy",
-               "quantity": 50,
-               "price": 6500
+               "quantity": 1.12356,
+               "price": 6500.4321
     	   }
 }
 ```
@@ -379,8 +394,8 @@ cancelledQuantity|BigDecimal| Order's cancelled quantity
                "matchId": "1235fty-3c98-8888-9896-9db81b1697",
                "makerOrderId": "92f9b6eb-3c73-4192-9896-9db81b1045e5",
                "takerOrderId": "825b5e62-7e25-411a-a3ce-9c3697aaec05",
-               "executedQuantity": 50,
-               "executedPrice": 10,
+               "executedQuantity": 50.12,
+               "executedPrice": 180.34,
          }
 }
 ```
@@ -395,9 +410,10 @@ cancelledQuantity|BigDecimal| Order's cancelled quantity
                "eventTimestamp": 1559834204805,
                "instrument": "GOOG",
                "orderId": "2729fb31-f5b5-4458-9a8d-626230f2879e",
-               "canceledQuantity": 50
+               "canceledQuantity": 50.12
          }
 }  
 ```
 
 </details>
+
