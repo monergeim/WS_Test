@@ -549,7 +549,7 @@ function DrawOrderEventsFunc() {
 
     var timeStamp = new Date(obj.d.eventTimestamp);
 	var messageType=obj.d.messageType;
-    orderEventsTable[len2] = [(len2+1).toString(),
+    orderEventsTable[len2] = [(len2+1),
         timeStamp.toLocaleDateString(),
 		[timeStamp.getHours(), timeStamp.getMinutes(), timeStamp.getSeconds(), timeStamp.getMilliseconds()],
 		(messageType != "Executed")  ?  obj.d.orderId.toString() : obj.d.makerOrderId.toString(),
@@ -575,7 +575,7 @@ function DrawOrderEventsDrawing() {
 function DrawOrderEventsTable() {
   //  NeedtoDrawBook = false;
     var dataTable1 = new google.visualization.DataTable();
-    dataTable1.addColumn('string', '#');
+    dataTable1.addColumn('number', '#');
 	dataTable1.addColumn('string', 'Date');
 	dataTable1.addColumn('timeofday', 'Timestamp');
 	dataTable1.addColumn('string', 'Order ID');
