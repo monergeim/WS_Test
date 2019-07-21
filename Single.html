@@ -482,7 +482,6 @@ async function writeToScreenNice(message, color) {
 
 window.addEventListener("load", init, false);
 
-	    
 function ManageBookFunc() {
     var len1 = book1.length;
 	if (CurrentInstrument != obj.d.instrument) return;
@@ -550,16 +549,19 @@ function DrawOrderEventsFunc() {
 
     var timeStamp = new Date(obj.d.eventTimestamp);
 	var messageType=obj.d.messageType;
-    orderEventsTable[len2] = [len2+1,
-        [timeStamp.getHours(), timeStamp.getMinutes(), timeStamp.getSeconds(), timeStamp.getMilliseconds()],
-		(messageType != "Executed")  ?  obj.d.orderId : obj.d.makerOrderId,
+    orderEventsTable[len2] = [(len2+1).toString(),
+        timeStamp.toLocaleDateString(),
+		[timeStamp.getHours(), timeStamp.getMinutes(), timeStamp.getSeconds(), timeStamp.getMilliseconds()],
+		(messageType != "Executed")  ?  obj.d.orderId.toString() : obj.d.makerOrderId.toString(),
 		messageType,
 		obj.d.side,
 		obj.d.instrument,
 		(messageType == "Add") ?  obj.d.quantity : ((messageType == "Cancelled") ?  obj.d.canceledQuantity: obj.d.executedQuantity),
 		(messageType == "Add") ? obj.d.price : obj.d.executedPrice,
 		(messageType == "Executed")  ?  obj.d.takerOrderId.toString() : "",
-		(messageType == "Executed")  ?  obj.d.matchId.toString() : ""
+		(messageType == "Executed")  ?  obj.d.matchId.toString() : "",
+		obj.d.eventId.toString()
+
     ];
 
 	NeedtoDrawOrderEvents= true;
@@ -573,9 +575,10 @@ function DrawOrderEventsDrawing() {
 function DrawOrderEventsTable() {
   //  NeedtoDrawBook = false;
     var dataTable1 = new google.visualization.DataTable();
-    dataTable1.addColumn('number', '#');
+    dataTable1.addColumn('string', '#');
+	dataTable1.addColumn('string', 'Date');
 	dataTable1.addColumn('timeofday', 'Timestamp');
-	dataTable1.addColumn('number', 'Order ID');
+	dataTable1.addColumn('string', 'Order ID');
 	dataTable1.addColumn('string', 'Message Type');
 	dataTable1.addColumn('string', 'Buy/Sell');
 	dataTable1.addColumn('string', 'Instrument');
@@ -583,6 +586,7 @@ function DrawOrderEventsTable() {
 	dataTable1.addColumn('number', 'Price');
 	dataTable1.addColumn('string', 'Taker Order ID');
 	dataTable1.addColumn('string', 'Match ID');
+	dataTable1.addColumn('string', 'Event ID');
 
 
  
@@ -590,10 +594,12 @@ function DrawOrderEventsTable() {
         dataTable1.addRows([orderEventsTable[j]]);
     }
 
+
     var table = new google.visualization.Table(document.getElementById('chart_div3'));
     table.draw(dataTable1, orderEventsTableOptions);
 	NeedtoDrawOrderEvents= false;
 }
+
 
 var PlaceORders,CancelOrder, FillORders,  orderEvents,    ConfigurationFetchAll;
 
