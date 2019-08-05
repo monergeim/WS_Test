@@ -393,10 +393,10 @@ async function onMessage(evt) {
 }
 async function onOpen(evt) {
     writeToScreenHeader('CONNECTED!', 'LIME');
-	 var now = Date.now(); 
-	var hash = CryptoJS.HmacSHA256('"apiKey":"6ggg","timestamp":"'+now+'"', "9ijrXAt7SgAZJ5gkLbhEahlgi2R9HgL6jzXB0WcyWRWIKsMhaxl5GzIym6uPiFkkkk");
- createSession ='{"q":"/om2.exchange.auth/createSession","sid":15,"d":{"apiKey":"6ggg","timestamp":"'+now+'","signature":"'+hash+'"}}' 
-   doSend(createSession);
+	// var now = Date.now(); 
+	//var hash = CryptoJS.HmacSHA256('"apiKey":"6ggg","timestamp":"'+now+'"', "9ijrXAt7SgAZJ5gkLbhEahlgi2R9HgL6jzXB0WcyWRWIKsMhaxl5GzIym6uPiFkkkk");
+ //createSession ='{"q":"/om2.exchange.auth/createSession","sid":15,"d":{"apiKey":"6ggg","timestamp":"'+now+'","signature":"'+hash+'"}}' 
+  // doSend(createSession);
 	
 	if (ManageBook) {
 	     await sleep(1000);
@@ -598,7 +598,10 @@ function FillFlow() {
     document.getElementById("myTextarea").value = FillORders;
 }
  function CancelOrdersMessage() {
-	CancelOrder = '{"q":"/om2.exchange.orders/cancelOrder","sid":75,"d":{"userId":"1A","orderId":"' + OrderID + '","instrument":"' + CurrentInstrument +'"}}';
+	//CancelOrder = '{"q":"/om2.exchange.orders/cancelOrder","sid":75,"d":{"userId":"1A","orderId":"' + OrderID + '","instrument":"' + CurrentInstrument +'"}}';
+	  var now = Date.now(); 
+	var hash = CryptoJS.HmacSHA256('"apiKey":"6ggg","timestamp":"'+now+'"', "9ijrXAt7SgAZJ5gkLbhEahlgi2R9HgL6jzXB0WcyWRWIKsMhaxl5GzIym6uPiFkkkk");
+ CancelOrder ='{"q":"/om2.exchange.auth/createSession","sid":15,"d":{"apiKey":"6ggg","timestamp":"'+now+'","signature":"'+hash+'"}}' 
  }
  
 function StreamsMessage() {
