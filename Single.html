@@ -159,7 +159,7 @@ select.form-control:focus::-ms-value {
    </style>
     <script type="text/javascript">
 var wsUri = "wss://master-ws.genesis.om2.com",
-    wsUriDev = "wss://develop-ws.genesis.om2.com",
+    wsUriDev = "wss://develop.exchange.om2.com",
 	ConfigurationUri = "wss://configuration-service-ws.genesis.om2.com";
 
 var output, outputDetails, outputDetailsOffline, data, lines, Message,
@@ -474,15 +474,15 @@ async function writeToScreenNice(message, color) {
 
 window.addEventListener("load", init, false);
 
-	    
-	    
-function ManageBookFunc() {
+	function ManageBookFunc() {
     var len1 = book1.length;
 	if (CurrentInstrument != obj.d.instrument) return;
     if (obj.d.messageType == "Add") {
+
         var order1 = [obj.d.price, ((obj.d.side == 'Sell') ? obj.d.quantity * -1 : obj.d.quantity), ((obj.d.side == 'Buy') ? 'Buy' : 'Sell'),obj.d.orderId]
         if (len1 == 0) book1[len1] = order1;
         else book1[len1] = order1;
+
     } 
 	else if (obj.d.messageType == "Cancelled"){
         for (var j = 0; j < book1.length; j++) {
@@ -494,6 +494,7 @@ function ManageBookFunc() {
 	else if (obj.d.messageType == "Executed" ){
         for (var j = 0; j < book1.length; j++) {
             if (book1[j][3] == obj.d.makerOrderId) { 
+
                 book1[j][1] =  book1[j][1] + ((book1[j][2] == 'Sell') ? obj.d.executedQuantity : obj.d.executedQuantity * -1 );
                if  (book1[j][1] * 1000000000000 < 0.01){ //due to rounding not chack ==0
 			  // alert("0 in quantity !");
@@ -504,12 +505,14 @@ function ManageBookFunc() {
     }
     NeedtoDrawBook = true;
 }
+
 function DrawBook() {
     google.charts.load('current', {
         'packages': ['table']
     });
     google.charts.setOnLoadCallback(drawBookTable);
 }
+
 function drawBookTable() {
     NeedtoDrawBook = false;
     var dataTable1 = new google.visualization.DataTable();
@@ -520,6 +523,7 @@ function drawBookTable() {
     for (var j = 0; j < book1.length; j++) {
         dataTable1.addRows([book1[j]]);
     }
+
     var formatter = new google.visualization.BarFormat({
         width: 80,
         colorPositive: 'green',
@@ -528,30 +532,42 @@ function drawBookTable() {
     formatter.format(dataTable1, 1); // Apply formatter to second column
     var table = new google.visualization.Table(document.getElementById('chart_div1'));
     table.draw(dataTable1, bookOptions);
+
 }
+
 function DrawOrderEventsFunc() {
     var len2 = orderEventsTable.length;
+
+
     var timeStamp = new Date(obj.d.eventTimestamp);
 	var messageType=obj.d.messageType;
     orderEventsTable[len2] = [(len2+1),
         timeStamp.toLocaleDateString(),
 		[timeStamp.getHours(), timeStamp.getMinutes(), timeStamp.getSeconds(), timeStamp.getMilliseconds()],
-		(messageType != "Executed")  ?  obj.d.orderId.toString() : obj.d.makerOrderId.toString(),
+		(messageType != "Executed")  ?  obj.d.orderId.toString() : obj.d.takerOrderId.toString(),
 		messageType,
 		obj.d.side,
 		obj.d.instrument,
-		(messageType == "Add") ?  obj.d.quantity : ((messageType == "Cancelled") ?  obj.d.canceledQuantity: obj.d.executedQuantity),
+		(messageType == "Add") ?  obj.d.quantity : ((messageType == "Cancelled") ?  obj.d.cancelledQuantity: obj.d.executedQuantity),
 		(messageType == "Add") ? obj.d.price : obj.d.executedPrice,
-		(messageType == "Executed")  ?  obj.d.takerOrderId.toString() : "",
+		(messageType == "Executed")  ?  obj.d.makerOrderId.toString() : "",
 		(messageType == "Executed")  ?  obj.d.matchId.toString() : "",
-		obj.d.eventId.toString()
+		obj.d.eventId.toString(),
+		(messageType == "Executed")  ? obj.d.takerBrokerId.toString(): obj.d.brokerId.toString(),
+		(messageType == "Executed") ? obj.d.takerBrokerOrderId.toString():obj.d.brokerOrderId.toString(),
+		(messageType == "Executed")  ?obj.d.makerBrokerId.toString():"",
+		(messageType == "Executed")  ?obj.d.makerBrokerOrderId.toString():""
+
     ];
+
 	NeedtoDrawOrderEvents= true;
 }
+
 function DrawOrderEventsDrawing() {
     google.charts.load('current', {'packages': ['table']});
     google.charts.setOnLoadCallback(DrawOrderEventsTable);
 }
+
 function DrawOrderEventsTable() {
   //  NeedtoDrawBook = false;
     var dataTable1 = new google.visualization.DataTable();
@@ -564,17 +580,28 @@ function DrawOrderEventsTable() {
 	dataTable1.addColumn('string', 'Instrument');
     dataTable1.addColumn('number', 'Quantity');
 	dataTable1.addColumn('number', 'Price');
-	dataTable1.addColumn('string', 'Taker Order ID');
+	dataTable1.addColumn('string', 'Maker Order ID');
 	dataTable1.addColumn('string', 'Match ID');
 	dataTable1.addColumn('string', 'Event ID');
+	dataTable1.addColumn('string', 'Broker ID');
+	dataTable1.addColumn('string', 'Broker Order ID');
+	dataTable1.addColumn('string', 'Maker Broker ID');
+	dataTable1.addColumn('string', 'Maker Broker Order ID');
+
+
+
+
  
     for (var j = 0; j < orderEventsTable.length; j++) {
         dataTable1.addRows([orderEventsTable[j]]);
     }
+
+
     var table = new google.visualization.Table(document.getElementById('chart_div3'));
     table.draw(dataTable1, orderEventsTableOptions);
 	NeedtoDrawOrderEvents= false;
 }
+
 var PlaceORders,CancelOrder, createSession,  orderEvents,    ConfigurationFetchAll;
 
  var bookssClassNames = {
