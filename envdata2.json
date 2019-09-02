@@ -694,6 +694,151 @@
                             ]
                         }
                     }}
+      ,
+      {"methodName": "updateEntry",
+        "group": "Write",
+        "payload": {
+          "sample": { "q": "/configuration/updateEntry",
+                            "sid": 1,"d": {
+                                "apiKey": "eyJraWQiOiJkZjFlYWQ3NC1jOTA2LTRiYWYtYmEzZi0zOTE5ZDVhZjcwZmEiLCJhbGciOiJSUzI1NiJ9.eyJqdGkiOiJPUkctM0UxNTk3MDkxOEYzNDk1QTZCODEiLCJpYXQiOjE1NjA1MTgxMDgsInN1YiI6Ik9SRy0zRTE1OTcwOTE4RjM0OTVBNkI4MSIsImlzcyI6InNjYWxlY3ViZS5pbyIsImF1ZCI6Ik9SRy0zRTE1OTcwOTE4RjM0OTVBNkI4MSIsInJvbGUiOiJNZW1iZXIifQ.JpCj6EpJ5P9uG9BsPvxTeveI-CjbyorMaacsq9AUx3Z9me-TC_vcwGVsT0rdmZVPTbUcSIhKaOhnfoMGVg8Cs39KSKf693zmnWYcZsUhncHmb5soksoXP48uN5_O0cZ2DiGXLVKblJq5PTm4QfToUsr73_ouPh2eC185wRm4jximp9sbYIMiNND883b_DA4ls1qnRV2T_UZESB_uE81iuQqB1BVF-AeUvN_R8GqB59RDJj6VBTRNnIkk-h0AJwoTgU4rhX5jszgPC2NwJuvU-zig95TfOjacT8dZ_CALtc8sz-EhARTAdRukW2rcmbq2L0A5YbdUYytPJB63G_oawQ",
+                                "repository": "InstrumentsList",
+                                 "key": "MyKey",
+                                 "value":{"param":1}
+                            }
+                           },
+          "metadata": {
+          "q": {
+                                "hidden": true,
+                                "valueType": "text",
+                                "id": "q",
+                                "label": "q",
+                                "type": "input",
+                                "initialValue": "/configuration/readList",
+                                "required": true
+                            },
+                            "repository": {
+                                "id": "repository",
+                                "label": "repository",
+                                "type": "input",
+                                "initialValue": "",
+                                "required": true,
+                                "valueType": "text"
+                            },
+                            "key": {
+                                "id": "key",
+                                "label": "key",
+                                "type": "input",
+                                "initialValue": "",
+                                "required": true,
+                                "valueType": "text"
+                            },
+                            "value": {
+                                "id": "value",
+                                "label": "value",
+                                "type": "input",
+                                "initialValue": "{}",
+                                "required": true,
+                                "valueType": "text"
+                            },
+                            "apiKey": {
+                                "id": "apiKey",
+                                "label": "apiKey",
+                                "type": "input",
+                                "initialValue": "eyJraWQiOiJkZjFlYWQ3NC1jOTA2LTRiYWYtYmEzZi0zOTE5ZDVhZjcwZmEiLCJhbGciOiJSUzI1NiJ9.eyJqdGkiOiJPUkctM0UxNTk3MDkxOEYzNDk1QTZCODEiLCJpYXQiOjE1NjA1MTgxMDgsInN1YiI6Ik9SRy0zRTE1OTcwOTE4RjM0OTVBNkI4MSIsImlzcyI6InNjYWxlY3ViZS5pbyIsImF1ZCI6Ik9SRy0zRTE1OTcwOTE4RjM0OTVBNkI4MSIsInJvbGUiOiJNZW1iZXIifQ.JpCj6EpJ5P9uG9BsPvxTeveI-CjbyorMaacsq9AUx3Z9me-TC_vcwGVsT0rdmZVPTbUcSIhKaOhnfoMGVg8Cs39KSKf693zmnWYcZsUhncHmb5soksoXP48uN5_O0cZ2DiGXLVKblJq5PTm4QfToUsr73_ouPh2eC185wRm4jximp9sbYIMiNND883b_DA4ls1qnRV2T_UZESB_uE81iuQqB1BVF-AeUvN_R8GqB59RDJj6VBTRNnIkk-h0AJwoTgU4rhX5jszgPC2NwJuvU-zig95TfOjacT8dZ_CALtc8sz-EhARTAdRukW2rcmbq2L0A5YbdUYytPJB63G_oawQ",
+                                "required": true,
+                                "valueType": "text"
+                            },
+                            "sid": {
+                                "id": "sid",
+                                "label": "sid",
+                                "type": "input",
+                                "initialValue": 1,
+                                "required": true,
+                                "valueType": "number"
+                            }
+                        },
+                        "structure": {
+                               "q": "q",
+                            "sid": "sid",  
+                          "d": [
+                                "apiKey",
+                                "repository",
+                                "key"
+                            ]
+                        }
+                    }},
+      {"methodName": "deleteEntry",
+        "group": "Write",
+        "payload": {
+          "sample": { "q": "/configuration/deleteEntry",
+                            "sid": 1,"d": {
+                                "apiKey": "eyJraWQiOiJkZjFlYWQ3NC1jOTA2LTRiYWYtYmEzZi0zOTE5ZDVhZjcwZmEiLCJhbGciOiJSUzI1NiJ9.eyJqdGkiOiJPUkctM0UxNTk3MDkxOEYzNDk1QTZCODEiLCJpYXQiOjE1NjA1MTgxMDgsInN1YiI6Ik9SRy0zRTE1OTcwOTE4RjM0OTVBNkI4MSIsImlzcyI6InNjYWxlY3ViZS5pbyIsImF1ZCI6Ik9SRy0zRTE1OTcwOTE4RjM0OTVBNkI4MSIsInJvbGUiOiJNZW1iZXIifQ.JpCj6EpJ5P9uG9BsPvxTeveI-CjbyorMaacsq9AUx3Z9me-TC_vcwGVsT0rdmZVPTbUcSIhKaOhnfoMGVg8Cs39KSKf693zmnWYcZsUhncHmb5soksoXP48uN5_O0cZ2DiGXLVKblJq5PTm4QfToUsr73_ouPh2eC185wRm4jximp9sbYIMiNND883b_DA4ls1qnRV2T_UZESB_uE81iuQqB1BVF-AeUvN_R8GqB59RDJj6VBTRNnIkk-h0AJwoTgU4rhX5jszgPC2NwJuvU-zig95TfOjacT8dZ_CALtc8sz-EhARTAdRukW2rcmbq2L0A5YbdUYytPJB63G_oawQ",
+                                "repository": "InstrumentsList",
+                                 "key": "MyKey",
+                                 "value":{"param":1}
+                            }
+                           },
+          "metadata": {
+          "q": {
+                                "hidden": true,
+                                "valueType": "text",
+                                "id": "q",
+                                "label": "q",
+                                "type": "input",
+                                "initialValue": "/configuration/readList",
+                                "required": true
+                            },
+                            "repository": {
+                                "id": "repository",
+                                "label": "repository",
+                                "type": "input",
+                                "initialValue": "",
+                                "required": true,
+                                "valueType": "text"
+                            },
+                            "key": {
+                                "id": "key",
+                                "label": "key",
+                                "type": "input",
+                                "initialValue": "",
+                                "required": true,
+                                "valueType": "text"
+                            },
+                            "value": {
+                                "id": "value",
+                                "label": "value",
+                                "type": "input",
+                                "initialValue": "{}",
+                                "required": true,
+                                "valueType": "text"
+                            },
+                            "apiKey": {
+                                "id": "apiKey",
+                                "label": "apiKey",
+                                "type": "input",
+                                "initialValue": "eyJraWQiOiJkZjFlYWQ3NC1jOTA2LTRiYWYtYmEzZi0zOTE5ZDVhZjcwZmEiLCJhbGciOiJSUzI1NiJ9.eyJqdGkiOiJPUkctM0UxNTk3MDkxOEYzNDk1QTZCODEiLCJpYXQiOjE1NjA1MTgxMDgsInN1YiI6Ik9SRy0zRTE1OTcwOTE4RjM0OTVBNkI4MSIsImlzcyI6InNjYWxlY3ViZS5pbyIsImF1ZCI6Ik9SRy0zRTE1OTcwOTE4RjM0OTVBNkI4MSIsInJvbGUiOiJNZW1iZXIifQ.JpCj6EpJ5P9uG9BsPvxTeveI-CjbyorMaacsq9AUx3Z9me-TC_vcwGVsT0rdmZVPTbUcSIhKaOhnfoMGVg8Cs39KSKf693zmnWYcZsUhncHmb5soksoXP48uN5_O0cZ2DiGXLVKblJq5PTm4QfToUsr73_ouPh2eC185wRm4jximp9sbYIMiNND883b_DA4ls1qnRV2T_UZESB_uE81iuQqB1BVF-AeUvN_R8GqB59RDJj6VBTRNnIkk-h0AJwoTgU4rhX5jszgPC2NwJuvU-zig95TfOjacT8dZ_CALtc8sz-EhARTAdRukW2rcmbq2L0A5YbdUYytPJB63G_oawQ",
+                                "required": true,
+                                "valueType": "text"
+                            },
+                            "sid": {
+                                "id": "sid",
+                                "label": "sid",
+                                "type": "input",
+                                "initialValue": 1,
+                                "required": true,
+                                "valueType": "number"
+                            }
+                        },
+                        "structure": {
+                               "q": "q",
+                            "sid": "sid",  
+                          "d": [
+                                "apiKey",
+                                "repository",
+                                "key"
+                            ]
+                        }
+                    }}
     ]
   }
 }
