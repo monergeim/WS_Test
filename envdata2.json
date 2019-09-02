@@ -388,7 +388,7 @@
                             "sid": "sid"
                         }
                     }},
-      "methodName": "readList",
+      { "methodName": "readList",
         "group": "Configuration Svc",
         "payload": {
           "sample": {"d": {
@@ -441,7 +441,7 @@
                             "sid": "sid"
                         }
                     }},
- "methodName": "readEntry",
+      {"methodName": "readEntry",
         "group": "Configuration Svc",
         "payload": {
           "sample": {"d": {
@@ -505,7 +505,7 @@
                         }
                     }},
 ,
- "methodName": "readEntryHistory",
+      {"methodName": "readEntryHistory",
         "group": "Configuration Svc",
         "payload": {
           "sample": {"d": {
