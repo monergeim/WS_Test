@@ -504,7 +504,6 @@
                             "sid": "sid"
                         }
                     }},
-,
       {"methodName": "readEntryHistory",
         "group": "Configuration Svc",
         "payload": {
