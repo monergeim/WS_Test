@@ -386,7 +386,7 @@
                             "q": "q",
                             "sid": "sid"
                         }
-                    }}},
+                    }},
       {
         "methodName": "echo2",
         "group": "Group1"
