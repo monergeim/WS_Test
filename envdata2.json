@@ -330,126 +330,63 @@
       "field": "symbol"
     }
   },
-  "test/echoWebSocket": {
-    "url": "wss://echo.websocket.org/",
+  "configuration/staging": {
+    "url": "wss://configuration-service-staging-ws.genesis.om2.com",
     "methods": [
       {
-        "methodName": "echo",
-        "group": "Group1",
+        "methodName": "getInstruments",
+        "group": "Instruments",
         "payload": {
-          "sample": {},
+          "sample": {"d": {
+                                "apiKey": "eyJraWQiOiJkZjFlYWQ3NC1jOTA2LTRiYWYtYmEzZi0zOTE5ZDVhZjcwZmEiLCJhbGciOiJSUzI1NiJ9.eyJqdGkiOiJPUkctM0UxNTk3MDkxOEYzNDk1QTZCODEiLCJpYXQiOjE1NjA1MTgxMDgsInN1YiI6Ik9SRy0zRTE1OTcwOTE4RjM0OTVBNkI4MSIsImlzcyI6InNjYWxlY3ViZS5pbyIsImF1ZCI6Ik9SRy0zRTE1OTcwOTE4RjM0OTVBNkI4MSIsInJvbGUiOiJNZW1iZXIifQ.JpCj6EpJ5P9uG9BsPvxTeveI-CjbyorMaacsq9AUx3Z9me-TC_vcwGVsT0rdmZVPTbUcSIhKaOhnfoMGVg8Cs39KSKf693zmnWYcZsUhncHmb5soksoXP48uN5_O0cZ2DiGXLVKblJq5PTm4QfToUsr73_ouPh2eC185wRm4jximp9sbYIMiNND883b_DA4ls1qnRV2T_UZESB_uE81iuQqB1BVF-AeUvN_R8GqB59RDJj6VBTRNnIkk-h0AJwoTgU4rhX5jszgPC2NwJuvU-zig95TfOjacT8dZ_CALtc8sz-EhARTAdRukW2rcmbq2L0A5YbdUYytPJB63G_oawQ",
+                                "repository": "InstrumentList"
+                            },
+                            "q": "/configuration/readList",
+                            "sid": 1},
           "metadata": {
-            "q": {
-              "type": "input",
-              "id": "q",
-              "label": "q",
-              "valueType": "text",
-              "initialValue": "/om2.exchange.orders/placeOrder",
-              "hidden": true,
-              "readonly": true,
-              "required": true
-            },
-            "sid": {
-              "type": "input",
-              "id": "sid",
-              "label": "sid",
-              "valueType": "number",
-              "initialValue": 1,
-              "required": true
-            },
-            "brokerOrderId": {
-              "type": "input",
-              "id": "brokerOrderId",
-              "label": "brokerOrderId",
-              "valueType": "number",
-              "initialValue": "__TIMESTAMP__",
-              "required": true
-            },
-            "orderType": {
-              "type": "select",
-              "id": "orderType",
-              "label": "orderType",
-              "data": ["Market", "Limit"],
-              "initialValue": "Limit",
-              "required": true
-            },
-            "side": {
-              "type": "select",
-              "id": "side",
-              "label": "side",
-              "data": ["Buy", "Sell"],
-              "initialValue": "Buy",
-              "required": true
-            },
-            "quantity": {
-              "type": "input",
-              "id": "quantity",
-              "label": "quantity",
-              "valueType": "number",
-              "required": true
-            },
-            "price": {
-              "type": "input",
-              "id": "price",
-              "label": "price",
-              "valueType": "number",
-              "required": false,
-              "hidden": true,
-              "omitted": true,
-              "dependency": {
-                "fieldId": "orderType",
-                "operator": "oneOf",
-                "values": ["Limit"],
-                "override": {
-                  "required": true,
-                  "hidden": false,
-                  "omitted": false
-                }
-              }
-            },
-            "userId": {
-              "type": "input",
-              "id": "userId",
-              "label": "userId",
-              "valueType": "text",
-              "initialValue": "UserTest1",
-              "required": true
-            },
-            "tradeBoxId": {
-              "type": "input",
-              "id": "tradeBoxId",
-              "label": "tradeBoxId",
-              "valueType": "number",
-              "initialValue": 7,
-              "required": true
-            },
-            "tradeActionId": {
-              "type": "input",
-              "id": "tradeActionId",
-              "label": "tradeActionId",
-              "valueType": "number",
-              "initialValue": 8,
-              "required": true
-            },
-            "password": {
-              "type": "input",
-              "id": "password",
-              "label": "password",
-              "valueType": "text",
-              "initialValue": "test",
-              "required": true
-            },
-            "country": {
-              "type": "input",
-              "id": "country",
-              "label": "country",
-              "valueType": "text",
-              "initialValue": "Israel",
-              "required": false
-            }
-          }
-        }
-      },
+          "q": {
+                                "hidden": true,
+                                "valueType": "text",
+                                "id": "q",
+                                "label": "q",
+                                "type": "input",
+                                "initialValue": "/configuration/readList",
+                                "required": true
+                            },
+                            "repository": {
+                                "id": "repository",
+                                "label": "repository",
+                                "type": "input",
+                                "initialValue": "InstrumentList",
+                                "required": true,
+                                "valueType": "text"
+                            },
+                            "apiKey": {
+                                "id": "apiKey",
+                                "label": "apiKey",
+                                "type": "input",
+                                "initialValue": "eyJraWQiOiJkZjFlYWQ3NC1jOTA2LTRiYWYtYmEzZi0zOTE5ZDVhZjcwZmEiLCJhbGciOiJSUzI1NiJ9.eyJqdGkiOiJPUkctM0UxNTk3MDkxOEYzNDk1QTZCODEiLCJpYXQiOjE1NjA1MTgxMDgsInN1YiI6Ik9SRy0zRTE1OTcwOTE4RjM0OTVBNkI4MSIsImlzcyI6InNjYWxlY3ViZS5pbyIsImF1ZCI6Ik9SRy0zRTE1OTcwOTE4RjM0OTVBNkI4MSIsInJvbGUiOiJNZW1iZXIifQ.JpCj6EpJ5P9uG9BsPvxTeveI-CjbyorMaacsq9AUx3Z9me-TC_vcwGVsT0rdmZVPTbUcSIhKaOhnfoMGVg8Cs39KSKf693zmnWYcZsUhncHmb5soksoXP48uN5_O0cZ2DiGXLVKblJq5PTm4QfToUsr73_ouPh2eC185wRm4jximp9sbYIMiNND883b_DA4ls1qnRV2T_UZESB_uE81iuQqB1BVF-AeUvN_R8GqB59RDJj6VBTRNnIkk-h0AJwoTgU4rhX5jszgPC2NwJuvU-zig95TfOjacT8dZ_CALtc8sz-EhARTAdRukW2rcmbq2L0A5YbdUYytPJB63G_oawQ",
+                                "required": true,
+                                "valueType": "text"
+                            },
+                            "sid": {
+                                "id": "sid",
+                                "label": "sid",
+                                "type": "input",
+                                "initialValue": 1,
+                                "required": true,
+                                "valueType": "number"
+                            }
+                        },
+                        "structure": {
+                            "d": [
+                                "apiKey",
+                                "repository"
+                            ],
+                            "q": "q",
+                            "sid": "sid"
+                        }
+                    },
       {
         "methodName": "echo2",
         "group": "Group1"
