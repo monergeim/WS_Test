@@ -459,7 +459,7 @@
                                 "id": "q",
                                 "label": "q",
                                 "type": "input",
-                                "initialValue": "/configuration/readList",
+                                "initialValue": "/configuration/readEntry",
                                 "required": true
                             },
                             "repository": {
@@ -523,7 +523,7 @@
                                 "id": "q",
                                 "label": "q",
                                 "type": "input",
-                                "initialValue": "/configuration/readList",
+                                "initialValue": "/configuration/readEntryHistory",
                                 "required": true
                             },
                             "repository": {
@@ -585,7 +585,7 @@
                                 "id": "q",
                                 "label": "q",
                                 "type": "input",
-                                "initialValue": "/configuration/readList",
+                                "initialValue": "/configuration/createRepository",
                                 "required": true
                             },
                             "repository": {
@@ -640,7 +640,7 @@
                                 "id": "q",
                                 "label": "q",
                                 "type": "input",
-                                "initialValue": "/configuration/readList",
+                                "initialValue": "/configuration/createEntry",
                                 "required": true
                             },
                             "repository": {
@@ -713,7 +713,7 @@
                                 "id": "q",
                                 "label": "q",
                                 "type": "input",
-                                "initialValue": "/configuration/readList",
+                                "initialValue": "/configuration/updateEntry",
                                 "required": true
                             },
                             "repository": {
@@ -785,7 +785,7 @@
                                 "id": "q",
                                 "label": "q",
                                 "type": "input",
-                                "initialValue": "/configuration/readList",
+                                "initialValue": "/configuration/deleteEntry",
                                 "required": true
                             },
                             "repository": {
