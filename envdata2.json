@@ -380,12 +380,12 @@
                             }
                         },
                         "structure": {
-                            "d": [
+                             "q": "q",
+                            "sid": "sid",  
+                          "d": [
                                 "apiKey",
                                 "repository"
-                            ],
-                            "q": "q",
-                            "sid": "sid"
+                            ]
                         }
                     }},
       { "methodName": "readList",
@@ -433,12 +433,12 @@
                             }
                         },
                         "structure": {
-                            "d": [
+                             "q": "q",
+                            "sid": "sid",  
+                          "d": [
                                 "apiKey",
                                 "repository"
-                            ],
-                            "q": "q",
-                            "sid": "sid"
+                            ]
                         }
                     }},
       {"methodName": "readEntry",
@@ -495,13 +495,14 @@
                             }
                         },
                         "structure": {
-                            "d": [
+                           "q": "q",
+                            "sid": "sid",  
+                          "d": [
                                 "apiKey",
                                 "repository",
                                 "key"
-                            ],
-                            "q": "q",
-                            "sid": "sid"
+                            ]
+
                         }
                     }},
       {"methodName": "readEntryHistory",
@@ -558,13 +559,13 @@
                             }
                         },
                         "structure": {
-                            "d": [
+                               "q": "q",
+                            "sid": "sid",  
+                          "d": [
                                 "apiKey",
                                 "repository",
                                 "key"
-                            ],
-                            "q": "q",
-                            "sid": "sid"
+                            ]
                         }
                     }},
             { "methodName": "createRepository",
@@ -612,12 +613,12 @@
                             }
                         },
                         "structure": {
-                            "d": [
+                               "q": "q",
+                            "sid": "sid",  
+                          "d": [
                                 "apiKey",
                                 "repository"
-                            ],
-                            "q": "q",
-                            "sid": "sid"
+                            ]
                         }
                     }},
       {"methodName": "createEntry",
@@ -659,7 +660,7 @@
                             },
                             "value": {
                                 "id": "value",
-                                "label": "key",
+                                "label": "value",
                                 "type": "input",
                                 "initialValue": "{}",
                                 "required": true,
@@ -683,13 +684,13 @@
                             }
                         },
                         "structure": {
-                            "d": [
+                               "q": "q",
+                            "sid": "sid",  
+                          "d": [
                                 "apiKey",
                                 "repository",
                                 "key"
-                            ],
-                            "q": "q",
-                            "sid": "sid"
+                            ]
                         }
                     }},
       {"methodName": "readEntryHistory",
@@ -746,13 +747,13 @@
                             }
                         },
                         "structure": {
-                            "d": [
+                               "q": "q",
+                            "sid": "sid",  
+                          "d": [
                                 "apiKey",
                                 "repository",
                                 "key"
-                            ],
-                            "q": "q",
-                            "sid": "sid"
+                            ]
                         }
                     }}
     ]
