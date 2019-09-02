@@ -567,18 +567,6 @@
                             "sid": "sid"
                         }
                     }},
-      {
-        "methodName": "echo2",
-        "group": "Group1"
-      },
-      {
-        "methodName": "echo",
-        "group": "Group2"
-      },
-      {
-        "methodName": "echo2",
-        "group": "Group2"
-      },
             { "methodName": "createRepository",
         "group": "Write",
         "payload": {
