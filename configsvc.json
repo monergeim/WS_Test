@@ -1,6 +1,5 @@
 {
-  
-  "staging Configuration": {
+    "staging Configuration": {
     "url": "wss://configuration-service-staging-ws.genesis.om2.com",
     "methods": [
       {
