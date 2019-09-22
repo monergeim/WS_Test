@@ -3,6 +3,8 @@
 
 - [Introduction](#Introduction)
   - [General Specifications](#GeneralSpecs)
+- [Authentication API](#AuthAPI)
+  - [createSession](#createSession)
 - [Trading API](#TradingAPI)
   - [placeOrder](#placeOrder)
   - [cancelOrder](#cancelOrder)
@@ -64,7 +66,7 @@ The response will always include the `q` and `sid` parameters from request and a
    "sid":1, 
    "d": 
      { 
-       "orderId":"f633782c-babf-4bc3-80b1-e90c49ba00ce", 
+       "orderId":1234, 
        "orderStatus":"Pending" 
      } 
 } 
@@ -121,16 +123,103 @@ sig|Description
 </details>
 
 
+
+# <a name="AuthAPI"></a>Authentication API
+## createSession
+
+The `createSession` API lets you authenticate to exchange API. 
+
+Prior to any exchasnge API call you must create a valid session, this session remains active as long as websocket connection remians open.
+Any broker connected to exchnage will be provided with 1 (or more) set of `apiKey` and `secret`, each `apiKey` is assigned with the relevant permissions.
+
+
+Endpoint: `/om2.exchange.auth/createSession"`
+
+**Request Parameters**
+
+Parameter|	Type|	Description
+---|---|---
+apiKey|String|Unique broker order ID
+timestamp|Unix timestamp |Login timestamp in milliseconds, must be now
+signature|String|`HMAC SHA256 signature` computed using provided `secret` key and message body. <br> Example:<br> `Message` = `"apiKey":"1234567abcdz","timestamp":"1558941516123"`<br>`secret` = `MySecretKey`<br>`signature = 265cfbc40c22355d6c1ecc1f3a1e87e8c46954db9096a7bd6967241dd8bc65b6`
+
+How to compute the signature 
+```
+$ echo -n '"apiKey":"1234567abcdz","timestamp":"1558941516123"' | openssl dgst -sha256 -hmac 'MySecretKey'
+(stdin)= 265cfbc40c22355d6c1ecc1f3a1e87e8c46954db9096a7bd6967241dd8bc65b6
+```
+
+**Error Codes**
+
+Code|Message
+---|---
+6000|`Authentication failed`
+6001|`Wrong timestamp`
+6002|`Missing fields: [Fieldname]`
+
+
+<details>
+<summary><b>Samples</b></summary>  
+
+**Request**  
+
+```javascript
+{
+        "q":"/om2.exchange.auth/createSession",
+        "sid":15,
+        "d":{
+                    "apiKey":"6ggg",
+                    "timestamp":"1563880778434",
+                    "signature":"1842286ea411ebdc3dde3e6b3185cc85c19fa0140d0eecebb0c74137e9957981"
+        }
+}
+
+
+```
+
+**Success Response**
+```javascript
+{
+        "q":"/om2.exchange.auth/createSession",
+        "sid":15,
+        "d":{}
+}
+```
+
+**Failure Response**
+```javascript
+{
+         "sig":2,
+         "q":"/io.scalecube.services.error/401",
+         "sid":15,
+         "d":{
+                   "errorCode":6001,
+                   "errorMessage":"Wrong timestamp"
+         }
+}
+```
+</details>
+
+
+
+
+
 # <a name="TradingAPI"></a>Trading API
 ## placeOrder
 
-The placeOrder API lets you place a new order into exchange. 
+The `placeOrder` API lets you place a new order into exchange. 
 
 If you send a valid order, you should receive a response with "Pending" status, this means that order was validated and accepted. The response contains the exchange orderId which should be stored and used for later status changes, notified via the orderBookDepth stream. 
 
-Non-valid order will be responded with the error message. 
-In case of timeout TBD
-`brokerOrder`Id Uniqueness TBD 
+Non-valid order will be responded with error message. 
+In case that broker system didn't get a response withing the timeout schedule the broker can do the one of the below:
+* **Retry** sending same order using same `brokerOrderId` which will result:
+  * Rejection in case that previous order was accepted 
+  * Success in case that previous order was not accepted
+* **Cancel** the order using `brokerOrderId` which will assure that order is no longer active (it might be already executed) 
+
+`brokerOrderId` is unique identifier and should not be used for more than a single order. 
+Note: system might accept already used `brokerOrderId` after predefined period but it is not recommended to use same `brokerOrderId` twice.
 
 Order types:  
 * **Limit**: Order is being sent with a specific price. A buy order will be executed with the requested price or lower price a sell order will be executed with the requested price or higher price. 
@@ -142,9 +231,10 @@ Endpoint: `/om2.exchange.orders/placeOrder`
 
 Parameter|	Type|	Description
 ---|---|---
+brokerOrderId|Long|Unique broker order ID
 userId|	String|	Reference data only which is not being used in the exchange
-OrderType|Enum|Order type Limit or Market
-OrderSide|Enum|Order side Buy or Sell
+orderType|Enum|Order type Limit or Market
+orderSide|Enum|Order side Buy or Sell
 instrument|String|Instrument identifier
 quantity|Decimal|Order quantity
 price `optional`|Decimal|The price of the Limit order. For Market order this will not be sent.
@@ -167,6 +257,9 @@ Code|Message
 1004|`Instrument trading is not allowed` 
 1005|`Price precision is[PricePrecision]` or<br> `Quantity precision is[QuantityPrecision]`
 1006|`Minimum order quantity is [MinOrderQuantity]` or<br>`Maximum order quantity is [MaxOrderQuantity]`
+1007|`Invalid session`
+1008|`This apiKey doesn’t have the right permission`
+1009|`Instrument trading is halt`
 1010|`Instrument [Instrument] not found`
 
 
@@ -180,7 +273,7 @@ Code|Message
 	"q":"/om2.exchange.orders/placeOrder",
 	"sid": 1,
 	"d":{
-		   "brokerOrderId": "1abc",   
+		   "brokerOrderId": 123,   
                    "userId": "1",
 		   "orderType": "Limit",
 		   "side": "Buy",
@@ -197,7 +290,7 @@ Code|Message
 	"q":"/om2.exchange.orders/placeOrder",
 	"sid":1,
 	"d":{
-		   "orderId":"aca1bdf9-60ec-497a-91e2-3c858a7e70a8",
+		   "orderId":2345,
 		   "orderStatus":"Pending"
 	   }
 
@@ -219,7 +312,7 @@ Code|Message
 </details>
 
 ## cancelOrder
-The cancelOrder API is used to request that an order be cancelled. 
+The `cancelOrder` API is used to request that an order be cancelled. 
 
 If you send a valid order to cancel, you should receive a response that confirms that order was cancelled. This means that remaining open quantity of the order was cancelled. 
 
@@ -230,11 +323,12 @@ Endpoint: `/om2.exchange.orders/cancelOrder`
 **Request Parameters**
 
 Parameter|	Type|	Description
----|----|----
-userId|String|Reference data only which is not being used in the exchange
+---------------------|----|----
 orderId `optional`|Long|Exchange Order ID. Not mandatory if `brokerOrderId` was sent
-brokerOrderId `optional`|String|Broker order ID. Not mandatory if `orderId` was sent
+brokerOrderId `optional`|Long|Broker order ID. Not mandatory if `orderId` was sent
 instrument|String|Instrument identifier
+userId|String|Reference data only which is not being used in the exchange
+
 
 
 **Response Parameters**
@@ -247,9 +341,12 @@ orderId|Long|	Exchange Order ID
 
 Code|Message
 ---|---
-1100|`orderId not found` 
+1100|`Order not found for that instrument` 
 1103|`Missing fields: [Fieldname]`
 1104|`Please use only one from orderId or brokerOrderId` 
+1007|`Invalid session`
+1008|`This apiKey doesn’t have the right permission`
+1009|`Instrument trading is halt`
 
 <details>
 <summary><b>Samples</b></summary>  
@@ -262,7 +359,7 @@ Code|Message
         "q":"/om2.exchange.orders/cancelOrder",
         "sid": 1,
         "d":{
-               "orderId":"aca1bdf9-60ec-497a-91e2-3c858a7e70a8",
+               "orderId":3456,
                "userId": "1",
                "instrument": "BTC"
         }
@@ -275,7 +372,7 @@ Code|Message
         "q":"/om2.exchange.orders/cancelOrder",
         "sid":1,
         "d":{
-               "orderId":"aca1bdf9-60ec-497a-91e2-3c858a7e70a8"
+               "orderId":3456
         }
 }
 ```
@@ -289,7 +386,7 @@ Code|Message
         "sid":1,
         "d":{
                "errorCode":1100,
-               "errorMessage":"orderId not found"
+               "errorMessage":"Order not found for that instrument"
         }
 }
 ```
@@ -299,8 +396,8 @@ Code|Message
 # <a name="MarketDataAPI"></a>Market Data API
 ## orderBookDepth
 
-The `orderBookDepth` stream provide the full order book depth data.
-This stream is public and anonymous, only the broker that placed the order knows the order origin. (As the orderId was provided within `placeOrder` response).
+The `orderBookDepth` stream provides the full order book depth data.
+This stream is public and pseudo anonymous, only the broker that placed the order knows the order origin. (`brokerId` is published but not any other broker details).
 
 The `orderBookDepth` publish only raw data without any aggregation, hence in order to determine the current state of an order, the subscriber needs to maintain the updated order state as per all the messages for that order.
 
@@ -309,6 +406,16 @@ There are 3 message types:
 * **Add**
 * **Cancelled**
 * **Executed**
+
+`eventId` is a sequence number of the events (per instrument). 
+
+In order to build accurate book state need to consume all events per instrument and apply it on the right sequence. 
+When subscribing to stream the system publish the current book state by sending synthetic event to all resting orders. (it is synthetic event as any resting order might be result of multiple events as this might be after partial executions).
+
+In case of synthetic event the `eventId = -1` and `eventTimestamp= -1`, the order priority for FIFO matching is determined by `orderId`. 
+
+Note: from technical reasons when you register to `orderBookDepth` stream system will not send the exact current book state but will start from a specific point of time at the past. You will get the synthetic events for that point and some as real past events till you catch the real time events.  (This is derived from that `snapshot` mechanism, if more details are required please contact us). 
+
 
 Endpoint: `/om2.exchange.market/orderBookDepth`
 
@@ -319,11 +426,14 @@ book.
 
 Field|Description
 ---|---
+eventId|Identifier for the event, unique per instrument
 messageType| **Add**
-orderId|Exchange OrderId
-eventTimestamp|Event timestamp (in microseconds)
-side|Buy / Sell
+eventTimestamp|Event timestamp (in milliseconds)
 instrument|Instrument symbol
+orderId|Exchange order ID
+brokerId|Broker identifier
+brokerOrderId|Broker order ID
+side|Buy / Sell
 quantity|Order quantity 
 price|Order price
 
@@ -331,12 +441,19 @@ price|Order price
 
 Field|Description
 ---|---
+eventId|Identifier for the event, unique per instrument
 messageType|**Executed** 
-mathchId|Unique ID for the match
-eventTimestamp|Event timestamp (in microseconds)
-makerOrderId|Resting `orderId`
-takerOrderId|Aggressive `orderId`
+eventTimestamp|Event timestamp (in milliseconds)
 instrument|Instrument symbol
+makerBrokerId|Resting broker ID
+makerBrokerOrderId|Resting broker order ID
+makerOrderId|Resting `orderId`
+takerBrokerId|Aggressive broker ID
+takerBrokerOrderId|Aggressive broker order ID
+takerOrderId|Aggressive order ID
+takerOrderType|Aggressive order type Limit or Market
+takerOrderPrice|Aggressive order requested price
+mathchId|Unique ID for the match
 executedQuantity|Matched quantity
 executedPrice|Matched price (maker order price). 
 
@@ -346,11 +463,14 @@ This message also sent in case of market order that was not fully filled.
 Field|Description
 ---|---
 messageType|**Cancelled** 
-orderId|Exchange `OrderId`
-eventTimestamp|Event timestamp (in microseconds)
+eventId|Identifier for the event, unique per instrument
+eventTimestamp|Event timestamp (in milliseconds)
 instrument|Instrument symbol
+orderSide|Buy/ Sell
+orderId|Exchange order ID
+brokerId|Broker identifier
+brokerOrderId|Broker order ID 
 cancelledQuantity|Order cancelled quantity
- 
 
 <details>
 <summary><b>Samples</b></summary>  
@@ -359,60 +479,74 @@ cancelledQuantity|Order cancelled quantity
 
 ```javascript
 {
-	"q":"/om2.exchange.market/orderBookDepth",
-        "sid": 1,
-        "d":{}
+  "q": "/om2.exchange.market/orderBookDepth",
+  "sid": 10,
+  "d": {}
 }
 ```
 
 **Add Order Message**
 ```javascript
 {
-        "q":"/om2.exchange.market/orderBookDepth",
-        "sid":1,
-        "d":{
-               "messageType": "Add",
-               "eventTimestamp": 1559833699198,
-               "instrument": "BTCUSD",
-               "orderId": "92f9b6eb-3c73-4192-9896-9db81b1045e5",
-               "side": "Buy",
-               "quantity": 1.12356,
-               "price": 6500.4321
-    	   }
+  "q": "/om2.exchange.market/orderBookDepth",
+  "sid": 10,
+  "d": {
+    "eventId": 29969,
+    "messageType": "Add",
+    "eventTimestamp": 1565790374956,
+    "instrument": "AMZ",
+    "orderId": 20012,
+    "brokerId": "12",
+    "brokerOrderId": 1565790360561,
+    "side": "Buy",
+    "quantity": 1,
+    "price": 1.22
+  }
 }
 ```
+
 **Order Executed Message**
 ```javascript
-
-{      
-        "q":"/om2.exchange.market/orderBookDepth",
-        "sid":1,
-        "d":{
-               "messageType": "Executed",
-               "eventTimestamp": 1559833871143,
-               "instrument": "FB",
-               "matchId": "1235fty-3c98-8888-9896-9db81b1697",
-               "makerOrderId": "92f9b6eb-3c73-4192-9896-9db81b1045e5",
-               "takerOrderId": "825b5e62-7e25-411a-a3ce-9c3697aaec05",
-               "executedQuantity": 50.12,
-               "executedPrice": 180.34,
-         }
+{
+  "q": "/om2.exchange.market/orderBookDepth",
+  "sid": 10,
+  "d": {
+    "eventId": 2,
+    "messageType": "Executed",
+    "eventTimestamp": 1569161821289,
+    "instrument": "INS1",
+    "makerBrokerId": 2,
+    "makerBrokerOrderId": 1564403702076,
+    "makerOrderId": 1,
+    "takerBrokerId": 2,
+    "takerBrokerOrderId": 1569161798700,
+    "takerOrderId": 2,
+    "takerOrderType": "Limit",
+    "takerOrderPrice": 10,
+    "matchId": 1,
+    "executedQuantity": 1,
+    "executedPrice": 10.25
+  }
 }
+
 ```
 **Order Cancel Message**
 ```javascript
-
-{   
-        "q":"/om2.exchange.market/orderBookDepth",
-        "sid":1,
-        "d":{
-               "messageType": "Cancelled",
-               "eventTimestamp": 1559834204805,
-               "instrument": "GOOG",
-               "orderId": "2729fb31-f5b5-4458-9a8d-626230f2879e",
-               "canceledQuantity": 50.12
-         }
-}  
+{
+  "q": "/om2.exchange.market/orderBookDepth",
+  "sid": 10,
+  "d": {
+    "eventId": 5,
+    "messageType": "Cancelled",
+    "eventTimestamp": 1569162456164,
+    "instrument": "INS1",
+    "orderId": 3,
+    "orderSide": "Sell",
+    "brokerId": 2,
+    "brokerOrderId": 1569161878394,
+    "cancelledQuantity": 2.2
+  }
+}
 ```
 
 </details>
