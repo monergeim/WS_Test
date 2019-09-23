@@ -496,7 +496,7 @@ window.addEventListener("load", init, false);
             if (book1[j][3] == obj.d.makerOrderId) { 
 
                 book1[j][1] =  book1[j][1] + ((book1[j][2] == 'Sell') ? obj.d.executedQuantity : obj.d.executedQuantity * -1 );
-               if  (book1[j][1] * 1000000000000 < 0.01){ //due to rounding not chack ==0
+               if  (Math.abs(book1[j][1] * 1000000000000 )< 0.01){ //due to rounding not chack ==0
 			  // alert("0 in quantity !");
 			    book1.splice(j,1);
 			   }
