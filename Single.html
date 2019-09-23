@@ -161,17 +161,16 @@ select.form-control:focus::-ms-value {
 var wsUri = "wss://exchange.om2.com",
     wsUriDev = "wss://develop.exchange.om2.com",
 	ConfigurationUri = "wss://configuration-service-ws.genesis.om2.com";
-
 var output, outputDetails, outputDetailsOffline, data, lines, Message,
     preHeader = document.createElement("p1"),
     preNice = document.createElement("pN"),
     Instrument = "INS1",
     DevInstrument = "BTCUSD",
-    CurrentInstrument = Instrument,
-    apiKeyDev ="YXZ",secretDev = "a6rrXAt7SgAZJ5gkLbhEahlgi2R9HgL6jzXB0WcyWRWIKsMhaxl5GzIym6uPiFXMaS"),
-    apiKey ="mcrrSDn00tEvi44H2pl58rAHEI7pbfS3mgsSYDWkm4vmrGRQ7Rhm4dP27ZAz",secret = "pZnMFPxf6dGTCr2lElwJyv5qaHjHcPde4wT2bQ65q9Gt0cNZwMgBHx5hT253"),
-    CurrentapiKey = apiKey,
-    CurrentSecret = secret,
+    CurrentInstrument = DevInstrument,
+    apiKeyDev ="YXZ",secretDev = "a6rrXAt7SgAZJ5gkLbhEahlgi2R9HgL6jzXB0WcyWRWIKsMhaxl5GzIym6uPiFXMaS",
+    apiKey ="pZnMFPxf6dGTCr2lElwJyv5qaHjHcPde4wT2bQ65q9Gt0cNZwMgBHx5hT253",secret = "mcrrSDn00tEvi44H2pl58rAHEI7pbfS3mgsSYDWkm4vmrGRQ7Rhm4dP27ZAz",
+    CurrentapiKey = apiKeyDev,
+    CurrentSecret = secretDev,
     NeedtoReconnect = true,
     WriteResponse = false,
     book = [],
@@ -192,50 +191,39 @@ function init() {
     output = document.getElementById("output");
     outputDetails = document.getElementById("outputDetails");
     outputDetailsOffline = document.getElementById("outputDetailsOffline");
-
     RefreshInstrumentant();
-
     ManageBook = document.getElementById("ManageBook").checked;
    // DrawRateChart = document.getElementById("DrawRateChart").checked;
     WriteResponse = document.getElementById("WritetoScr").checked;
 	DrawOrderEvents = document.getElementById("DrawEventTable").checked;
     timestosend = document.getElementById("myTextareaMax").innerText;
     document.getElementById("myTextareaURL").style.visibility = "hidden";
-
 	
     document.getElementById("dynamicinstrumentid").addEventListener("input", function sett() {
         RefreshInstrumentant();
         reDrawBook();
 		//reDrawRate();
     }, false);
-
     document.getElementById("ManageBook").addEventListener("input", function() {
         ManageBook = document.getElementById("ManageBook").checked;
         reDrawBook();
     }, false);
-
     document.getElementById("WritetoScr").addEventListener("input", function() {
         WriteResponse = document.getElementById("WritetoScr").checked;
-
     }, false);
-
 	document.getElementById("DrawEventTable").addEventListener("input", function() {
         DrawOrderEvents = document.getElementById("DrawEventTable").checked;
     }, false);
-
     document.getElementById("myTextareaMax").addEventListener("input", function() {
         timestosend = document.getElementById("myTextareaMax").innerText;
     }, false);
    
    testWebSocket();
 }
-
-
 function myTimer() {
     if (NeedtoDrawBook) DrawBook();
    // if (NeedtoDrawRate) DrawRateChartFunc();
 	if (NeedtoDrawOrderEvents) DrawOrderEventsDrawing();
-
 	 if (WriteResponse && FileContent.length >0 ) {
 		writeToScreenNice(FileContent);
 		FileContent="";
@@ -245,7 +233,6 @@ function myTimer() {
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
-
 function reDrawBook() {
     book1 = [];
 	NeedtoDrawBook=true;
@@ -254,14 +241,11 @@ function reDrawBook() {
 		doSend(orderEvents);
    }
 }
-
 function RefreshInstrumentant() {
     CurrentInstrument = document.getElementById("dynamicinstrumentid").innerText;
     PlaceOrdersMessage();
     StreamsMessage();
 }
-
-
 function OpenURL() {
     if (document.getElementById("SelectEnv").value == "Dev") {
         document.getElementById("dynamicinstrumentid").innerText = DevInstrument;
@@ -283,12 +267,10 @@ function OpenURL() {
 		ConfigurationFetchAllMessage();
 		document.getElementById("myTextarea").value=ConfigurationFetchAll;
      }
-
     RefreshInstrumentant();
     reDrawBook();
 	//reDrawRate();
 }
-
 function ChangeMessage() {
 switch (document.getElementById("SelectMessage").value) {
         case 'Place Orders':
@@ -305,7 +287,6 @@ switch (document.getElementById("SelectMessage").value) {
             break;
     }
 }
-
 async function CancelFlow() {
     WriteResponse = true;
     data = PlaceORders; //document.getElementById("myTextarea").value;
@@ -315,12 +296,10 @@ async function CancelFlow() {
 	CancelOrdersMessage();
     doSend(CancelOrder);
 }
-
 function Send() {
     var now = Date.now(); 
 	data = document.getElementById("myTextarea").value;
     lines = data.split(';');
-
     if (timestosend == 1) {
         for (var i = 0; i < lines.length; i++) {
             //console.log (lines[i]);
@@ -338,37 +317,29 @@ function Send() {
         }
     }
 }
-
 function Clear() {
     preNice.innerHTML = "";
     FileContent = "";
 	orderEventsTable=[];
 	NeedtoDrawOrderEvents= true;
-
 }
-
 function Disconnect() {
     NeedtoReconnect = false;
     book1 = [];
     writeToScreenHeader('Disconnecting ' + CurrentUri);
     websocket.close();
 }
-
 function ReConnect() {
     NeedtoReconnect = true;
     testWebSocket();
 }
-
 async function testWebSocket() {
     if (document.getElementById("SelectEnv").value == "Dev") CurrentUri = wsUriDev;
     else if (document.getElementById("SelectEnv").value == "Production") CurrentUri = wsUri;
     else if (document.getElementById("SelectEnv").value == "Other") CurrentUri = document.getElementById("myTextareaURL").innerText;
-
     writeToScreenHeader('Connecting ' + CurrentUri);
     try {
         websocket = new WebSocket(CurrentUri);
-
-
         websocket.onopen = function(evt) {
             onOpen(evt)
         };
@@ -383,10 +354,8 @@ async function testWebSocket() {
         };
     } catch (err) {
         console.log(err.message);
-
     }
 }
-
 async function doSend(message) { //d=new Date();
  var now = Date.now(); 
 if (message.length<=1) return;
@@ -404,7 +373,6 @@ if (message.length<=1) return;
     writeToScreenNice(d.toISOString() + ' ' +err.message, "#C93F3B");
     }
 }
-
 async function onMessage(evt) {
     dt = new Date(evt.timeStamp + d.getTime());
     obj = JSON.parse(evt.data);
@@ -429,23 +397,23 @@ async function onMessage(evt) {
             break;
     }
 }
-
 async function onOpen(evt) {
     writeToScreenHeader('CONNECTED!', 'LIME');
-
 	var now = Date.now(); 
-	var hash = CryptoJS.HmacSHA256('"apiKey":"6ggg","timestamp":"'+now+'"', "9ijrXAt7SgAZJ5gkLbhEahlgi2R9HgL6jzXB0WcyWRWIKsMhaxl5GzIym6uPiFkkkk");
-	createSessionOnOpen ='{"q":"/om2.exchange.auth/createSession","sid":15,"d":{"apiKey":"6ggg","timestamp":"'+now+'","signature":"'+hash+'"}}' 
-	doSend(createSessionOnOpen);
+	//var hash = CryptoJS.HmacSHA256('"apiKey":"6ggg","timestamp":"'+now+'"', "9ijrXAt7SgAZJ5gkLbhEahlgi2R9HgL6jzXB0WcyWRWIKsMhaxl5GzIym6uPiFkkkk");
+	//createSessionOnOpen ='{"q":"/om2.exchange.auth/createSession","sid":15,"d":{"apiKey":"6ggg","timestamp":"'+now+'","signature":"'+hash+'"}}' 
+	
+	var hash = CryptoJS.HmacSHA256('"apiKey":"'+CurrentapiKey+'","timestamp":"'+now+'"', CurrentSecret);
+	createSessionOnOpen ='{"q":"/om2.exchange.auth/createSession","sid":15,"d":{"apiKey":"'+CurrentapiKey+'","timestamp":"'+now+'","signature":"'+hash+'"}}' 
 
+	
+	doSend(createSessionOnOpen);
 	if (ManageBook) {
 		await sleep(1000);
         book1 = [];
         doSend(orderEvents);
     }
-
 }
-
 async function onClose(evt) {
     writeToScreenHeader('Disconnected', 'red');
     console.log(evt);
@@ -453,13 +421,11 @@ async function onClose(evt) {
         testWebSocket();
     }
 }
-
 function onError(evt) {
 	    d = new Date();
 		writeToScreenNice(d.toISOString() + ' ' +evt.data, "red");
     console.log(evt);
 }
-
 function setupDownloadLink() {
     console.log(FileContent)
 }
@@ -469,7 +435,6 @@ async function writeToScreenHeader(message, color) {
     preHeader.innerHTML = da.toISOString() + ': ' + '<span style="color: ' + color + ';">' + message + '</span>' + '<BR>' + preHeader.innerHTML;
     output.appendChild(preHeader);
 }
-
 async function writeToScreenNice(message, color) {
     if (color == null)  preNice.innerHTML =  message + preNice.innerHTML;
 	else    {
@@ -478,18 +443,14 @@ async function writeToScreenNice(message, color) {
 	}
     outputDetails.appendChild(preNice);
 }
-
 window.addEventListener("load", init, false);
-
 	function ManageBookFunc() {
     var len1 = book1.length;
 	if (CurrentInstrument != obj.d.instrument) return;
     if (obj.d.messageType == "Add") {
-
         var order1 = [obj.d.price, ((obj.d.side == 'Sell') ? obj.d.quantity * -1 : obj.d.quantity), ((obj.d.side == 'Buy') ? 'Buy' : 'Sell'),obj.d.orderId]
         if (len1 == 0) book1[len1] = order1;
         else book1[len1] = order1;
-
     } 
 	else if (obj.d.messageType == "Cancelled"){
         for (var j = 0; j < book1.length; j++) {
@@ -501,7 +462,6 @@ window.addEventListener("load", init, false);
 	else if (obj.d.messageType == "Executed" ){
         for (var j = 0; j < book1.length; j++) {
             if (book1[j][3] == obj.d.makerOrderId) { 
-
                 book1[j][1] =  book1[j][1] + ((book1[j][2] == 'Sell') ? obj.d.executedQuantity : obj.d.executedQuantity * -1 );
                if  (Math.abs(book1[j][1] * 1000000000000 )< 0.01){ //due to rounding not chack ==0
 			  // alert("0 in quantity !");
@@ -512,14 +472,12 @@ window.addEventListener("load", init, false);
     }
     NeedtoDrawBook = true;
 }
-
 function DrawBook() {
     google.charts.load('current', {
         'packages': ['table']
     });
     google.charts.setOnLoadCallback(drawBookTable);
 }
-
 function drawBookTable() {
     NeedtoDrawBook = false;
     var dataTable1 = new google.visualization.DataTable();
@@ -530,7 +488,6 @@ function drawBookTable() {
     for (var j = 0; j < book1.length; j++) {
         dataTable1.addRows([book1[j]]);
     }
-
     var formatter = new google.visualization.BarFormat({
         width: 80,
         colorPositive: 'green',
@@ -539,13 +496,9 @@ function drawBookTable() {
     formatter.format(dataTable1, 1); // Apply formatter to second column
     var table = new google.visualization.Table(document.getElementById('chart_div1'));
     table.draw(dataTable1, bookOptions);
-
 }
-
 function DrawOrderEventsFunc() {
     var len2 = orderEventsTable.length;
-
-
     var timeStamp = new Date(obj.d.eventTimestamp);
 	var messageType=obj.d.messageType;
     orderEventsTable[len2] = [(len2+1),
@@ -564,17 +517,13 @@ function DrawOrderEventsFunc() {
 		(messageType == "Executed") ? obj.d.takerBrokerOrderId.toString():obj.d.brokerOrderId.toString(),
 		(messageType == "Executed")  ?obj.d.makerBrokerId.toString():"",
 		(messageType == "Executed")  ?obj.d.makerBrokerOrderId.toString():""
-
     ];
-
 	NeedtoDrawOrderEvents= true;
 }
-
 function DrawOrderEventsDrawing() {
     google.charts.load('current', {'packages': ['table']});
     google.charts.setOnLoadCallback(DrawOrderEventsTable);
 }
-
 function DrawOrderEventsTable() {
   //  NeedtoDrawBook = false;
     var dataTable1 = new google.visualization.DataTable();
@@ -594,23 +543,15 @@ function DrawOrderEventsTable() {
 	dataTable1.addColumn('string', 'Broker Order ID');
 	dataTable1.addColumn('string', 'Maker Broker ID');
 	dataTable1.addColumn('string', 'Maker Broker Order ID');
-
-
-
-
  
     for (var j = 0; j < orderEventsTable.length; j++) {
         dataTable1.addRows([orderEventsTable[j]]);
     }
-
-
     var table = new google.visualization.Table(document.getElementById('chart_div3'));
     table.draw(dataTable1, orderEventsTableOptions);
 	NeedtoDrawOrderEvents= false;
 }
-
 var PlaceORders,CancelOrder, createSession,  orderEvents,    ConfigurationFetchAll;
-
  var bookssClassNames = {
         'headerRow': 'table-background',
         'tableRow': 'table-background',
@@ -621,7 +562,6 @@ var PlaceORders,CancelOrder, createSession,  orderEvents,    ConfigurationFetchA
         'tableCell': 'table-background',
         'rowNumberCell': 'table-background'
     };
-
     var bookOptions = {
         'showRowNumber': false,
         'allowHtml': true,
@@ -642,7 +582,6 @@ var PlaceORders,CancelOrder, createSession,  orderEvents,    ConfigurationFetchA
         'tableCell': 'table-background',
         'rowNumberCell': 'table-background'
     };
-
     var orderEventsTableOptions = {
         'showRowNumber': false,
         'allowHtml': true,
@@ -664,7 +603,6 @@ function ConfigurationFetchAllMessage() {
  ' {"q":"/configuration/fetch","sid": 2,"d": {"token": "eyJraWQiOiJkOGE5MGZiOS01MDdjLTQzMmItYmU0OS00ODNkYjVlOGUwMDUiLCJhbGciOiJSUzI1NiJ9.eyJqdGkiOiJPUkctNDc1QThERUQyMjQ4RERGMUZEQTQiLCJpYXQiOjE1NTY1MzczODgsInN1YiI6Ik9SRy00NzVBOERFRDIyNDhEREYxRkRBNCIsImlzcyI6InNjYWxlY3ViZS5pbyIsImF1ZCI6Ik9SRy00NzVBOERFRDIyNDhEREYxRkRBNCIsInJvbGUiOiJPd25lciJ9.V7h9Gfq2waBwQasK9yYjw4vRzM-hYb9L0YTsClLmJ0bndFTL01WAf87KftNRuuujZABQmpkxFEUfcirlfARdcSYOR4HQb6DC9LQMPcX8XBSFX5b5QYXz62zCi3f1ZYKXNNwrPJLwDwFBED4S5-mutZrdyV16liObmXPh8BotOslfZOr7fmxG8S3tCrw1tUWOxZsJTiymengx69pGT7EvaEYxjcRGBCIEkaXXtukawziScyuEaFULjYax87jzmaSUbIASubE7ZeMLRm88f3XU1-X5BwBNvQRQQkyv4H30wwJiz7KKYs0zqoA3ijMixCJhaJvntte42tihSgCSWWQghA","repository": "DudiRepo1",        "key":"DudiKey2"  }};';
  
  }
-
  
  
  function PlaceOrdersMessage() {
@@ -675,21 +613,16 @@ function ConfigurationFetchAllMessage() {
         '{"q": "/om2.exchange.orders/placeOrder","sid": "nonce","d": {"brokerOrderId":"nonce","userId": "1A","orderType": "Limit","side": "Buy","instrument":"' + CurrentInstrument + '","quantity": 4,"price": 1202}};' + '\n' +
         '{"q": "/om2.exchange.orders/placeOrder","sid": "nonce","d": {"brokerOrderId":"nonce","userId": "1A","orderType": "Limit","side": "Buy","instrument":"' + CurrentInstrument + '","quantity": 5,"price": 1203}};';
 }
-
 function PlaceOrders() {
-
     PlaceOrdersMessage();
      document.getElementById("myTextarea").value = PlaceORders;
 }
-
 function CreateSession() {
-
 	var now = Date.now(); 
-	var hash = CryptoJS.HmacSHA256('"apiKey":"'&currentapiKey&'","timestamp":"'+now+'"', "'&CurrentSecret&'");
-	createSession ='{"q":"/om2.exchange.auth/createSession","sid":15,"d":{"apiKey":"'&currentapiKey&'","timestamp":"'+now+'","signature":"'+hash+'"}}' 
+	var hash = CryptoJS.HmacSHA256('"apiKey":"'+CurrentapiKey+'","timestamp":"'+now+'"', CurrentSecret);
+	createSession ='{"q":"/om2.exchange.auth/createSession","sid":15,"d":{"apiKey":"'+CurrentapiKey+'","timestamp":"'+now+'","signature":"'+hash+'"}}' 
      document.getElementById("myTextarea").value = createSession;
 }
-
  function CancelOrdersMessage() {
 	CancelOrder = '{"q":"/om2.exchange.orders/cancelOrder","sid":75,"d":{"userId":"1A","orderId":"' + OrderID + '","instrument":"' + CurrentInstrument +'"}}';
  }
@@ -697,14 +630,10 @@ function CreateSession() {
 function StreamsMessage() {
   	orderEvents   = '{"q": "/om2.exchange.market/orderBookDepth","sid": 30000,"d":{}}';
   }
-
-
 function Streams() {
      StreamsMessage();
 	document.getElementById("myTextarea").value =  orderEvents + ';\n' ;
 }
-
-
 	</script>
 <body bgcolor="#242424">
     <meta charset="utf-8" />
@@ -718,8 +647,8 @@ function Streams() {
     <button type="button" id="DisConnectButton" onclick="Disconnect()" class="button button3">Disconnect</button>
 
     <select id="SelectEnv" type="selectBox" class="button selectBox" onChange="OpenURL()" ;>
-        <option value="Dev">Dev</option>
-        <option value="Production">Production</option>
+   		<option value="Dev">Dev</option>
+		<option value="Production">Production</option>
         <option value="Other">Enter Manually</option>
 		<option value="Configuration">Configuration</option>
     </select>
