@@ -158,16 +158,20 @@ select.form-control:focus::-ms-value {
  
    </style>
     <script type="text/javascript">
-var wsUri = "wss://master-ws.genesis.om2.com",
+var wsUri = "wss://exchange.om2.com",
     wsUriDev = "wss://develop.exchange.om2.com",
 	ConfigurationUri = "wss://configuration-service-ws.genesis.om2.com";
 
 var output, outputDetails, outputDetailsOffline, data, lines, Message,
     preHeader = document.createElement("p1"),
     preNice = document.createElement("pN"),
-    Instrument = "16562665EC17CDF08E97",
-    DevInstrument = "BTC",
+    Instrument = "INS1",
+    DevInstrument = "BTCUSD",
     CurrentInstrument = Instrument,
+    apiKeyDev ="YXZ",secretDev = "a6rrXAt7SgAZJ5gkLbhEahlgi2R9HgL6jzXB0WcyWRWIKsMhaxl5GzIym6uPiFXMaS"),
+    apiKey ="mcrrSDn00tEvi44H2pl58rAHEI7pbfS3mgsSYDWkm4vmrGRQ7Rhm4dP27ZAz",secret = "pZnMFPxf6dGTCr2lElwJyv5qaHjHcPde4wT2bQ65q9Gt0cNZwMgBHx5hT253"),
+    CurrentapiKey = apiKey,
+    CurrentSecret = secret,
     NeedtoReconnect = true,
     WriteResponse = false,
     book = [],
@@ -262,10 +266,13 @@ function OpenURL() {
     if (document.getElementById("SelectEnv").value == "Dev") {
         document.getElementById("dynamicinstrumentid").innerText = DevInstrument;
         CurrentUri = wsUriDev;
-    } else if (document.getElementById("SelectEnv").value == "Master") {
+	CurrentapiKey= apiKeyDev;
+	    CurrentSecret = secretDev;
+    } else if (document.getElementById("SelectEnv").value == "Production") {
         document.getElementById("dynamicinstrumentid").innerText = Instrument;
         CurrentUri = wsUri;
-
+	CurrentapiKey= apiKey;
+	CurrentSecret = secret;
     } else if (document.getElementById("SelectEnv").value == "Other") {
         document.getElementById("myTextareaURL").style.visibility = "visible";
 		CurrentUri = document.getElementById("myTextareaURL").innerText;
@@ -354,7 +361,7 @@ function ReConnect() {
 
 async function testWebSocket() {
     if (document.getElementById("SelectEnv").value == "Dev") CurrentUri = wsUriDev;
-    else if (document.getElementById("SelectEnv").value == "Master") CurrentUri = wsUri;
+    else if (document.getElementById("SelectEnv").value == "Production") CurrentUri = wsUri;
     else if (document.getElementById("SelectEnv").value == "Other") CurrentUri = document.getElementById("myTextareaURL").innerText;
 
     writeToScreenHeader('Connecting ' + CurrentUri);
@@ -678,8 +685,8 @@ function PlaceOrders() {
 function CreateSession() {
 
 	var now = Date.now(); 
-	var hash = CryptoJS.HmacSHA256('"apiKey":"YXZ","timestamp":"'+now+'"', "a6rrXAt7SgAZJ5gkLbhEahlgi2R9HgL6jzXB0WcyWRWIKsMhaxl5GzIym6uPiFXMaS");
-	createSession ='{"q":"/om2.exchange.auth/createSession","sid":15,"d":{"apiKey":"YXZ","timestamp":"'+now+'","signature":"'+hash+'"}}' 
+	var hash = CryptoJS.HmacSHA256('"apiKey":"'&currentapiKey&'","timestamp":"'+now+'"', "'&CurrentSecret&'");
+	createSession ='{"q":"/om2.exchange.auth/createSession","sid":15,"d":{"apiKey":"'&currentapiKey&'","timestamp":"'+now+'","signature":"'+hash+'"}}' 
      document.getElementById("myTextarea").value = createSession;
 }
 
@@ -712,7 +719,7 @@ function Streams() {
 
     <select id="SelectEnv" type="selectBox" class="button selectBox" onChange="OpenURL()" ;>
         <option value="Dev">Dev</option>
-        <option value="Master">Master</option>
+        <option value="Production">Production</option>
         <option value="Other">Enter Manually</option>
 		<option value="Configuration">Configuration</option>
     </select>
