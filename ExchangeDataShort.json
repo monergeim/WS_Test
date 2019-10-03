@@ -1,6 +1,7 @@
 {
   "Dev Configuration": {
     "url": "wss://configuration-service-staging-ws.genesis.om2.com",
+      "provider": "websocket",
     "methods": [
       {
         "methodName": "readList",
@@ -70,6 +71,7 @@
   },
   "Staging Configuration": {
     "url": "wss://configuration-service-staging-ws.genesis.om2.com",
+      "provider": "websocket",
     "methods": [
       {
         "methodName": "readList",
@@ -139,6 +141,7 @@
   },
   "Prod Configuration": {
     "url": "wss://configuration-service-ws.genesis.om2.com",
+      "provider": "websocket",
     "methods": [
       {
         "methodName": "readList",
