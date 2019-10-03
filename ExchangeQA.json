@@ -1,5 +1,5 @@
 {
-  "exchange/develop5": {
+  "exchange/develop6": {
     "url": "wss://develop.exchange.om2.com",
     "methods": [
       {
@@ -77,7 +77,7 @@
         "group": "Authentication API",
         "payload": {
           "sample": {
-            "q": "/om2.exchange.auth/createSession",
+            "q": "/om2.exchange.operation.auth/createSession",
             "sid": 1,
             "d": {
               "apiKey": "",
@@ -91,7 +91,7 @@
               "id": "q",
               "label": "q",
               "valueType": "text",
-              "initialValue": "/om2.exchange.auth/createSession",
+              "initialValue": "/om2.exchange.operation.auth/createSession",
               "hidden": true,
               "required": true
             },
