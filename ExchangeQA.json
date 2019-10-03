@@ -1,5 +1,5 @@
 {
-  "exchange/develop2": {
+  "exchange/develop3": {
     "url": "wss://develop.exchange.om2.com",
     "methods": [
       {
@@ -81,13 +81,13 @@
             "q": "/om2.exchange.orders/placeOrder",
             "sid": 1,
             "d": {
-              "brokerOrderId": 1564403702076,
+              "brokerOrderId": "__SIGNATURE__",
               "userId": "UserTest1",
               "orderType": "Limit",
               "side": "Buy",
               "instrument": "AMZ",
-              "quantity": "",
-              "price": ""
+              "quantity": "2.11",
+              "price": "100.1"
             }
           }
         }
