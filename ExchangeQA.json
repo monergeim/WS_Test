@@ -1,5 +1,5 @@
 {
-  "exchange/develop4": {
+  "exchange/develop5": {
     "url": "wss://develop.exchange.om2.com",
     "methods": [
       {
@@ -185,6 +185,21 @@
             "q": "/om2.exchange.market/orderBookDepth",
             "sid": 10,
             "d": {}
+          }
+        }
+      },
+          {
+        "methodName": "tradingAction",
+        "group": "Operations API",
+        "payload": {
+          "sample": {
+    "q": "/om2.exchange.market/tradingAction",
+            "sid": 5,
+            "d": {
+                 "instrument": "AMZ",
+                  "action": "halt"
+              
+            }
           }
         }
       }
