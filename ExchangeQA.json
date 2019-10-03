@@ -1,5 +1,5 @@
 {
-  "exchange/develop": {
+  "exchange/develop1": {
     "url": "wss://develop.exchange.om2.com",
     "methods": [
       {
