@@ -146,7 +146,7 @@
                 "label": "quantity",
                 "type": "input",
                 "required": true,
-                 "initialValue": 1.25
+                 "initialValue": 1.25,
                 "valueType": "number"
               },
               "price": {
@@ -168,8 +168,7 @@
                 "id": "price",
                 "label": "price",
                 "type": "input",
-                "initialValue": 100.50
-
+                "initialValue": 100.50,
                 "required": false
               },
               "timeInForce": {
