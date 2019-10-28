@@ -208,7 +208,7 @@
               
               
               
-                 "timeInForce": {
+                 "timeInForceMarket": {
                 "hidden": true,
                 "dependency": {
                   "override": {
@@ -224,7 +224,7 @@
                 },
                 "valueType": "number",
                 "omitted": true,
-                "id": "timeInForce",
+                "id": "timeInForceMarket",
                 "label": "timeInForce",
                 "type": "input",
                 "initialValue": "IOC",
@@ -267,6 +267,7 @@
                 "quantity",
                 "price",
                 "timeInForce",
+                "timeInForceMarket",
                 "expiryDate",
                 "brokerOrderId",
                  "userId"
