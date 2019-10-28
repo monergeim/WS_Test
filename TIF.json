@@ -2,6 +2,13 @@
   "exchange/develop": {
     "url": "wss://develop.exchange.om2.com",
       "provider": "websocket",
+    {
+    "field": "symbol",
+    "repository": "InstrumentsList",
+    "provider": "scalecube",
+    "url": "https://configuration-service-staging-http.genesis.om2.com",
+    "token": "eyJraWQiOiI1NjliMTcyMS1mZDkxLTRhZTEtODJmMi00ZDFiY2E3ZGM1MTMiLCJhbGciOiJSUzI1NiJ9.eyJqdGkiOiJPUkctM0UxNTk3MDkxOEYzNDk1QTZCODEiLCJpYXQiOjE1NjA1MTg4MTgsInN1YiI6Ik9SRy0zRTE1OTcwOTE4RjM0OTVBNkI4MSIsImlzcyI6InNjYWxlY3ViZS5pbyIsImF1ZCI6Ik9SRy0zRTE1OTcwOTE4RjM0OTVBNkI4MSIsInJvbGUiOiJPd25lciJ9.SnX3XyJmnZqBcnhRFP6CLJuTpAjGDjEbfSW4jj3VCnninW69jogIuyTTTFEuf1stomA0B9UtrAOpmG981XqBpJdLBNXdMrE6XZSX-1Gm4FcJwdbydZ6ZWw51ty5-ElcTC-1Ps6gmIkjmZTuTJBWhNpQar450-SjN4VqAQE4frsm2FdHbBhk2258eJo43fAGtVyauAjMWZKrwZUeQjhH7jujbqtR9tkliC6XvaSAAPBbXXhcMFF6_BQL5rOwwuD5EeeoPHOxR1F9_X6ncSKMf2rKelQtYYknZT1cI7ty1ucWKZY2khWurSxonbOUqs4RKkvz5bk6jiSnDlhOSpQG5fQ"
+  },
     "methods": [
       {
         "methodName": "createSession - Broker",
