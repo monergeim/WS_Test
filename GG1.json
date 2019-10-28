@@ -1,5 +1,5 @@
   {
-       "exchange/develop3": {
+       "exchange/develop5": {
 
       "configurationService": {
         "field": "symbol",
@@ -187,7 +187,7 @@
                   "fieldId": "orderType"
                 },
                 "id": "timeInForce",
-                "label": "timeInForce  (Market Order)",
+                "label": "timeInForce  (Limit Order)",
                 "data": [
                   "GTC",
                   "GTD"
@@ -222,7 +222,7 @@
               
               
               
-                 "timeInForceMarket": {
+                 "timeInForceMarket1": {
                 "hidden": true,
                 "dependency": {
                   "override": {
@@ -236,7 +236,7 @@
                   ],
                   "fieldId": "orderType"
                 },
-                "id": "timeInForce",
+                "id": "timeInForceMarket2",
                 "label": "timeInForce (Market Order)",
                 "data": [
                   "IOC",
@@ -284,7 +284,7 @@
                 "quantity",
                 "price",
                 "timeInForce",
-                "timeInForceMarket",
+                "timeInForceMarket1",    "timeInForceMarket2",
                 "expiryDate",
                 "brokerOrderId",
                  "userId"
