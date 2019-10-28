@@ -1,0 +1,455 @@
+{
+       "exchange/develop10": {
+
+      "configurationService": {
+        "field": "symbol",
+        "repository": "InstrumentsList",
+        "provider": "scalecube",
+        "url": "https://configuration-service-staging-http.genesis.om2.com",
+        "token": "eyJraWQiOiI1NjliMTcyMS1mZDkxLTRhZTEtODJmMi00ZDFiY2E3ZGM1MTMiLCJhbGciOiJSUzI1NiJ9.eyJqdGkiOiJPUkctM0UxNTk3MDkxOEYzNDk1QTZCODEiLCJpYXQiOjE1NjA1MTg4MTgsInN1YiI6Ik9SRy0zRTE1OTcwOTE4RjM0OTVBNkI4MSIsImlzcyI6InNjYWxlY3ViZS5pbyIsImF1ZCI6Ik9SRy0zRTE1OTcwOTE4RjM0OTVBNkI4MSIsInJvbGUiOiJPd25lciJ9.SnX3XyJmnZqBcnhRFP6CLJuTpAjGDjEbfSW4jj3VCnninW69jogIuyTTTFEuf1stomA0B9UtrAOpmG981XqBpJdLBNXdMrE6XZSX-1Gm4FcJwdbydZ6ZWw51ty5-ElcTC-1Ps6gmIkjmZTuTJBWhNpQar450-SjN4VqAQE4frsm2FdHbBhk2258eJo43fAGtVyauAjMWZKrwZUeQjhH7jujbqtR9tkliC6XvaSAAPBbXXhcMFF6_BQL5rOwwuD5EeeoPHOxR1F9_X6ncSKMf2rKelQtYYknZT1cI7ty1ucWKZY2khWurSxonbOUqs4RKkvz5bk6jiSnDlhOSpQG5fQ"
+      },
+      "provider": "websocket",
+      "methods": [
+        {
+          "payload": {
+            "sample": {
+              "d": {
+                "apiKey": "",
+                "signature": "",
+                "timestamp": ""
+              },
+              "q": "/om2.exchange.auth/createSession",
+              "sid": 1
+            },
+            "metadata": {
+              "q": {
+                "hidden": true,
+                "valueType": "text",
+                "id": "q",
+                "label": "q",
+                "type": "input",
+                "initialValue": "/om2.exchange.auth/createSession",
+                "required": true
+              },
+              "secret": {
+                "id": "secret",
+                "label": "secret",
+                "type": "input",
+                "initialValue": "a6rrXAt7SgAZJ5gkLbhEahlgi2R9HgL6jzXB0WcyWRWIKsMhaxl5GzIym6uPiFXMaS",
+                "required": true,
+                "valueType": "text"
+              },
+              "apiKey": {
+                "id": "apiKey",
+                "label": "apiKey",
+                "type": "input",
+                "initialValue": "YXZ",
+                "required": true,
+                "valueType": "text"
+              },
+              "signature": {
+                "id": "signature",
+                "label": "signature",
+                "hidden": true,
+                "type": "input",
+                "initialValue": "__SIGNATURE__",
+                "valueType": "text"
+              },
+              "sid": {
+                "id": "sid",
+                "label": "sid",
+                "type": "input",
+                "initialValue": 1,
+                "required": true,
+                "valueType": "number"
+              },
+              "timestamp": {
+                "id": "timestamp",
+                "label": "timestamp",
+                "type": "input",
+                "initialValue": "__TIMESTAMP__",
+                "required": true,
+                "valueType": "number"
+              }
+            },
+            "structure": {
+              "d": [
+                "apiKey",
+                "timestamp",
+                "signature"
+              ],
+              "q": "q",
+              "sid": "sid"
+            }
+          },
+          "methodName": "createSession",
+          "group": "Authentication API"
+        },
+         
+        {
+          "payload": {
+            "sample": {
+              "d": {
+                "orderType": "Limit",
+                 "instrument": "AMZ",
+                "side": "Buy",
+                "quantity": 1.3,
+                "price":100.33,
+                "timeInForce": "GTC",
+                "brokerOrderId": 1564403702076,
+                "userId": "UserTest1"
+              },
+              "q": "/om2.exchange.orders/placeOrder",
+              "sid": 1
+            },
+            "metadata": {
+              "q": {
+                "hidden": true,
+                "readonly": true,
+                "valueType": "text",
+                "id": "q",
+                "label": "q",
+                "type": "input",
+                "initialValue": "/om2.exchange.orders/placeOrder",
+                "required": true
+              },
+              "orderType": {
+                "id": "orderType",
+                "label": "orderType",
+                "data": [
+                  "Market",
+                  "Limit"
+                ],
+                "type": "select",
+                "initialValue": "Limit",
+                "required": true
+              },
+              "instrument": {
+                "id": "instrument",
+                "label": "instrument",
+                "data": "__INSTRUMENTS__",
+                "type": "select",
+                "required": true
+              },
+              "side": {
+                "id": "side",
+                "label": "side",
+                "data": [
+                  "Buy",
+                  "Sell"
+                ],
+                "type": "select",
+                "initialValue": "Buy",
+                "required": true
+              },
+              "quantity": {
+                "id": "quantity",
+                "label": "quantity",
+                "type": "input",
+                "required": true,
+                 "initialValue": 1.25,
+                "valueType": "number"
+              },
+              "price": {
+                "hidden": true,
+                "dependency": {
+                  "override": {
+                    "hidden": false,
+                    "omitted": false,
+                    "required": true
+                  },
+                  "operator": "oneOf",
+                  "values": [
+                    "Limit"
+                  ],
+                  "fieldId": "orderType"
+                },
+                "valueType": "number",
+                "omitted": true,
+                "id": "price",
+                "label": "price",
+                "type": "input",
+                "initialValue": 100.50,
+                "required": false
+              },
+              "timeInForce": {
+                    "hidden": true,
+                "dependency": {
+                  "override": {
+                    "hidden": false,
+                    "omitted": false,
+                    "required": true
+                  },
+                  "operator": "oneOf",
+                  "values": [
+                    "Limit"
+                  ],
+                  "fieldId": "orderType"
+                },
+                "id": "timeInForce",
+                "label": "timeInForce  (Limit Order)",
+                "data": [
+                  "GTC",
+                  "GTD"
+                ],
+                "type": "select",
+                "initialValue": "GTC",
+                "omitted": true,
+                "required": true
+              },
+            "expiryDate": {
+                "hidden": true,
+                "dependency": {
+                  "override": {
+                    "hidden": false,
+                    "omitted": false,
+                    "required": true
+                  },
+                  "operator": "oneOf",
+                  "values": [
+                    "GTD"
+                  ],
+                  "fieldId": "timeInForce"
+                },
+                "valueType": "number",
+                "omitted": true,
+                "id": "expiryDate",
+                "label": "expiryDate",
+                "type": "input",
+                "initialValue": "__TIMESTAMP__",
+                "required": false
+              },
+              
+              
+              
+                 "timeInForce": {
+                "hidden": true,
+                "dependency": {
+                  "override": {
+                    "hidden": false,
+                    "omitted": false,
+                    "required": true
+                  },
+                  "operator": "oneOf",
+                  "values": [
+                    "Market"
+                  ],
+                  "fieldId": "orderType"
+                },
+                "id": "timeInForceMarket",
+                "label": "timeInForce (Market Order)",
+                "data": [
+                  "IOC",
+                  "FOK"
+                ],
+                 "type": "select",
+                "initialValue": "IOC",
+                   "omitted": true,
+                 "required": true
+              },
+              
+              
+              
+              
+              "brokerOrderId": {
+                "id": "brokerOrderId",
+                "label": "brokerOrderId",
+                "type": "input",
+                "initialValue": "__TIMESTAMP__",
+                "required": true,
+                "valueType": "number"
+              },
+              "userId": {
+                "id": "userId",
+                "label": "userId",
+                "type": "input",
+                "initialValue": "UserTest1",
+                "required": true,
+                "valueType": "text"
+              },
+              "sid": {
+                "id": "sid",
+                "label": "sid",
+                "type": "input",
+                "initialValue": 1,
+                "required": true,
+                "valueType": "number"
+              }
+            },
+            "structure": {
+              "d": [
+                "orderType",
+                 "instrument",
+                "side",
+                "quantity",
+                "price",
+                "timeInForce",
+                "timeInForceMarket",  
+                "expiryDate",
+                "brokerOrderId",
+                 "userId"
+              ],
+              "q": "q",
+              "sid": "sid"
+            }
+          },
+           "methodName": "placeOrder",
+          "group": "Trading API"
+        },
+        {
+          "payload": {
+            "sample": {
+              "d": {
+                "orderId": "",
+                "userId": "UserTest1",
+                "instrument": "AMZ"
+              },
+              "q": "/om2.exchange.orders/cancelOrder",
+              "sid": 1
+            },
+            "metadata": {
+              "q": {
+                "hidden": true,
+                "readonly": true,
+                "valueType": "text",
+                "id": "q",
+                "label": "q",
+                "type": "input",
+                "initialValue": "/om2.exchange.orders/cancelOrder",
+                "required": true
+              },
+              "idType": {
+                "id": "idType",
+                "label": "idType",
+                "data": [
+                  "orderId",
+                  "brokerOrderId"
+                ],
+                "type": "select",
+                "initialValue": "orderId",
+                "required": true
+              },
+              "orderId": {
+                "hidden": true,
+                "dependency": {
+                  "override": {
+                    "hidden": false,
+                    "omitted": false,
+                    "required": true
+                  },
+                  "operator": "oneOf",
+                  "values": [
+                    "orderId"
+                  ],
+                  "fieldId": "idType"
+                },
+                "valueType": "number",
+                "omitted": true,
+                "id": "orderId",
+                "label": "orderId",
+                "type": "input",
+                "initialValue": "",
+                "required": false
+              },
+              "instrument": {
+                "id": "instrument",
+                "label": "instrument",
+                "data": "__INSTRUMENTS__",
+                "type": "select",
+                "required": true
+              },
+              "brokerOrderId": {
+                "hidden": true,
+                "dependency": {
+                  "override": {
+                    "hidden": false,
+                    "omitted": false,
+                    "required": true
+                  },
+                  "operator": "oneOf",
+                  "values": [
+                    "brokerOrderId"
+                  ],
+                  "fieldId": "idType"
+                },
+                "valueType": "number",
+                "omitted": true,
+                "id": "brokerOrderId",
+                "label": "brokerOrderId",
+                "type": "input",
+                "initialValue": "",
+                "required": false
+              },
+              "userId": {
+                "id": "userId",
+                "label": "userId",
+                "type": "input",
+                "initialValue": "UserTest1",
+                "required": true,
+                "valueType": "text"
+              },
+              "sid": {
+                "id": "sid",
+                "label": "sid",
+                "type": "input",
+                "initialValue": 1,
+                "required": true,
+                "valueType": "number"
+              }
+            },
+            "structure": {
+              "d": [
+                "orderId",
+                "brokerOrderId",
+                "userId",
+                "instrument"
+              ],
+              "q": "q",
+              "sid": "sid"
+            }
+          },
+          "methodName": "cancelOrder",
+          "group": "Trading API"
+        },
+        {
+          "payload": {
+            "sample": {
+              "d": {},
+              "q": "/om2.exchange.market/orderBookDepth",
+              "sid": 10
+            },
+            "metadata": {
+              "q": {
+                "hidden": true,
+                "readonly": true,
+                "valueType": "text",
+                "id": "q",
+                "label": "q",
+                "type": "input",
+                "initialValue": "/om2.exchange.market/orderBookDepth",
+                "required": true
+              },
+              "sid": {
+                "id": "sid",
+                "label": "sid",
+                "type": "input",
+                "initialValue": 10,
+                "required": true,
+                "valueType": "number"
+              }
+            },
+            "structure": {
+              "d": [],
+              "q": "q",
+              "sid": "sid"
+            }
+          },
+          "methodName": "orderBookDepth",
+          "group": "Market Data API"
+        }
+      ],
+      "url": "wss://develop.exchange.om2.com",
+      "order": 1
+    }
+
+  }
