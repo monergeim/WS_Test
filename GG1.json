@@ -183,7 +183,7 @@
                 "initialValue": "GTC",
                 "required": true
               },
-            "expireDate": {
+            "expiryDate": {
                 "hidden": true,
                 "dependency": {
                   "override": {
@@ -199,8 +199,8 @@
                 },
                 "valueType": "number",
                 "omitted": true,
-                "id": "expireDate",
-                "label": "expireDate",
+                "id": "expiryDate",
+                "label": "expiryDate",
                 "type": "input",
                 "initialValue": "__TIMESTAMP__",
                 "required": false
