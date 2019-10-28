@@ -173,6 +173,19 @@
                 "required": false
               },
               "timeInForce": {
+                    "hidden": true,
+                "dependency": {
+                  "override": {
+                    "hidden": false,
+                    "omitted": false,
+                    "required": true
+                  },
+                  "operator": "oneOf",
+                  "values": [
+                    "Limit"
+                  ],
+                  "fieldId": "orderType"
+                },
                 "id": "timeInForce",
                 "label": "timeInForce",
                 "data": [
@@ -181,6 +194,7 @@
                 ],
                 "type": "select",
                 "initialValue": "GTC",
+                "omitted": true,
                 "required": true
               },
             "expiryDate": {
