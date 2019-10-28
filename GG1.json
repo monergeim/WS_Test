@@ -1,5 +1,5 @@
   {
-       "exchange/develop5": {
+       "exchange/develop6": {
 
       "configurationService": {
         "field": "symbol",
@@ -236,7 +236,7 @@
                   ],
                   "fieldId": "orderType"
                 },
-                "id": "timeInForceMarket2",
+                "id": "timeInForce",
                 "label": "timeInForce (Market Order)",
                 "data": [
                   "IOC",
@@ -284,7 +284,7 @@
                 "quantity",
                 "price",
                 "timeInForce",
-                "timeInForceMarket1",    "timeInForceMarket2",
+                "timeInForceMarket1",  
                 "expiryDate",
                 "brokerOrderId",
                  "userId"
