@@ -1,5 +1,5 @@
   {
-       "exchange/develop8": {
+       "exchange/develop10": {
 
       "configurationService": {
         "field": "symbol",
@@ -222,7 +222,7 @@
               
               
               
-                 "timeInForce": {
+                 "timeInForceMarket": {
                 "hidden": true,
                 "dependency": {
                   "override": {
