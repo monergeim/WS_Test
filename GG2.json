@@ -1,5 +1,5 @@
 {
-       "exchange/develop10": {
+       "exchange/develop": {
 
       "configurationService": {
         "field": "symbol",
@@ -173,24 +173,14 @@
                 "required": false
               },
               "timeInForce": {
-                    "hidden": true,
-                "dependency": {
-                  "override": {
-                    "hidden": false,
-                    "omitted": false,
-                    "required": true
-                  },
-                  "operator": "oneOf",
-                  "values": [
-                    "Limit"
-                  ],
-                  "fieldId": "orderType"
-                },
+                    
                 "id": "timeInForce",
-                "label": "timeInForce  (Limit Order)",
+                "label": "timeInForce",
                 "data": [
                   "GTC",
-                  "GTD"
+                  "GTD",
+                  "IOC",
+                  "FOK"          
                 ],
                 "type": "select",
                 "initialValue": "GTC",
@@ -220,36 +210,7 @@
                 "required": false
               },
               
-              
-              
-                 "timeInForce": {
-                "hidden": true,
-                "dependency": {
-                  "override": {
-                    "hidden": false,
-                    "omitted": false,
-                    "required": true
-                  },
-                  "operator": "oneOf",
-                  "values": [
-                    "Market"
-                  ],
-                  "fieldId": "orderType"
-                },
-                "id": "timeInForceMarket",
-                "label": "timeInForce (Market Order)",
-                "data": [
-                  "IOC",
-                  "FOK"
-                ],
-                 "type": "select",
-                "initialValue": "IOC",
-                   "omitted": true,
-                 "required": true
-              },
-              
-              
-              
+         
               
               "brokerOrderId": {
                 "id": "brokerOrderId",
