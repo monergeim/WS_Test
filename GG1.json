@@ -1,5 +1,5 @@
   {
-       "exchange/develop6": {
+       "exchange/develop7": {
 
       "configurationService": {
         "field": "symbol",
@@ -222,7 +222,7 @@
               
               
               
-                 "timeInForceMarket1": {
+                 "timeInForce": {
                 "hidden": true,
                 "dependency": {
                   "override": {
@@ -236,7 +236,7 @@
                   ],
                   "fieldId": "orderType"
                 },
-                "id": "timeInForce",
+                "id": "timeInForceMarket2",
                 "label": "timeInForce (Market Order)",
                 "data": [
                   "IOC",
