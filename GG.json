@@ -84,6 +84,8 @@
           "methodName": "createSession",
           "group": "Authentication API"
         },
+         "methodName": "placeOrder",
+          "group": "Trading API",
         {
           "payload": {
             "sample": {
@@ -191,23 +193,57 @@
                 "required": true,
                 "valueType": "number"
               }
+              "timeInForce": {
+                "id": "timeInForce",
+                "label": "timeInForce",
+                "data": [
+                  "GTC",
+                  "GTD"
+                ],
+                "type": "select",
+                "initialValue": "Buy",
+                "required": true
+              },
+            "expireDate": {
+                "hidden": true,
+                "dependency": {
+                  "override": {
+                    "hidden": false,
+                    "omitted": false,
+                    "required": true
+                  },
+                  "operator": "oneOf",
+                  "values": [
+                    "GTD"
+                  ],
+                  "fieldId": "timeInForce"
+                },
+                "valueType": "number",
+                "omitted": true,
+                "id": "expireDate",
+                "label": "expireDate",
+                "type": "input",
+                "initialValue": "__TIMESTAMP__",
+                "required": false
+              }
             },
             "structure": {
               "d": [
-                "brokerOrderId",
-                "userId",
                 "orderType",
+                 "instrument",
                 "side",
-                "instrument",
                 "quantity",
-                "price"
+                "price",
+                "timeInForce",
+                "expiryDate",
+                "brokerOrderId",
+                 "userId"
               ],
               "q": "q",
               "sid": "sid"
             }
-          },
-          "methodName": "placeOrder",
-          "group": "Trading API"
+          }
+         
         },
         {
           "payload": {
