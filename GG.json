@@ -1,5 +1,6 @@
   {
-   
+       "exchange/develop": {
+
       "configurationService": {
         "field": "symbol",
         "repository": "InstrumentsList",
@@ -402,3 +403,4 @@
       "order": 1
     }
 
+  }
