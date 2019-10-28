@@ -123,6 +123,13 @@
                 "initialValue": "Limit",
                 "required": true
               },
+              "instrument": {
+                "id": "instrument",
+                "label": "instrument",
+                "data": "__INSTRUMENTS__",
+                "type": "select",
+                "required": true
+              },
               "side": {
                 "id": "side",
                 "label": "side",
@@ -162,12 +169,38 @@
                 "type": "input",
                 "required": false
               },
-              "instrument": {
-                "id": "instrument",
-                "label": "instrument",
-                "data": "__INSTRUMENTS__",
+              "timeInForce": {
+                "id": "timeInForce",
+                "label": "timeInForce",
+                "data": [
+                  "GTC",
+                  "GTD"
+                ],
                 "type": "select",
+                "initialValue": "GTC",
                 "required": true
+              },
+            "expireDate": {
+                "hidden": true,
+                "dependency": {
+                  "override": {
+                    "hidden": false,
+                    "omitted": false,
+                    "required": true
+                  },
+                  "operator": "oneOf",
+                  "values": [
+                    "GTD"
+                  ],
+                  "fieldId": "timeInForce"
+                },
+                "valueType": "number",
+                "omitted": true,
+                "id": "expireDate",
+                "label": "expireDate",
+                "type": "input",
+                "initialValue": "__TIMESTAMP__",
+                "required": false
               },
               "brokerOrderId": {
                 "id": "brokerOrderId",
@@ -192,41 +225,7 @@
                 "initialValue": 1,
                 "required": true,
                 "valueType": "number"
-              },
-              "timeInForce": {
-                "id": "timeInForce",
-                "label": "timeInForce",
-                "data": [
-                  "GTC",
-                  "GTD"
-                ],
-                "type": "select",
-                "initialValue": "Buy",
-                "required": true
-              },
-            "expireDate": {
-                "hidden": true,
-                "dependency": {
-                  "override": {
-                    "hidden": false,
-                    "omitted": false,
-                    "required": true
-                  },
-                  "operator": "oneOf",
-                  "values": [
-                    "GTD"
-                  ],
-                  "fieldId": "timeInForce"
-                },
-                "valueType": "number",
-                "omitted": true,
-                "id": "expireDate",
-                "label": "expireDate",
-                "type": "input",
-                "initialValue": "__TIMESTAMP__",
-                "required": false
               }
-            
             },
             "structure": {
               "d": [
