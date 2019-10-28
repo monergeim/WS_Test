@@ -1,5 +1,5 @@
   {
-    "value": {
+   
       "configurationService": {
         "field": "symbol",
         "repository": "InstrumentsList",
@@ -84,8 +84,7 @@
           "methodName": "createSession",
           "group": "Authentication API"
         },
-         "methodName": "placeOrder",
-          "group": "Trading API",
+         
         {
           "payload": {
             "sample": {
@@ -192,7 +191,7 @@
                 "initialValue": 1,
                 "required": true,
                 "valueType": "number"
-              }
+              },
               "timeInForce": {
                 "id": "timeInForce",
                 "label": "timeInForce",
@@ -226,6 +225,7 @@
                 "initialValue": "__TIMESTAMP__",
                 "required": false
               }
+            
             },
             "structure": {
               "d": [
@@ -242,8 +242,9 @@
               "q": "q",
               "sid": "sid"
             }
-          }
-         
+          },
+           "methodName": "placeOrder",
+          "group": "Trading API"
         },
         {
           "payload": {
@@ -400,4 +401,4 @@
       "url": "wss://develop.exchange.om2.com",
       "order": 1
     }
-  }
+
