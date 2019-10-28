@@ -1,0 +1,350 @@
+{
+  "exchange/develop": {
+    "url": "wss://develop.exchange.om2.com",
+      "provider": "websocket",
+    "methods": [
+      {
+        "methodName": "createSession - Broker",
+        "group": "Authentication API",
+        "payload": {
+          "sample": {
+            "q": "/om2.exchange.auth/createSession",
+            "sid": 1,
+            "d": {
+              "apiKey": "",
+              "timestamp": "",
+              "signature": ""
+            }
+          },
+          "metadata": {
+            "q": {
+              "type": "input",
+              "id": "q",
+              "label": "q",
+              "valueType": "text",
+              "initialValue": "/om2.exchange.auth/createSession",
+              "hidden": true,
+              "required": true
+            },
+            "sid": {
+              "type": "input",
+              "id": "sid",
+              "label": "sid",
+              "valueType": "number",
+              "initialValue": 1,
+              "required": true
+            },
+            "apiKey": {
+              "type": "input",
+              "id": "apiKey",
+              "label": "apiKey",
+              "valueType": "text",
+              "initialValue": "YXZ",
+              "required": true
+            },
+            "secret": {
+              "type": "input",
+              "id": "secret",
+              "label": "secret",
+              "valueType": "text",
+              "initialValue": "a6rrXAt7SgAZJ5gkLbhEahlgi2R9HgL6jzXB0WcyWRWIKsMhaxl5GzIym6uPiFXMaS",
+              "required": true
+            },
+            "timestamp": {
+              "type": "input",
+              "id": "timestamp",
+              "label": "timestamp",
+              "valueType": "number",
+              "initialValue": "__TIMESTAMP__",
+              "required": true
+            },
+            "signature": {
+              "type": "input",
+              "id": "signature",
+              "label": "signature",
+              "valueType": "text",
+              "hidden": true,
+              "initialValue": "__SIGNATURE__"
+            }
+          },
+          "structure": {
+            "q": "q",
+            "sid": "sid",
+            "d": ["apiKey", "timestamp", "signature"]
+          }
+        }
+      },   {
+        "methodName": "createSession - Operation",
+        "group": "Authentication API",
+        "payload": {
+          "sample": {
+            "q": "/om2.exchange.operation.auth/createSession",
+            "sid": 1,
+            "d": {
+              "apiKey": "",
+              "timestamp": "",
+              "signature": ""
+            }
+          },
+          "metadata": {
+            "q": {
+              "type": "input",
+              "id": "q",
+              "label": "q",
+              "valueType": "text",
+              "initialValue": "/om2.exchange.operation.auth/createSession",
+              "hidden": true,
+              "required": true
+            },
+            "sid": {
+              "type": "input",
+              "id": "sid",
+              "label": "sid",
+              "valueType": "number",
+              "initialValue": 1,
+              "required": true
+            },
+            "apiKey": {
+              "type": "input",
+              "id": "apiKey",
+              "label": "apiKey",
+              "valueType": "text",
+              "initialValue": "ABC",
+              "required": true
+            },
+            "secret": {
+              "type": "input",
+              "id": "secret",
+              "label": "secret",
+              "valueType": "text",
+              "initialValue": "oMQMgLLNVF8XzH1zVgCKtbiqjbG7rp05V4MKQ88PIox1gK6UaBTvoMKQ88PY6mS2uY",
+              "required": true
+            },
+            "timestamp": {
+              "type": "input",
+              "id": "timestamp",
+              "label": "timestamp",
+              "valueType": "number",
+              "initialValue": "__TIMESTAMP__",
+              "required": true
+            },
+            "signature": {
+              "type": "input",
+              "id": "signature",
+              "label": "signature",
+              "valueType": "text",
+              "hidden": true,
+              "initialValue": "__SIGNATURE__"
+            }
+          },
+          "structure": {
+            "q": "q",
+            "sid": "sid",
+            "d": ["apiKey", "timestamp", "signature"]
+          }
+        }
+      },
+     {
+          "payload": {
+            "sample": {
+              "d": {
+                "orderType": "Limit",
+                "side": "Buy",
+                "quantity": "2.11",
+                "price": "100.22",
+                "instrument": "AMZ",
+                "brokerOrderId": 1564403702076,
+                "userId": "UserTest1",
+              "timeInForce":"GTC"
+              },
+              "q": "/om2.exchange.orders/placeOrder",
+              "sid": 1
+            },
+            "metadata": {
+              "q": {
+                "hidden": true,
+                "readonly": true,
+                "valueType": "text",
+                "id": "q",
+                "label": "q",
+                "type": "input",
+                "initialValue": "/om2.exchange.orders/placeOrder",
+                "required": true
+              },
+              "orderType": {
+                "id": "orderType",
+                "label": "orderType",
+                "data": [
+                  "Market",
+                  "Limit"
+                ],
+                "type": "select",
+                "initialValue": "Limit",
+                "required": true
+              },
+              "side": {
+                "id": "side",
+                "label": "side",
+                "data": [
+                  "Buy",
+                  "Sell"
+                ],
+                "type": "select",
+                "initialValue": "Buy",
+                "required": true
+              },
+              "quantity": {
+                "id": "quantity",
+                "label": "quantity",
+                "type": "input",
+                "required": true,
+                "valueType": "number"
+              },
+              "price": {
+                "hidden": true,
+                "dependency": {
+                  "override": {
+                    "hidden": false,
+                    "omitted": false,
+                    "required": true
+                  },
+                  "operator": "oneOf",
+                  "values": [
+                    "Limit"
+                  ],
+                  "fieldId": "orderType"
+                },
+                "valueType": "number",
+                "omitted": true,
+                "id": "price",
+                "label": "price",
+                "type": "input",
+                "required": false
+              },
+              "instrument": {
+                "id": "instrument",
+                "label": "instrument",
+                "data": "__INSTRUMENTS__",
+                "type": "select",
+                "required": true
+              },
+              "brokerOrderId": {
+                "id": "brokerOrderId",
+                "label": "brokerOrderId",
+                "type": "input",
+                "initialValue": "__TIMESTAMP__",
+                "required": true,
+                "valueType": "number"
+              },
+              "userId": {
+                "id": "userId",
+                "label": "userId",
+                "type": "input",
+                "initialValue": "UserTest1",
+                "required": true,
+                "valueType": "text"
+              },
+              "sid": {
+                "id": "sid",
+                "label": "sid",
+                "type": "input",
+                "initialValue": 1,
+                "required": true,
+                "valueType": "number"
+              },
+              "timeInForce": {
+                "id": "timeInForce",
+                "label": "timeInForce",
+                "data": [
+                  "GTC",
+                  "GTD"
+                ],
+                "type": "select",
+                "initialValue": "Buy",
+                "required": true
+              },
+            "expireDate": {
+                "hidden": true,
+                "dependency": {
+                  "override": {
+                    "hidden": false,
+                    "omitted": false,
+                    "required": true
+                  },
+                  "operator": "oneOf",
+                  "values": [
+                    "GTD"
+                  ],
+                  "fieldId": "timeInForce"
+                },
+                "valueType": "number",
+                "omitted": true,
+                "id": "expireDate",
+                "label": "expireDate",
+                "type": "input",
+                "initialValue": "__TIMESTAMP__",
+                "required": false
+              }
+              
+            },
+            "structure": {
+              "d": [
+                "brokerOrderId",
+                "userId",
+                "orderType",
+                "side",
+                "instrument",
+                "quantity",
+                "price"
+              ],
+              "q": "q",
+              "sid": "sid"
+            }
+          },
+          "methodName": "placeOrder",
+          "group": "Trading API"
+        },
+      {
+        "methodName": "cancelOrder",
+        "group": "Trading API",
+        "payload": {
+          "sample": {
+            "q": "/om2.exchange.orders/cancelOrder",
+            "sid": 1,
+            "d": {
+              "orderId": "",
+              "userId": "UserTest1",
+              "instrument": "AMZ"
+            }
+          }
+        }
+      },
+      {
+        "methodName": "orderBookDepth",
+        "group": "Market Data API",
+        "payload": {
+          "sample": {
+            "q": "/om2.exchange.market/orderBookDepth",
+            "sid": 10,
+            "d": {}
+          }
+        }
+      },
+          {
+        "methodName": "tradingAction",
+        "group": "Operations API",
+        "payload": {
+          "sample": {
+    "q": "/om2.exchange.market/tradingAction",
+            "sid": 5,
+            "d": {
+                 "instrument": "AMZ",
+                  "action": "halt"
+              
+            }
+          }
+        }
+      }
+    ]
+  }
+}
