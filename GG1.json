@@ -1,5 +1,5 @@
   {
-       "exchange/develop1": {
+       "exchange/develop": {
 
       "configurationService": {
         "field": "symbol",
@@ -236,11 +236,14 @@
                   ],
                   "fieldId": "orderType"
                 },
-                "valueType": "number",
                 "omitted": true,
                 "id": "timeInForceMarket",
                 "label": "timeInForce",
-                "type": "input",
+                "type": "select",
+                      "data": [
+                  "IOC",
+                  "FOK"
+                ],
                 "initialValue": "IOC",
                 "required": false
               },
