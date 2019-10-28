@@ -184,7 +184,6 @@
                 ],
                 "type": "select",
                 "initialValue": "GTC",
-                "omitted": true,
                 "required": true
               },
             "expiryDate": {
@@ -245,7 +244,6 @@
                 "quantity",
                 "price",
                 "timeInForce",
-                "timeInForceMarket",  
                 "expiryDate",
                 "brokerOrderId",
                  "userId"
