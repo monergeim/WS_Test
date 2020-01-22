@@ -1,0 +1,812 @@
+  
+<!DOCTYPE html>
+<html>
+<article class="markdown-body entry-content p-3 p-md-6" itemprop="text"><p><a target="_blank" rel="noopener noreferrer" href="https://camo.githubusercontent.com/236aeace75f7cd17de354be8b4395e45482ff04b/68747470733a2f2f63646e2e73686f7274706978656c2e61692f636c69656e742f746f5f776562702c715f676c6f7373792c7265745f696d672c775f3730392f68747470733a2f2f657862657272792e696f2f77702d636f6e74656e742f75706c6f6164732f323032302f30312f657862657272792d30392e706e67"><img src="https://camo.githubusercontent.com/236aeace75f7cd17de354be8b4395e45482ff04b/68747470733a2f2f63646e2e73686f7274706978656c2e61692f636c69656e742f746f5f776562702c715f676c6f7373792c7265745f696d672c775f3730392f68747470733a2f2f657862657272792e696f2f77702d636f6e74656e742f75706c6f6164732f323032302f30312f657862657272792d30392e706e67" width="80" data-canonical-src="https://cdn.shortpixel.ai/client/to_webp,q_glossy,ret_img,w_709/https://exberry.io/wp-content/uploads/2020/01/exberry-09.png" style="max-width:100%;"></a></p>
+<ul>
+<li><a href="#Introduction">Introduction</a>
+<ul>
+<li><a href="#GeneralSpecs">General Specifications</a></li>
+</ul>
+</li>
+<li><a href="#AuthAPI">Authentication API</a>
+<ul>
+<li><a href="#createSession">createSession</a></li>
+</ul>
+</li>
+<li><a href="#TradingAPI">Trading API</a>
+<ul>
+<li><a href="#placeOrder">placeOrder</a></li>
+<li><a href="#cancelOrder">cancelOrder</a></li>
+</ul>
+</li>
+<li><a href="#MarketDataAPI">Market Data API</a>
+<ul>
+<li><a href="#orderBookDepth">orderBookDepth</a></li>
+</ul>
+</li>
+</ul>
+<h1><a id="user-content-introduction" class="anchor" aria-hidden="true" href="#introduction"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Introduction</h1>
+<p>The exberry exchange API offers real time market data as well as the ability to trade with the exchange.</p>
+<p>The underlying technology used is <a href="http://scalecube.io/" rel="nofollow">Scalecube</a> a Novel Open-source application-platform that addresses inherent challenges involved in the development of distributed computing.</p>
+<p>Exchange API protocol is WebSocket.<br>
+Any request body should be a valid <code>JSON</code>, non valid <code>JSON</code> objects will be ignored.</p>
+<p>Within the valid JSON please be aware that:</p>
+<ul>
+<li>System ignores any additional parameter that was sent on request body but was not specified in this document.</li>
+<li>In case of multiple parameters sent with different values, system will always use the last value provided.</li>
+</ul>
+<p><strong>Sandbox</strong></p>
+<ul>
+<li>Navigate to <a href="https://sandbox.exBerry.io/" rel="nofollow">Sandbox</a></li>
+<li>Create a session and start investigate the API</li>
+</ul>
+<details><summary><a name="user-content-generalspecs"></a><b>General Specifications</b></summary>
+<p><strong>Request Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>q</td>
+<td>String</td>
+<td>qualifier, contains the method for the specific API call.</td>
+</tr>
+<tr>
+<td>sid</td>
+<td>Int</td>
+<td>stream identifier, for each WebSocket connection this is a unique identifier for the API call. Please note that as long as the sid was not ended (other by exchange or by consumer) this can’t be used again on the same WebSocket connection</td>
+</tr>
+<tr>
+<td>d</td>
+<td>Json</td>
+<td>data object, contain the request body</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight highlight-source-js"><pre><span class="pl-kos">{</span> 
+ <span class="pl-s">"q"</span>:<span class="pl-s">"/om2.exchange.orders/placeOrder"</span><span class="pl-kos">,</span> 
+ <span class="pl-s">"sid"</span>:<span class="pl-c1">1</span><span class="pl-kos">,</span> 
+ <span class="pl-s">"d"</span>: 
+   <span class="pl-kos">{</span> 
+	 <span class="pl-s">"userId"</span>:<span class="pl-s">"UserTest1"</span><span class="pl-kos">,</span> 
+	 <span class="pl-s">"orderType"</span>:<span class="pl-s">"Limit"</span><span class="pl-kos">,</span> 
+	 <span class="pl-s">"side"</span>:<span class="pl-s">"Buy"</span><span class="pl-kos">,</span> 
+	 <span class="pl-s">"instrument"</span>:<span class="pl-s">"FB"</span><span class="pl-kos">,</span> 
+	 <span class="pl-s">"quantity"</span>:<span class="pl-c1">1.3</span><span class="pl-kos">,</span> 
+	 <span class="pl-s">"price"</span>:<span class="pl-c1">170.11</span>
+   <span class="pl-kos">}</span> 
+<span class="pl-kos">}</span> </pre></div>
+<p><strong>Success Response</strong><br>
+The response will always include the <code>q</code> and <code>sid</code> parameters from request and a <code>d</code> parameter with the response body.</p>
+<div class="highlight highlight-source-js"><pre><span class="pl-kos">{</span> 
+   <span class="pl-s">"q"</span>:<span class="pl-s">"/om2.exchange.orders/placeOrder"</span><span class="pl-kos">,</span> 
+   <span class="pl-s">"sid"</span>:<span class="pl-c1">1</span><span class="pl-kos">,</span> 
+   <span class="pl-s">"d"</span>: 
+     <span class="pl-kos">{</span> 
+       <span class="pl-s">"orderId"</span>:<span class="pl-c1">1234</span><span class="pl-kos">,</span> 
+       <span class="pl-s">"orderStatus"</span>:<span class="pl-s">"Pending"</span> 
+     <span class="pl-kos">}</span> 
+<span class="pl-kos">}</span> </pre></div>
+<p>In case of short living stream (i.e. trading action), additional response will be sent upon stream closure with success, this message will include <code>sid</code> with request sid and <code>sig:1</code>.</p>
+<div class="highlight highlight-source-js"><pre><span class="pl-kos">{</span> 
+  <span class="pl-s">"sig"</span>:<span class="pl-c1">1</span><span class="pl-kos">,</span> 
+  <span class="pl-s">"sid"</span>:<span class="pl-c1">1</span> 
+<span class="pl-kos">}</span> </pre></div>
+<p><strong>Response With Failure</strong><br>
+The response will always include the below parameters:</p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>sig</td>
+<td>signal will be equal to "2"</td>
+</tr>
+<tr>
+<td>q</td>
+<td>always <code>/io.scalecube.services.error/XXX</code>, the XXX value is internal and should be ignored</td>
+</tr>
+<tr>
+<td>sid</td>
+<td>from request</td>
+</tr>
+<tr>
+<td>d</td>
+<td>data that contain errorCode and errorMessage. Those are the error code and message to consider</td>
+</tr>
+</tbody>
+</table>
+<div class="highlight highlight-source-js"><pre><span class="pl-kos">{</span> 
+   <span class="pl-s">"sig"</span>:<span class="pl-c1">2</span><span class="pl-kos">,</span> 
+   <span class="pl-s">"q"</span>:<span class="pl-s">"/io.scalecube.services.error/500"</span><span class="pl-kos">,</span> 
+   <span class="pl-s">"sid"</span>:<span class="pl-c1">1</span><span class="pl-kos">,</span> 
+   <span class="pl-s">"d"</span>: 
+     <span class="pl-kos">{</span> 
+       <span class="pl-s">"errorCode"</span>:<span class="pl-c1">1000</span><span class="pl-kos">,</span> 
+       <span class="pl-s">"errorMessage"</span>:<span class="pl-s">"Unknown order type: SL"</span> 
+     <span class="pl-kos">}</span> 
+<span class="pl-kos">}</span> </pre></div>
+<p><strong>Stream Closure</strong><br>
+In order to close active stream need to send a message with <code>sig:3</code> and <code>sid</code> with the stream id to be closed.</p>
+<div class="highlight highlight-source-js"><pre><span class="pl-kos">{</span> 
+    <span class="pl-s">"sig"</span>:<span class="pl-c1">3</span><span class="pl-kos">,</span> 
+    <span class="pl-s">"sid"</span>:<span class="pl-c1">30000</span> 
+<span class="pl-kos">}</span> </pre></div>
+<p>sig parameter summary table:</p>
+<table>
+<thead>
+<tr>
+<th>sig</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>Stream closed with success</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Stream closed with failure</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Stream was closed due to consumer request</td>
+</tr>
+</tbody>
+</table>
+</details>
+<h1><a id="user-content-authentication-api" class="anchor" aria-hidden="true" href="#authentication-api"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><a name="user-content-authapi"></a>Authentication API</h1>
+<h2><a id="user-content-createsession" class="anchor" aria-hidden="true" href="#createsession"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>createSession</h2>
+<p>The <code>createSession</code> API lets you authenticate to exchange API.</p>
+<p>Prior to any exchasnge API call you must create a valid session, this session remains active as long as websocket connection remians open.
+Any broker connected to exchnage will be provided with 1 (or more) set of <code>apiKey</code> and <code>secret</code>, each <code>apiKey</code> is assigned with the relevant permissions.</p>
+<p>Endpoint: <code>/om2.exchange.auth/createSession"</code></p>
+<p><strong>Request Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>apiKey</td>
+<td>String</td>
+<td>Unique broker order ID</td>
+</tr>
+<tr>
+<td>timestamp</td>
+<td>Unix timestamp</td>
+<td>Login timestamp in milliseconds, must be now</td>
+</tr>
+<tr>
+<td>signature</td>
+<td>String</td>
+<td><code>HMAC SHA256 signature</code> computed using provided <code>secret</code> key and message body. <br> Example:<br> <code>Message</code> = <code>"apiKey":"1234567abcdz","timestamp":"1558941516123"</code><br><code>secret</code> = <code>MySecretKey</code><br><code>signature = 265cfbc40c22355d6c1ecc1f3a1e87e8c46954db9096a7bd6967241dd8bc65b6</code></td>
+</tr>
+</tbody>
+</table>
+<p>How to compute the signature</p>
+<pre><code>$ echo -n '"apiKey":"1234567abcdz","timestamp":"1558941516123"' | openssl dgst -sha256 -hmac 'MySecretKey'
+(stdin)= 265cfbc40c22355d6c1ecc1f3a1e87e8c46954db9096a7bd6967241dd8bc65b6
+</code></pre>
+<p><strong>Error Codes</strong></p>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Message</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>6000</td>
+<td><code>Authentication failed</code></td>
+</tr>
+<tr>
+<td>6001</td>
+<td><code>Wrong timestamp</code></td>
+</tr>
+<tr>
+<td>6002</td>
+<td><code>Missing fields: [Fieldname]</code></td>
+</tr>
+</tbody>
+</table>
+<details>
+<summary><b>Samples</b></summary>  
+<p><strong>Request</strong></p>
+<div class="highlight highlight-source-js"><pre><span class="pl-kos">{</span>
+        <span class="pl-s">"q"</span>:<span class="pl-s">"/om2.exchange.auth/createSession"</span><span class="pl-kos">,</span>
+        <span class="pl-s">"sid"</span>:<span class="pl-c1">15</span><span class="pl-kos">,</span>
+        <span class="pl-s">"d"</span>:<span class="pl-kos">{</span>
+                    <span class="pl-s">"apiKey"</span>:<span class="pl-s">"6ggg"</span><span class="pl-kos">,</span>
+                    <span class="pl-s">"timestamp"</span>:<span class="pl-s">"1563880778434"</span><span class="pl-kos">,</span>
+                    <span class="pl-s">"signature"</span>:<span class="pl-s">"1842286ea411ebdc3dde3e6b3185cc85c19fa0140d0eecebb0c74137e9957981"</span>
+        <span class="pl-kos">}</span>
+<span class="pl-kos">}</span>
+</pre></div>
+<p><strong>Success Response</strong></p>
+<div class="highlight highlight-source-js"><pre><span class="pl-kos">{</span>
+        <span class="pl-s">"q"</span>:<span class="pl-s">"/om2.exchange.auth/createSession"</span><span class="pl-kos">,</span>
+        <span class="pl-s">"sid"</span>:<span class="pl-c1">15</span><span class="pl-kos">,</span>
+        <span class="pl-s">"d"</span>:<span class="pl-kos">{</span><span class="pl-kos">}</span>
+<span class="pl-kos">}</span></pre></div>
+<p><strong>Failure Response</strong></p>
+<div class="highlight highlight-source-js"><pre><span class="pl-kos">{</span>
+         <span class="pl-s">"sig"</span>:<span class="pl-c1">2</span><span class="pl-kos">,</span>
+         <span class="pl-s">"q"</span>:<span class="pl-s">"/io.scalecube.services.error/401"</span><span class="pl-kos">,</span>
+         <span class="pl-s">"sid"</span>:<span class="pl-c1">15</span><span class="pl-kos">,</span>
+         <span class="pl-s">"d"</span>:<span class="pl-kos">{</span>
+                   <span class="pl-s">"errorCode"</span>:<span class="pl-c1">6001</span><span class="pl-kos">,</span>
+                   <span class="pl-s">"errorMessage"</span>:<span class="pl-s">"Wrong timestamp"</span>
+         <span class="pl-kos">}</span>
+<span class="pl-kos">}</span></pre></div>
+</details>
+<h1><a id="user-content-trading-api" class="anchor" aria-hidden="true" href="#trading-api"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><a name="user-content-tradingapi"></a>Trading API</h1>
+<h2><a id="user-content-placeorder" class="anchor" aria-hidden="true" href="#placeorder"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>placeOrder</h2>
+<p>The <code>placeOrder</code> API lets you place a new order into exchange.</p>
+<p>If you send a valid order, you should receive a response with "Pending" status, this means that order was validated and accepted. The response contains the exchange orderId which should be stored and used for later status changes, notified via the orderBookDepth stream.</p>
+<p>Non-valid order will be responded with error message.
+In case that broker system didn't get a response withing the timeout schedule the broker can do the one of the below:</p>
+<ul>
+<li><strong>Retry</strong> sending same order using same <code>brokerOrderId</code> which will result:
+<ul>
+<li>Rejection in case that previous order was accepted</li>
+<li>Success in case that previous order was not accepted</li>
+</ul>
+</li>
+<li><strong>Cancel</strong> the order using <code>brokerOrderId</code> which will assure that order is no longer active (it might be already executed)</li>
+</ul>
+<p><code>brokerOrderId</code> is unique identifier and should not be used for more than a single order.
+Note: system might accept already used <code>brokerOrderId</code> after predefined period but it is not recommended to use same <code>brokerOrderId</code> twice.</p>
+<p>Order types:</p>
+<ul>
+<li><strong>Limit</strong>: Order is being sent with a specific price. A buy order will be executed with the requested price or lower price a sell order will be executed with the requested price or higher price.</li>
+<li><strong>Market</strong>: Order is attempted filled at the best price in the market. Partial filled is allowed. In case not all the amount can be filled, the residual amount will be cancelled.</li>
+</ul>
+<p>Endpoint: <code>/om2.exchange.orders/placeOrder</code></p>
+<p><strong>Request Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>brokerOrderId</td>
+<td>Long</td>
+<td>Unique broker order ID</td>
+</tr>
+<tr>
+<td>userId</td>
+<td>String</td>
+<td>Reference data only which is not being used in the exchange. 20 characters length, [a-z,A-Z,0-9]</td>
+</tr>
+<tr>
+<td>orderType</td>
+<td>Enum</td>
+<td>Order type&nbsp;Limit&nbsp;or&nbsp;Market</td>
+</tr>
+<tr>
+<td>orderSide</td>
+<td>Enum</td>
+<td>Order side&nbsp;Buy&nbsp;or&nbsp;Sell</td>
+</tr>
+<tr>
+<td>instrument</td>
+<td>String</td>
+<td>Instrument identifier</td>
+</tr>
+<tr>
+<td>quantity</td>
+<td>Decimal</td>
+<td>Order quantity</td>
+</tr>
+<tr>
+<td>price <code>optional</code></td>
+<td>Decimal</td>
+<td>The price of the Limit order. For&nbsp;Market&nbsp;order this will not be sent.</td>
+</tr>
+<tr>
+<td>timeInForce</td>
+<td>Enum</td>
+<td>Available options for Limit order:<br><strong>GTC</strong> - Good Till Cancel (resting on book till cancellation)<br><strong>GTD</strong> - Good Till Date (at given time (expiryDate) order will be automatically cancelled).<br>Available options for Market order:<br><strong>FOK</strong> - Fill Or Kill (all or nothing)<br><strong>IOC</strong> - Immediate Or Cancelled (allows partial fills) <br></td>
+</tr>
+<tr>
+<td>expiryDate</td>
+<td>UTC Time</td>
+<td>Required only for GTD orders - expiration date and time in seconds. <br>In case that trading is halted or market is closed at expiry date - the order will be cancelled (even that cancelOrder requests are not allowed).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>orderId</td>
+<td>Long</td>
+<td>Exchange Order ID</td>
+</tr>
+<tr>
+<td>orderStatus</td>
+<td>String</td>
+<td>Order status: Pending</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Error Codes</strong></p>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Message</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1000</td>
+<td><code>Missing fields: [Fieldname]</code></td>
+</tr>
+<tr>
+<td>1001</td>
+<td><code>Order must contain a positive quantity</code> or   <br><code>Market order must not specify price</code> or <br><code>Limit order must contain a positive price</code> or<br><code>Wrong orderType</code> or<br><code>Wrong side</code> or<br><code>Wrong brokerOrderId</code> or<br><code>Wrong userId</code> or<br><code>Wrong timeInForce</code> or<br><code>Wrong expiryDate</code></td>
+</tr>
+<tr>
+<td>1002</td>
+<td><code>brokerOrderId is already in use</code></td>
+</tr>
+<tr>
+<td>1003</td>
+<td><code>Market is closed</code></td>
+</tr>
+<tr>
+<td>1004</td>
+<td><code>Instrument trading is not allowed</code></td>
+</tr>
+<tr>
+<td>1005</td>
+<td><code>Price precision is[PricePrecision]</code> or<br> <code>Quantity precision is[QuantityPrecision]</code></td>
+</tr>
+<tr>
+<td>1006</td>
+<td><code>Minimum order quantity is [MinOrderQuantity]</code> or<br><code>Maximum order quantity is [MaxOrderQuantity]</code> or<br><code>Quantity increment is [quantityIncrement]</code></td>
+</tr>
+<tr>
+<td>1007</td>
+<td><code>Invalid session</code></td>
+</tr>
+<tr>
+<td>1008</td>
+<td><code>This apiKey doesn’t have the right permission</code></td>
+</tr>
+<tr>
+<td>1009</td>
+<td><code>Instrument trading is halt</code></td>
+</tr>
+<tr>
+<td>1010</td>
+<td><code>Instrument [Instrument] not found</code></td>
+</tr>
+</tbody>
+</table>
+<details>
+<summary><b>Samples</b></summary>  
+<p><strong>Request</strong></p>
+<div class="highlight highlight-source-js"><pre><span class="pl-kos">{</span>
+	<span class="pl-s">"q"</span>:<span class="pl-s">"/om2.exchange.orders/placeOrder"</span><span class="pl-kos">,</span>
+	<span class="pl-s">"sid"</span>: <span class="pl-c1">1</span><span class="pl-kos">,</span>
+	<span class="pl-s">"d"</span>:<span class="pl-kos">{</span>
+		   <span class="pl-s">"brokerOrderId"</span>: <span class="pl-c1">123</span><span class="pl-kos">,</span>   
+                   <span class="pl-s">"userId"</span>: <span class="pl-s">"1"</span><span class="pl-kos">,</span>
+		   <span class="pl-s">"orderType"</span>: <span class="pl-s">"Limit"</span><span class="pl-kos">,</span>
+		   <span class="pl-s">"side"</span>: <span class="pl-s">"Buy"</span><span class="pl-kos">,</span>
+		   <span class="pl-s">"instrument"</span>: <span class="pl-s">"BTC"</span><span class="pl-kos">,</span>
+		   <span class="pl-s">"quantity"</span>: <span class="pl-c1">123</span><span class="pl-kos">,</span>
+		   <span class="pl-s">"price"</span>: <span class="pl-c1">100.555</span><span class="pl-kos">,</span>
+                   <span class="pl-s">"timeInForce"</span>: <span class="pl-s">"GTC"</span><span class="pl-kos">,</span>
+
+	<span class="pl-kos">}</span>
+<span class="pl-kos">}</span></pre></div>
+<p><strong>Success Response</strong></p>
+<div class="highlight highlight-source-js"><pre><span class="pl-kos">{</span>
+	<span class="pl-s">"q"</span>:<span class="pl-s">"/om2.exchange.orders/placeOrder"</span><span class="pl-kos">,</span>
+	<span class="pl-s">"sid"</span>:<span class="pl-c1">1</span><span class="pl-kos">,</span>
+	<span class="pl-s">"d"</span>:<span class="pl-kos">{</span>
+		   <span class="pl-s">"orderId"</span>:<span class="pl-c1">2345</span><span class="pl-kos">,</span>
+		   <span class="pl-s">"orderStatus"</span>:<span class="pl-s">"Pending"</span>
+	   <span class="pl-kos">}</span>
+
+<span class="pl-kos">}</span></pre></div>
+<p><strong>Failure Response</strong></p>
+<div class="highlight highlight-source-js"><pre><span class="pl-kos">{</span>
+	<span class="pl-s">"sig"</span>:<span class="pl-c1">2</span><span class="pl-kos">,</span>
+	<span class="pl-s">"q"</span>:<span class="pl-s">"/io.scalecube.services.error/400"</span><span class="pl-kos">,</span>
+	<span class="pl-s">"sid"</span>:<span class="pl-c1">1</span><span class="pl-kos">,</span>
+	<span class="pl-s">"d"</span>:<span class="pl-kos">{</span>
+		   <span class="pl-s">"errorCode"</span>:<span class="pl-c1">1001</span><span class="pl-kos">,</span>
+		   <span class="pl-s">"errorMessage"</span>:<span class="pl-s">"Limit order must contain a positive price"</span>
+	<span class="pl-kos">}</span>
+<span class="pl-kos">}</span></pre></div>
+</details>
+<h2><a id="user-content-cancelorder" class="anchor" aria-hidden="true" href="#cancelorder"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>cancelOrder</h2>
+<p>The <code>cancelOrder</code> API is used to request that an order be cancelled.</p>
+<p>If you send a valid order to cancel, you should receive a response that confirms that order was cancelled. This means that remaining open quantity of the order was cancelled.</p>
+<p>Non-valid cancel order will be responded with the error message.</p>
+<p>Endpoint: <code>/om2.exchange.orders/cancelOrder</code></p>
+<p><strong>Request Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>orderId <code>optional</code></td>
+<td>Long</td>
+<td>Exchange Order ID. Not mandatory if <code>brokerOrderId</code> was sent</td>
+</tr>
+<tr>
+<td>brokerOrderId <code>optional</code></td>
+<td>Long</td>
+<td>Broker order ID. Not mandatory if <code>orderId</code> was sent</td>
+</tr>
+<tr>
+<td>instrument</td>
+<td>String</td>
+<td>Instrument identifier</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Response Parameters</strong></p>
+<table>
+<thead>
+<tr>
+<th>Parameter</th>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>orderId</td>
+<td>Long</td>
+<td>Exchange Order ID</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Error Codes</strong></p>
+<table>
+<thead>
+<tr>
+<th>Code</th>
+<th>Message</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1100</td>
+<td><code>Order not found for that instrument</code></td>
+</tr>
+<tr>
+<td>1103</td>
+<td><code>Missing fields: [Fieldname]</code></td>
+</tr>
+<tr>
+<td>1104</td>
+<td><code>Please use only one from orderId or brokerOrderId</code></td>
+</tr>
+<tr>
+<td>1007</td>
+<td><code>Invalid session</code></td>
+</tr>
+<tr>
+<td>1008</td>
+<td><code>This apiKey doesn’t have the right permission</code></td>
+</tr>
+<tr>
+<td>1009</td>
+<td><code>Instrument trading is halt</code></td>
+</tr>
+</tbody>
+</table>
+<details>
+<summary><b>Samples</b></summary>  
+<p><strong>Request</strong></p>
+<div class="highlight highlight-source-js"><pre><span class="pl-kos">{</span>
+        <span class="pl-s">"q"</span>:<span class="pl-s">"/om2.exchange.orders/cancelOrder"</span><span class="pl-kos">,</span>
+        <span class="pl-s">"sid"</span>: <span class="pl-c1">1</span><span class="pl-kos">,</span>
+        <span class="pl-s">"d"</span>:<span class="pl-kos">{</span>
+               <span class="pl-s">"orderId"</span>:<span class="pl-c1">3456</span><span class="pl-kos">,</span>
+               <span class="pl-s">"instrument"</span>: <span class="pl-s">"BTC"</span>
+        <span class="pl-kos">}</span>
+<span class="pl-kos">}</span></pre></div>
+<p><strong>Success Response</strong></p>
+<div class="highlight highlight-source-js"><pre><span class="pl-kos">{</span>
+        <span class="pl-s">"q"</span>:<span class="pl-s">"/om2.exchange.orders/cancelOrder"</span><span class="pl-kos">,</span>
+        <span class="pl-s">"sid"</span>:<span class="pl-c1">1</span><span class="pl-kos">,</span>
+        <span class="pl-s">"d"</span>:<span class="pl-kos">{</span>
+               <span class="pl-s">"orderId"</span>:<span class="pl-c1">3456</span>
+        <span class="pl-kos">}</span>
+<span class="pl-kos">}</span></pre></div>
+<p><strong>Failure Response</strong></p>
+<div class="highlight highlight-source-js"><pre><span class="pl-kos">{</span>
+        <span class="pl-s">"sig"</span>:<span class="pl-c1">2</span><span class="pl-kos">,</span>
+        <span class="pl-s">"q"</span>:<span class="pl-s">"/io.scalecube.services.error/500"</span><span class="pl-kos">,</span>
+        <span class="pl-s">"sid"</span>:<span class="pl-c1">1</span><span class="pl-kos">,</span>
+        <span class="pl-s">"d"</span>:<span class="pl-kos">{</span>
+               <span class="pl-s">"errorCode"</span>:<span class="pl-c1">1100</span><span class="pl-kos">,</span>
+               <span class="pl-s">"errorMessage"</span>:<span class="pl-s">"Order not found for that instrument"</span>
+        <span class="pl-kos">}</span>
+<span class="pl-kos">}</span></pre></div>
+</details>
+<h1><a id="user-content-market-data-api" class="anchor" aria-hidden="true" href="#market-data-api"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a><a name="user-content-marketdataapi"></a>Market Data API</h1>
+<h2><a id="user-content-orderbookdepth" class="anchor" aria-hidden="true" href="#orderbookdepth"><svg class="octicon octicon-link" viewBox="0 0 16 16" version="1.1" width="16" height="16" aria-hidden="true"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>orderBookDepth</h2>
+<p>The <code>orderBookDepth</code> stream provides the full order book depth data.
+This stream is public and pseudo anonymous, only the broker that placed the order knows the order origin. (<code>brokerId</code> is published but not any other broker details).</p>
+<p>The <code>orderBookDepth</code> publish only raw data without any aggregation, hence in order to determine the current state of an order, the subscriber needs to maintain the updated order state as per all the messages for that order.</p>
+<p>There are 3 message types:</p>
+<ul>
+<li><strong>Add</strong></li>
+<li><strong>Cancelled</strong></li>
+<li><strong>Executed</strong></li>
+</ul>
+<p><code>eventId</code> is a sequence number of the events (per instrument).</p>
+<p>In order to build accurate book state need to consume all events per instrument and apply it on the right sequence.
+When subscribing to stream the system publish the current book state by sending synthetic event to all resting orders. (it is synthetic event as any resting order might be result of multiple events as this might be after partial executions).</p>
+<p>In case of synthetic event the <code>eventId = -1</code> and <code>eventTimestamp= -1</code>, the order priority for FIFO matching is determined by <code>orderId</code>.</p>
+<p>Note: from technical reasons when you register to <code>orderBookDepth</code> stream system will not send the exact current book state but will start from a specific point of time at the past. You will get the synthetic events for that point and some as real past events till you catch the real time events.  (This is derived from that <code>snapshot</code> mechanism, if more details are required please contact us).</p>
+<p>Endpoint: <code>/om2.exchange.market/orderBookDepth</code></p>
+<p>Note: No subscription parameters are required to subscribe the stream.</p>
+<p><strong>Add Order Message</strong> indicates that a new order has been accepted by the exchange and was added to the
+book.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>eventId</td>
+<td>Identifier for the event, unique per instrument</td>
+</tr>
+<tr>
+<td>messageType</td>
+<td><strong>Add</strong></td>
+</tr>
+<tr>
+<td>eventTimestamp</td>
+<td>Event timestamp (in milliseconds)</td>
+</tr>
+<tr>
+<td>instrument</td>
+<td>Instrument symbol</td>
+</tr>
+<tr>
+<td>orderId</td>
+<td>Exchange order ID</td>
+</tr>
+<tr>
+<td>brokerId</td>
+<td>Broker identifier</td>
+</tr>
+<tr>
+<td>brokerOrderId</td>
+<td>Broker order ID</td>
+</tr>
+<tr>
+<td>side</td>
+<td>Buy / Sell</td>
+</tr>
+<tr>
+<td>quantity</td>
+<td>Order quantity</td>
+</tr>
+<tr>
+<td>price</td>
+<td>Order price</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Order Executed Message</strong> indicates that an order on the book is matched with a new coming order in whole or in part. It is possible to receive several Order Executed Messages for a single orderId.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>eventId</td>
+<td>Identifier for the event, unique per instrument</td>
+</tr>
+<tr>
+<td>messageType</td>
+<td><strong>Executed</strong></td>
+</tr>
+<tr>
+<td>eventTimestamp</td>
+<td>Event timestamp (in milliseconds)</td>
+</tr>
+<tr>
+<td>instrument</td>
+<td>Instrument symbol</td>
+</tr>
+<tr>
+<td>makerBrokerId</td>
+<td>Resting broker ID</td>
+</tr>
+<tr>
+<td>makerBrokerOrderId</td>
+<td>Resting broker order ID</td>
+</tr>
+<tr>
+<td>makerOrderId</td>
+<td>Resting <code>orderId</code></td>
+</tr>
+<tr>
+<td>takerBrokerId</td>
+<td>Aggressive broker ID</td>
+</tr>
+<tr>
+<td>takerBrokerOrderId</td>
+<td>Aggressive broker order ID</td>
+</tr>
+<tr>
+<td>takerOrderId</td>
+<td>Aggressive order ID</td>
+</tr>
+<tr>
+<td>mathchId</td>
+<td>Unique ID for the match</td>
+</tr>
+<tr>
+<td>executedQuantity</td>
+<td>Matched quantity</td>
+</tr>
+<tr>
+<td>executedPrice</td>
+<td>Matched price (maker order price).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Order Cancel Message</strong> indicates that an order on the book is being cancelled.
+This message also sent in case of market order that was not fully filled.</p>
+<table>
+<thead>
+<tr>
+<th>Field</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>messageType</td>
+<td><strong>Cancelled</strong></td>
+</tr>
+<tr>
+<td>eventId</td>
+<td>Identifier for the event, unique per instrument</td>
+</tr>
+<tr>
+<td>eventTimestamp</td>
+<td>Event timestamp (in milliseconds)</td>
+</tr>
+<tr>
+<td>instrument</td>
+<td>Instrument symbol</td>
+</tr>
+<tr>
+<td>orderSide</td>
+<td>Buy/ Sell</td>
+</tr>
+<tr>
+<td>orderId</td>
+<td>Exchange order ID</td>
+</tr>
+<tr>
+<td>brokerId</td>
+<td>Broker identifier</td>
+</tr>
+<tr>
+<td>brokerOrderId</td>
+<td>Broker order ID</td>
+</tr>
+<tr>
+<td>cancelledQuantity</td>
+<td>Order cancelled quantity</td>
+</tr>
+</tbody>
+</table>
+<details>
+<summary><b>Samples</b></summary>  
+<p><strong>Subscription</strong></p>
+<div class="highlight highlight-source-js"><pre><span class="pl-kos">{</span>
+  <span class="pl-s">"q"</span>: <span class="pl-s">"/om2.exchange.market/orderBookDepth"</span><span class="pl-kos">,</span>
+  <span class="pl-s">"sid"</span>: <span class="pl-c1">10</span><span class="pl-kos">,</span>
+  <span class="pl-s">"d"</span>: <span class="pl-kos">{</span><span class="pl-kos">}</span>
+<span class="pl-kos">}</span></pre></div>
+<p><strong>Add Order Message</strong></p>
+<div class="highlight highlight-source-js"><pre><span class="pl-kos">{</span>
+  <span class="pl-s">"q"</span>: <span class="pl-s">"/om2.exchange.market/orderBookDepth"</span><span class="pl-kos">,</span>
+  <span class="pl-s">"sid"</span>: <span class="pl-c1">10</span><span class="pl-kos">,</span>
+  <span class="pl-s">"d"</span>: <span class="pl-kos">{</span>
+    <span class="pl-s">"eventId"</span>: <span class="pl-c1">29969</span><span class="pl-kos">,</span>
+    <span class="pl-s">"messageType"</span>: <span class="pl-s">"Add"</span><span class="pl-kos">,</span>
+    <span class="pl-s">"eventTimestamp"</span>: <span class="pl-c1">1565790374956</span><span class="pl-kos">,</span>
+    <span class="pl-s">"instrument"</span>: <span class="pl-s">"AMZ"</span><span class="pl-kos">,</span>
+    <span class="pl-s">"orderId"</span>: <span class="pl-c1">20012</span><span class="pl-kos">,</span>
+    <span class="pl-s">"brokerId"</span>: <span class="pl-s">"12"</span><span class="pl-kos">,</span>
+    <span class="pl-s">"brokerOrderId"</span>: <span class="pl-c1">1565790360561</span><span class="pl-kos">,</span>
+    <span class="pl-s">"side"</span>: <span class="pl-s">"Buy"</span><span class="pl-kos">,</span>
+    <span class="pl-s">"quantity"</span>: <span class="pl-c1">1</span><span class="pl-kos">,</span>
+    <span class="pl-s">"price"</span>: <span class="pl-c1">1.22</span>
+  <span class="pl-kos">}</span>
+<span class="pl-kos">}</span></pre></div>
+<p><strong>Order Executed Message</strong></p>
+<div class="highlight highlight-source-js"><pre><span class="pl-kos">{</span>
+  <span class="pl-s">"q"</span>: <span class="pl-s">"/om2.exchange.market/orderBookDepth"</span><span class="pl-kos">,</span>
+  <span class="pl-s">"sid"</span>: <span class="pl-c1">10</span><span class="pl-kos">,</span>
+  <span class="pl-s">"d"</span>: <span class="pl-kos">{</span>
+    <span class="pl-s">"eventId"</span>: <span class="pl-c1">2</span><span class="pl-kos">,</span>
+    <span class="pl-s">"messageType"</span>: <span class="pl-s">"Executed"</span><span class="pl-kos">,</span>
+    <span class="pl-s">"eventTimestamp"</span>: <span class="pl-c1">1569161821289</span><span class="pl-kos">,</span>
+    <span class="pl-s">"instrument"</span>: <span class="pl-s">"INS1"</span><span class="pl-kos">,</span>
+    <span class="pl-s">"makerBrokerId"</span>: <span class="pl-c1">2</span><span class="pl-kos">,</span>
+    <span class="pl-s">"makerBrokerOrderId"</span>: <span class="pl-c1">1564403702076</span><span class="pl-kos">,</span>
+    <span class="pl-s">"makerOrderId"</span>: <span class="pl-c1">1</span><span class="pl-kos">,</span>
+    <span class="pl-s">"takerBrokerId"</span>: <span class="pl-c1">2</span><span class="pl-kos">,</span>
+    <span class="pl-s">"takerBrokerOrderId"</span>: <span class="pl-c1">1569161798700</span><span class="pl-kos">,</span>
+    <span class="pl-s">"takerOrderId"</span>: <span class="pl-c1">2</span><span class="pl-kos">,</span>
+    <span class="pl-s">"matchId"</span>: <span class="pl-c1">1</span><span class="pl-kos">,</span>
+    <span class="pl-s">"executedQuantity"</span>: <span class="pl-c1">1</span><span class="pl-kos">,</span>
+    <span class="pl-s">"executedPrice"</span>: <span class="pl-c1">10.25</span>
+  <span class="pl-kos">}</span>
+<span class="pl-kos">}</span></pre></div>
+<p><strong>Order Cancel Message</strong></p>
+<div class="highlight highlight-source-js"><pre><span class="pl-kos">{</span>
+  <span class="pl-s">"q"</span>: <span class="pl-s">"/om2.exchange.market/orderBookDepth"</span><span class="pl-kos">,</span>
+  <span class="pl-s">"sid"</span>: <span class="pl-c1">10</span><span class="pl-kos">,</span>
+  <span class="pl-s">"d"</span>: <span class="pl-kos">{</span>
+    <span class="pl-s">"eventId"</span>: <span class="pl-c1">5</span><span class="pl-kos">,</span>
+    <span class="pl-s">"messageType"</span>: <span class="pl-s">"Cancelled"</span><span class="pl-kos">,</span>
+    <span class="pl-s">"eventTimestamp"</span>: <span class="pl-c1">1569162456164</span><span class="pl-kos">,</span>
+    <span class="pl-s">"instrument"</span>: <span class="pl-s">"INS1"</span><span class="pl-kos">,</span>
+    <span class="pl-s">"orderId"</span>: <span class="pl-c1">3</span><span class="pl-kos">,</span>
+    <span class="pl-s">"orderSide"</span>: <span class="pl-s">"Sell"</span><span class="pl-kos">,</span>
+    <span class="pl-s">"brokerId"</span>: <span class="pl-c1">2</span><span class="pl-kos">,</span>
+    <span class="pl-s">"brokerOrderId"</span>: <span class="pl-c1">1569161878394</span><span class="pl-kos">,</span>
+    <span class="pl-s">"cancelledQuantity"</span>: <span class="pl-c1">2.2</span>
+  <span class="pl-kos">}</span>
+<span class="pl-kos">}</span></pre></div>
+</details>
+</article>
+</html>
