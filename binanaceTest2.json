@@ -1,5 +1,5 @@
 {
-  "Test3": {
+  "Test4": {
     "url": "wss://stream.binance.com/stream",
     "provider": "websocket",
     "order": 1,
@@ -67,8 +67,8 @@
           "structure": {
             "method": "method",
            
-            "params [":[ "params","symbol"],
-             "] id": "id"
+            "params":[ "params","symbol"],
+             "id": "id"
           }
         }
       },
