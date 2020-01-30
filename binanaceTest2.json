@@ -1,8 +1,8 @@
 {
-  "[custom]-new-env-3": {
+  "Test3": {
     "url": "wss://stream.binance.com/stream",
     "provider": "websocket",
-    "order": 4,
+    "order": 1,
     "methods": [
       {
         "group": "Market Stream",
@@ -67,7 +67,7 @@
           "structure": {
             "method": "method",
            
-            "params[":[ params,symbol],
+            "params [":[ "params","symbol"],
              "] id": "id"
           }
         }
