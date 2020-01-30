@@ -1,5 +1,5 @@
 {
-  "Test6": {
+  "Test7": {
     "url": "wss://stream.binance.com/stream",
     "provider": "websocket",
     "order": 1,
@@ -38,7 +38,7 @@
                 "btcusdt@depth",
                 "[btcusdt@trade]",
                 "///btcusdt@miniTicker///",
-                "/"!miniTicker@arr/"",
+                "/!miniTicker@arr/",
                 "btcusdt@ticker"
               ],
               "initialValue": "btcusdt@depth",
@@ -57,7 +57,7 @@
           },
           "structure": {
             "method": "method",
-           "params": "params",,
+           "params": "params",
              "id": "id"
           }
         }
