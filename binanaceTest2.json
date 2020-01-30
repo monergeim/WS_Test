@@ -62,13 +62,12 @@
               "type": "input",
               "initialValue": "ZZZZZZZZZ",
               "required": true
-            },
+            }
           },
           "structure": {
             "method": "method",
-           
-            "params":[ "params","symbol"],
-             "id": "id"
+           "params [":[ "params","symbol"],
+             "] id": "id"
           }
         }
       },
