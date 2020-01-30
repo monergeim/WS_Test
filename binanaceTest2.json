@@ -1,0 +1,127 @@
+{
+  "[custom]-new-env-3": {
+    "url": "wss://stream.binance.com/stream",
+    "provider": "websocket",
+    "order": 4,
+    "methods": [
+      {
+        "group": "Market Stream",
+        "methodName": "Subscribe",
+        "payload": {
+          "sample": {
+            "method": "SUBSCRIBE",
+            "params": [
+              "btcusdt@aggTrade",
+              "btcusdt@depth"
+            ],
+            "id": 1
+          },
+          "metadata": {
+           "method": {
+              "id": "method",
+              "label": "method",
+              "type": "select",
+              "data": [
+                "SUBSCRIBE",
+                "UNSUBSCRIBE"
+              ],
+              "initialValue": "SUBSCRIBE",
+              "required": true,
+              "valueType": "text"
+            },
+            "params": {
+              "id": "params",
+              "label": "params",
+              "type": "select",
+              "data": [
+                "btcusdt@aggTrade",
+                "btcusdt@depth",
+                "btcusdt@trade",
+                "btcusdt@miniTicker",
+                "!miniTicker@arr",
+                "btcusdt@ticker"
+              ],
+              "initialValue": "btcusdt@depth",
+              "required": true,
+              "valueType": "text"
+            },
+            
+            "id": {
+              "id": "id",
+              "label": "id",
+              "type": "input",
+              "initialValue": 1,
+              "required": true,
+              "valueType": "number"
+            },
+            "symbol": {
+              "hidden": true,
+              "valueType": "text",
+              "id": "symbol",
+              "label": "symbol",
+              "type": "input",
+              "initialValue": "ZZZZZZZZZ",
+              "required": true
+            },
+          },
+          "structure": {
+            "method": "method",
+           
+            "params[":[ params,symbol],
+             "] id": "id"
+          }
+        }
+      },
+      {
+        "group": "Market Stream",
+        "methodName": "Unsubscribe",
+        "payload": {
+          "sample": {
+            "method": "UNSUBSCRIBE",
+            "params": [
+              "btcusdt@depth"
+            ],
+            "id": 312
+          }
+        }
+      },
+      {
+        "group": "Market Stream",
+        "methodName": "Listing Subscriptions",
+        "payload": {
+          "sample": {
+            "method": "LIST_SUBSCRIPTIONS",
+            "id": 3
+          }
+        }
+      },
+      {
+        "group": "Market Stream",
+        "methodName": "Setting Properties",
+        "payload": {
+          "sample": {
+            "method": "SET_PROPERTY",
+            "params": [
+              "combined",
+              true
+            ],
+            "id": 5
+          }
+        }
+      },
+      {
+        "group": "Market Stream",
+        "methodName": "Retrieving Properties",
+        "payload": {
+          "sample": {
+            "method": "GET_PROPERTY",
+            "params": [
+              "combined"
+            ],
+            "id": 2
+          }
+        }
+      }
+    ]
+  }
+}
