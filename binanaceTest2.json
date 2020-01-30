@@ -1,5 +1,5 @@
 {
-  "Test5": {
+  "Test6": {
     "url": "wss://stream.binance.com/stream",
     "provider": "websocket",
     "order": 1,
@@ -36,9 +36,9 @@
               "data": [
                 "btcusdt@aggTrade",
                 "btcusdt@depth",
-                "btcusdt@trade",
-                "btcusdt@miniTicker",
-                "!miniTicker@arr",
+                "[btcusdt@trade]",
+                "///btcusdt@miniTicker///",
+                "/"!miniTicker@arr/"",
                 "btcusdt@ticker"
               ],
               "initialValue": "btcusdt@depth",
@@ -53,21 +53,12 @@
               "initialValue": 1,
               "required": true,
               "valueType": "number"
-            },
-            "symbol": {
-              "hidden": true,
-              "valueType": "text",
-              "id": "symbol",
-              "label": "symbol",
-              "type": "input",
-              "initialValue": "ZZZZZZZZZ",
-              "required": true
             }
           },
           "structure": {
             "method": "method",
-           "params [":[ "params","symbol"],
-             "] id": "id"
+           "params": "params",,
+             "id": "id"
           }
         }
       },
