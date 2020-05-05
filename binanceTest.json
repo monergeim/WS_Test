@@ -1,0 +1,107 @@
+{
+  "echoWebSocket": {
+    "provider": "websocket",
+    "methods": [
+      {
+        "payload": {
+          "sample": {
+            "message": "test"
+          }
+        },
+        "methodName": "echo",
+        "group": "Group1"
+      }
+    ],
+    "url": "wss://echo.websocket.org/",
+    "order": 1
+  },
+  "[custom]-new-env-1": {
+    "url": "wss://stream.binance.com/stream?streams=!miniTicker@arr@3000ms/btcusdt@depth.b10/btcusdt@aggTrade.b10",
+    "provider": "websocket",
+    "order": 2,
+    "methods": []
+  },
+  "[custom]-new-env-2": {
+    "url": "wss://stream.binance.com/stream?streams=btcusdt@depth.b10",
+    "provider": "websocket",
+    "order": 3,
+    "methods": []
+  },
+  "[custom]-new-env-3": {
+    "url": "wss://stream.binance.com/stream",
+    "provider": "websocket",
+    "order": 7,
+    "methods": [
+      {
+        "group": "Market Stream",
+        "methodName": "Subscribe",
+        "payload": {
+          "sample": {
+            "method": "SUBSCRIBE",
+            "params": [
+              "btcusdt@aggTrade",
+              "btcusdt@depth"
+            ],
+            "id": 1
+          }
+        }
+      },
+      {
+        "group": "Market Stream",
+        "methodName": "Unsubscribe",
+        "payload": {
+          "sample": {
+            "method": "UNSUBSCRIBE",
+            "params": [
+              "btcusdt@depth"
+            ],
+            "id": 312
+          }
+        }
+      },
+      {
+        "group": "Market Stream",
+        "methodName": "Listing Subscriptions",
+        "payload": {
+          "sample": {
+            "method": "LIST_SUBSCRIPTIONS",
+            "id": 3
+          }
+        }
+      },
+      {
+        "group": "Market Stream",
+        "methodName": "Setting Properties",
+        "payload": {
+          "sample": {
+            "method": "SET_PROPERTY",
+            "params": [
+              "combined",
+              true
+            ],
+            "id": 5
+          }
+        }
+      },
+      {
+        "group": "Market Stream",
+        "methodName": "Retrieving Properties",
+        "payload": {
+          "sample": {
+            "method": "GET_PROPERTY",
+            "params": [
+              "combined"
+            ],
+            "id": 2
+          }
+        }
+      }
+    ]
+  },
+  "[custom]-new-env-4": {
+    "url": "wss://client-streams-ws.etorox.com/",
+    "provider": "websocket",
+    "order": 4,
+    "methods": []
+  }
+}
