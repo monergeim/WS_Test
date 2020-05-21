@@ -184,54 +184,65 @@ var output, outputDetails, outputDetailsOffline, data, lines, Message,
     timestosend,
     FileContent = "",//d.toISOString() + '\n',
     obj = "",
-    myVar = setInterval(myTimer, 5000),
-	createSessionOnOpen="";
+  //  myVar = setInterval(myTimer, 5000),
+	myVar,
+	createSessionOnOpen="",
+	dynamicFrequency=5,
+	myVartoWrite= setInterval(myTimerToWrite, 1000)
+;
 	
 function init() {
     output = document.getElementById("output");
     outputDetails = document.getElementById("outputDetails");
     outputDetailsOffline = document.getElementById("outputDetailsOffline");
     RefreshInstrumentant();
-    ManageBook = document.getElementById("ManageBook").checked;
+   // ManageBook = document.getElementById("ManageBook").checked;
    // DrawRateChart = document.getElementById("DrawRateChart").checked;
     WriteResponse = document.getElementById("WritetoScr").checked;
-	DrawOrderEvents = document.getElementById("DrawEventTable").checked;
+	//DrawOrderEvents = document.getElementById("DrawEventTable").checked;
     timestosend = document.getElementById("myTextareaMax").innerText;
-    document.getElementById("myTextareaURL").style.visibility = "hidden";
+	
+	dynamicFrequency = document.getElementById("dynamicFrequency").innerText;
+	myVar= setInterval(myTimertoSend, dynamicFrequency*1000)
+   
+   document.getElementById("myTextareaURL").style.visibility = "hidden";
 	
     document.getElementById("dynamicinstrumentid").addEventListener("input", function sett() {
         RefreshInstrumentant();
-        reDrawBook();
+        //reDrawBook();
 		//reDrawRate();
     }, false);
-    document.getElementById("ManageBook").addEventListener("input", function() {
-        ManageBook = document.getElementById("ManageBook").checked;
-        reDrawBook();
-    }, false);
-    document.getElementById("WritetoScr").addEventListener("input", function() {
+     document.getElementById("WritetoScr").addEventListener("input", function() {
         WriteResponse = document.getElementById("WritetoScr").checked;
-    }, false);
-	document.getElementById("DrawEventTable").addEventListener("input", function() {
-        DrawOrderEvents = document.getElementById("DrawEventTable").checked;
     }, false);
     document.getElementById("myTextareaMax").addEventListener("input", function() {
         timestosend = document.getElementById("myTextareaMax").innerText;
     }, false);
+    document.getElementById("dynamicFrequency").addEventListener("input", function() {
+        dynamicFrequency = document.getElementById("dynamicFrequency").innerText;
+		clearInterval(myVar);
+		myVar = setInterval(myTimertoSend, (dynamicFrequency*1000))
+    }, false);
+   
+   
    
    testWebSocket();
     PlaceOrders();
 }
-function myTimer() {
-    if (NeedtoDrawBook) DrawBook();
+function myTimertoSend() {
+   
+	 sendOrders();
+}
+function myTimerToWrite() {
+    //if (NeedtoDrawBook) DrawBook();
    // if (NeedtoDrawRate) DrawRateChartFunc();
-	if (NeedtoDrawOrderEvents) DrawOrderEventsDrawing();
-		sendOrders();
+	//if (NeedtoDrawOrderEvents) DrawOrderEventsDrawing();
+	
 
 	 if (WriteResponse && FileContent.length >0 ) {
 		writeToScreenNice(FileContent);
 		FileContent="";
 	 }
-	//doSend('{"q": "/om2.exchange.orders/placeOrder","sid": 1,"d": {"Dummy Ping":"D"}}');	
 }
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -242,14 +253,7 @@ function sendOrders() {
 		//doSend(orderEvents);
   // }
 }
-function reDrawBook() {
-    book1 = [];
-	NeedtoDrawBook=true;
-   if (ManageBook){	   
-		doSend('{"sid": 30000,"sig": 3}');
-		doSend(orderEvents);
-   }
-}
+
 function RefreshInstrumentant() {
     CurrentInstrument = document.getElementById("dynamicinstrumentid").innerText;
     PlaceOrdersMessage();
@@ -277,7 +281,7 @@ function OpenURL() {
 		document.getElementById("myTextarea").value=ConfigurationFetchAll;
      }
     RefreshInstrumentant();
-    reDrawBook();
+    //reDrawBook();
 	//reDrawRate();
 }
 function ChangeMessage() {
@@ -481,131 +485,6 @@ window.addEventListener("load", init, false);
     }
     NeedtoDrawBook = true;
 }
-function DrawBook() {
-    google.charts.load('current', {
-        'packages': ['table']
-    });
-    google.charts.setOnLoadCallback(drawBookTable);
-}
-function drawBookTable() {
-    NeedtoDrawBook = false;
-    var dataTable1 = new google.visualization.DataTable();
-    dataTable1.addColumn('number', 'Price');
-    dataTable1.addColumn('number', 'Quantity');
-    dataTable1.addColumn('string', 'Buy/Sell');
-	dataTable1.addColumn('number', 'Order ID');
-    for (var j = 0; j < book1.length; j++) {
-        dataTable1.addRows([book1[j]]);
-    }
-    var formatter = new google.visualization.BarFormat({
-        width: 80,
-        colorPositive: 'green',
-        drawZeroLine: true /*,showValue:false*/
-    });
-    formatter.format(dataTable1, 1); // Apply formatter to second column
-    var table = new google.visualization.Table(document.getElementById('chart_div1'));
-    table.draw(dataTable1, bookOptions);
-}
-function DrawOrderEventsFunc() {
-    var len2 = orderEventsTable.length;
-    var timeStamp = new Date(obj.d.eventTimestamp);
-	var messageType=obj.d.messageType;
-    orderEventsTable[len2] = [(len2+1),
-        timeStamp.toLocaleDateString(),
-		[timeStamp.getHours(), timeStamp.getMinutes(), timeStamp.getSeconds(), timeStamp.getMilliseconds()],
-		(messageType != "Executed")  ?  obj.d.orderId.toString() : obj.d.takerOrderId.toString(),
-		messageType,
-		obj.d.side,
-		obj.d.instrument,
-		(messageType == "Add") ?  obj.d.quantity : ((messageType == "Cancelled") ?  obj.d.cancelledQuantity: obj.d.executedQuantity),
-		(messageType == "Add") ? obj.d.price : obj.d.executedPrice,
-		(messageType == "Executed")  ?  obj.d.makerOrderId.toString() : "",
-		(messageType == "Executed")  ?  obj.d.matchId.toString() : "",
-		obj.d.eventId.toString(),
-		(messageType == "Executed")  ? obj.d.takerBrokerId.toString(): obj.d.brokerId.toString(),
-		(messageType == "Executed") ? obj.d.takerBrokerOrderId.toString():obj.d.brokerOrderId.toString(),
-		(messageType == "Executed")  ?obj.d.makerBrokerId.toString():"",
-		(messageType == "Executed")  ?obj.d.makerBrokerOrderId.toString():""
-    ];
-	NeedtoDrawOrderEvents= true;
-}
-function DrawOrderEventsDrawing() {
-    google.charts.load('current', {'packages': ['table']});
-    google.charts.setOnLoadCallback(DrawOrderEventsTable);
-}
-function DrawOrderEventsTable() {
-  //  NeedtoDrawBook = false;
-    var dataTable1 = new google.visualization.DataTable();
-    dataTable1.addColumn('number', '#');
-	dataTable1.addColumn('string', 'Date');
-	dataTable1.addColumn('timeofday', 'Timestamp');
-	dataTable1.addColumn('string', 'Order ID');
-	dataTable1.addColumn('string', 'Message Type');
-	dataTable1.addColumn('string', 'Buy/Sell');
-	dataTable1.addColumn('string', 'Instrument');
-    dataTable1.addColumn('number', 'Quantity');
-	dataTable1.addColumn('number', 'Price');
-	dataTable1.addColumn('string', 'Maker Order ID');
-	dataTable1.addColumn('string', 'Match ID');
-	dataTable1.addColumn('string', 'Event ID');
-	dataTable1.addColumn('string', 'Broker ID');
-	dataTable1.addColumn('string', 'Broker Order ID');
-	dataTable1.addColumn('string', 'Maker Broker ID');
-	dataTable1.addColumn('string', 'Maker Broker Order ID');
- 
-    for (var j = 0; j < orderEventsTable.length; j++) {
-        dataTable1.addRows([orderEventsTable[j]]);
-    }
-    var table = new google.visualization.Table(document.getElementById('chart_div3'));
-    table.draw(dataTable1, orderEventsTableOptions);
-	NeedtoDrawOrderEvents= false;
-}
-var PlaceORders,CancelOrder, createSession,  orderEvents,    ConfigurationFetchAll;
- var bookssClassNames = {
-        'headerRow': 'table-background',
-        'tableRow': 'table-background',
-        'oddTableRow': 'table-background',
-        'selectedTableRow': 'table-background',
-        'hoverTableRow': 'table-background',
-        'headerCell': 'table-backgroundHead',
-        'tableCell': 'table-background',
-        'rowNumberCell': 'table-background'
-    };
-    var bookOptions = {
-        'showRowNumber': false,
-        'allowHtml': true,
-        sortColumn: 0,
-        sortAscending: false,
-        'cssClassNames': bookssClassNames
-    };
-	
-	
-		
-    var orderEventsTablecssClassNames = {
-        'headerRow': 'table-background',
-        'tableRow': 'table-background',
-        'oddTableRow': 'table-background',
-        'selectedTableRow': 'table-background',
-        'hoverTableRow': 'table-background',
-        'headerCell': 'table-backgroundHead',
-        'tableCell': 'table-background',
-        'rowNumberCell': 'table-background'
-    };
-    var orderEventsTableOptions = {
-        'showRowNumber': false,
-        'allowHtml': true,
-        sortColumn: 0,
-        sortAscending: false,
-        'cssClassNames': orderEventsTablecssClassNames
-    };
-	
-	/* var control = new google.visualization.ControlWrapper({
-      'controlType': 'StringFilter',
-      'containerId': 'chart_div3',
-      'options': {
-        'filterColumnIndex': 6
-      }
-    });*/
 	
 function ConfigurationFetchAllMessage() {
  ConfigurationFetchAll = '{"q":"/configuration/entries","sid": 1,"d": {"token": "eyJraWQiOiJkOGE5MGZiOS01MDdjLTQzMmItYmU0OS00ODNkYjVlOGUwMDUiLCJhbGciOiJSUzI1NiJ9.eyJqdGkiOiJPUkctNDc1QThERUQyMjQ4RERGMUZEQTQiLCJpYXQiOjE1NTY1MzczODgsInN1YiI6Ik9SRy00NzVBOERFRDIyNDhEREYxRkRBNCIsImlzcyI6InNjYWxlY3ViZS5pbyIsImF1ZCI6Ik9SRy00NzVBOERFRDIyNDhEREYxRkRBNCIsInJvbGUiOiJPd25lciJ9.V7h9Gfq2waBwQasK9yYjw4vRzM-hYb9L0YTsClLmJ0bndFTL01WAf87KftNRuuujZABQmpkxFEUfcirlfARdcSYOR4HQb6DC9LQMPcX8XBSFX5b5QYXz62zCi3f1ZYKXNNwrPJLwDwFBED4S5-mutZrdyV16liObmXPh8BotOslfZOr7fmxG8S3tCrw1tUWOxZsJTiymengx69pGT7EvaEYxjcRGBCIEkaXXtukawziScyuEaFULjYax87jzmaSUbIASubE7ZeMLRm88f3XU1-X5BwBNvQRQQkyv4H30wwJiz7KKYs0zqoA3ijMixCJhaJvntte42tihSgCSWWQghA","repository": "DudiRepo1"  }};'+
@@ -672,29 +551,19 @@ function Streams() {
 		<option value="Send Cancellation">Send Cancellation</option>
     </select>
 
-    <span class="a">InstrumentID: </span>
+    <span class="a">Instrument: </span>
     <span id="dynamicinstrumentid" class="a" contenteditable="true" style="color: #9A7FD5;">AMZ</span>
     <!-- <span class="a">. UserID: </span>
     <span id="dynamicuserid" class="a" contenteditable="true" style="color: #9A7FD5;">2</span> -->
-    <span class="a">. Manage Book? </span>
-    <label>
-        <input type='checkbox' id="ManageBook" >
-        <span></span>
-    </label>
-
-    <span class="a">. Write to screen? </span>
+     <span class="a">. Write to screen? </span>
 
     <label>
         <input type='checkbox' id="WritetoScr" checked>
         <span></span>
     </label>
-	 <span class="a">. Draw orderBookDepth Table? </span>
-    <label>
-        <input type='checkbox' id="DrawEventTable" >
-        <span></span>
-    </label>
-  <a href="https://docs.google.com/spreadsheets/d/1MxgtupJXyrRvSwtb-VHM8cS_0edSMd5P03c34kJ5094/edit#gid=0" target="_blank" class="a">. multi prices builder</a>
-	
+  <span class="a">Frequency (Sec) </span>
+    <span id="dynamicFrequency" class="a" contenteditable="true" style="color: #9A7FD5;">5</span>
+  	
     <br>
     <div id="inputdata" class="wrapTextBox">
         <textarea id="myTextarea" rows="6" cols="215" class="form-control"></textarea>
