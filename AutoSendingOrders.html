@@ -188,7 +188,9 @@ var output, outputDetails, outputDetailsOffline, data, lines, Message,
 	myVar,
 	createSessionOnOpen="",
 	dynamicFrequency=5,
-	myVartoWrite= setInterval(myTimerToWrite, 1000)
+	myVartoWrite= setInterval(myTimerToWrite, 1000),
+	SucessOrders =0,
+	FailedOrders =0
 ;
 	
 function init() {
@@ -403,10 +405,14 @@ async function onMessage(evt) {
     switch (obj.q) {
         case '/om2.exchange.orders/placeOrder':
             OrderID = obj.d.orderId;
-            break;
-     	case "/om2.exchange.market/orderBookDepth":
-			if (ManageBook) ManageBookFunc();
-			if (DrawOrderEvents)	DrawOrderEventsFunc();
+            SucessOrders  = SucessOrders +1;
+			//document.getElementById("SucessOrderNum").value = SucessOrders;
+			document.getElementById("SucessOrderNum").innerText = SucessOrders;
+			break;
+     	case "io.scalecube.services.error/500":
+			FailedOrders  = FailedOrders +1;
+			document.getElementById("FailedOrderNum").innerText = FailedOrders;
+		
             break;
     }
 }
@@ -576,7 +582,8 @@ function Streams() {
     <!--button type="button" onclick="ToFile()"style="width:100px">Download File</button>  -->
     <button type="button" onclick="setupDownloadLink()" class="button button4">console log</button>
     <button type="button" onclick="Clear()" class="button button4">Clear</button>
-
+<span style="color: #74E680;" class="a"># Success Orders&nbsp;</span><span  id="SucessOrderNum" style="color: #74E680;" class="a">0 </span>
+<span style="color: #C93F3B;" class="a">&nbsp;&nbsp;# Failed Orders&nbsp;</span><span  id="FailedOrderNum" style="color: #C93F3B;" class="a">0 </span>
 
 
 	  <!-- <div id="chart_div3" class="wrapTextBox" style="height: 260px;"></div>-->
