@@ -409,7 +409,7 @@ async function onMessage(evt) {
 			//document.getElementById("SucessOrderNum").value = SucessOrders;
 			document.getElementById("SucessOrderNum").innerText = SucessOrders;
 			break;
-     	case "io.scalecube.services.error/500":
+	case ("io.scalecube.services.error/500", "io.scalecube.services.error/400"):
 			FailedOrders  = FailedOrders +1;
 			document.getElementById("FailedOrderNum").innerText = FailedOrders;
 		
