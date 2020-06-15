@@ -189,7 +189,7 @@
 	function init() {
 		output = document.getElementById("output");
 		outputDetails = document.getElementById("outputDetails");
-		outputDetailsOffline = document.getElementById("outputDetailsOffline");
+		outputDetailsOfflinef = document.getElementById("outputDetailsOffline");
 		RefreshInstrumentant();
 	   // ManageBook = document.getElementById("ManageBook").checked;
 	   // DrawRateChart = document.getElementById("DrawRateChart").checked;
@@ -307,7 +307,7 @@
 			for (var i = 0; i < lines.length; i++) {
 				//console.log (lines[i]);
 				 var now = Date.now(); 
-				doSend(lines[i].replace('nonce',now+i).replace('nonce',now+i));
+				doSend(lines[i].replace('nonce',now+i+Math.floor(Math.random() * 1000000000)).replace('nonce',Math.floor(Math.random() * 1000000000)));
 			}
 		} else {
 			var newLines = "";
@@ -426,11 +426,11 @@
 
 		
 		doSend(createSessionOnOpen);
-		if (ManageBook) {
-			await sleep(1000);
-			book1 = [];
-			doSend(orderEvents);
-		}
+	//	if (ManageBook) {
+	//		await sleep(1000);
+		//	book1 = [];
+	////		doSend(orderEvents);
+	//	}
 	}
 	async function onClose(evt) {
 		writeToScreenHeader('Disconnected', 'red');
