@@ -307,7 +307,7 @@
 			for (var i = 0; i < lines.length; i++) {
 				//console.log (lines[i]);
 				 var now = Date.now(); 
-				doSend(lines[i].replace('nonce',now+i+Math.floor(Math.random() * 1000000000)).replace('nonce',Math.floor(Math.random() * 1000000000)));
+				doSend(lines[i].replace('nonce',now+i+Math.floor(Math.random() * 1000000000)).replace('nonce',now+i+Math.floor(Math.random() * 1000000000)));
 			}
 		} else {
 			var newLines = "";
