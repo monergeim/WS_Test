@@ -158,16 +158,16 @@
 	 
 	   </style>
 		<script type="text/javascript">
-	var wsUri = "wss://exchange-gateway-master-2.demo.exberry.io",
+	var wsUri = "wss://exchange-gateway-rc.dev.exchange.exberry.io",
 		wsUriDev = "wss://exchange-gateway-master.dev.exchange.exberry.io"
 	var output, outputDetails, outputDetailsOffline, data, lines, Message,
 		preHeader = document.createElement("p1"),
 		preNice = document.createElement("pN"),
-		Instrument = "AMZ2",
+		Instrument = "LoadIns",
 		DevInstrument = "AMZ",
 		CurrentInstrument = DevInstrument,
 		apiKeyDev ="9239fb59-8f7a-4457-a13b-460effb349f2",secretDev = "f501a13b005b6ccbaaea6ed74687317ecf800cc22a2b5c73987e67a021b0da36",
-		apiKey ="550ace20-a082-47e6-8659-e36d53b03e5e",secret = "df3b7921c02be1c0cc5cc3432bb25fbd70c653dfdad17bb32db0c3e3021a9301",
+		apiKey ="4b4888dd-6c72-48cc-bcb0-9b54133abd91",secret = "b7fb1bfb591e1f0713e980b40c6bd362e50c2d0147b83f743bae4cb1728018af",
 		CurrentapiKey = apiKeyDev,
 		CurrentSecret = secretDev,
 		NeedtoReconnect = true,
@@ -254,16 +254,18 @@
 		StreamsMessage();
 	}
 	function OpenURL() {
-		if (document.getElementById("SelectEnv").value == "Dev") {
+		if (document.getElementById("SelectEnv").value == "master") {
 			document.getElementById("dynamicinstrumentid").innerText = DevInstrument;
 			CurrentUri = wsUriDev;
 		CurrentapiKey= apiKeyDev;
 			CurrentSecret = secretDev;
-		} else if (document.getElementById("SelectEnv").value == "Production") {
+			RefreshInstrumentant()
+		} else if (document.getElementById("SelectEnv").value == "RC") {
 			document.getElementById("dynamicinstrumentid").innerText = Instrument;
 			CurrentUri = wsUri;
 		CurrentapiKey= apiKey;
 		CurrentSecret = secret;
+		RefreshInstrumentant()
 		} else if (document.getElementById("SelectEnv").value == "Other") {
 			document.getElementById("myTextareaURL").style.visibility = "visible";
 			CurrentUri = document.getElementById("myTextareaURL").innerText;
@@ -337,8 +339,8 @@
 		PlaceOrders();
 	}
 	async function testWebSocket() {
-		if (document.getElementById("SelectEnv").value == "Dev") CurrentUri = wsUriDev;
-		else if (document.getElementById("SelectEnv").value == "Production") CurrentUri = wsUri;
+		if (document.getElementById("SelectEnv").value == "master") CurrentUri = wsUriDev;
+		else if (document.getElementById("SelectEnv").value == "RC") CurrentUri = wsUri;
 		else if (document.getElementById("SelectEnv").value == "Other") CurrentUri = document.getElementById("myTextareaURL").innerText;
 		writeToScreenHeader('Connecting ' + CurrentUri);
 		try {
@@ -503,8 +505,8 @@
 		<button type="button" id="DisConnectButton" onclick="Disconnect()" class="button button3">Disconnect</button>
 
 		<select id="SelectEnv" type="selectBox" class="button selectBox" onChange="OpenURL()" ;>
-			<option value="Dev">Master1</option>
-			<option value="Production">Master2</option>
+			<option value="master">Master</option>
+			<option value="RC">RC</option>
 			<option value="Other">Enter Manually</option>
 		</select>
 
