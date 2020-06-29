@@ -1,6 +1,6 @@
 {
   "[custom]-new-env-5": {
-    "url": "wss://exchange-gateway-master.dev.exchange.exberry.io",
+    "url": "wss://exchange-gateway-rc.dev.exchange.exberry.io",
     "provider": "websocket",
     "methods": [
       {
@@ -39,7 +39,7 @@
               "id": "apiKey",
               "label": "apiKey",
               "valueType": "text",
-              "initialValue": "59d2d468-b475-4b4e-b06a-77e261b65e18",
+              "initialValue": "c92d9d4d-5bd1-4289-805d-9c5bb172ebfb",
               "required": true
             },
             "secret": {
@@ -47,7 +47,7 @@
               "id": "secret",
               "label": "secret",
               "valueType": "text",
-              "initialValue": "9b50eca1fa23ece7630b415c682af0d53c36801cf6e12a6f32a6610fbb8816df",
+              "initialValue": "e0475c9add0a317593fe9aad105b898b23a29ac799883e4ee36ffae054dd8890",
               "required": true
             },
             "timestamp": {
@@ -280,9 +280,9 @@
     "order": 39
   },
   "[custom]-new-env-7": {
-    "url": "wss://exchange-backoffice-master.dev.ops.exberry.io/api",
+    "url": "wss://exchange-backoffice-rc.dev.ops.exberry.io/api",
     "provider": "rsocket",
-    "order": 71,
+    "order": 73,
     "methods": [
       {
         "group": "Instrument API",
@@ -314,7 +314,7 @@
                   "symbol": "DAInstrument10",
                   "quoteCurrency": "USD",
                   "instrumentDescription": "instrument Test",
-                  "calendarId": "1763300036",
+                  "calendarId": "1413295192",
                   "pricePrecision": 8,
                   "quantityPrecision": 6,
                   "minQuantity": 0.001,
