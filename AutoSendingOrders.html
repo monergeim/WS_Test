@@ -308,7 +308,7 @@
 			for (var i = 0; i < lines.length; i++) {
 				//console.log (lines[i]);
 				 var now = Date.now(); 
-				doSend(lines[i].replace('nonce',now+i+Math.floor(Math.random() * 1000000000)).replace('nonce',now+i+Math.floor(Math.random() * 1000000000)));
+				lines[i] = lines[i].replace('nonce',now+i+Math.floor(Math.random() * 1000000000)).replace('nonce',now+i+Math.floor(Math.random() * 1000000000));
 				doSend(lines[i].replace('random',Math.trunc(Math.random()*100) + Math.trunc(Math.random()*100)/10000).replace('random',Math.trunc(Math.random()*100) + Math.trunc(Math.random()*100)/10000))
 
 			}
@@ -319,7 +319,7 @@
 			}
 			newLines = newLines.split(';')
 			for (var i = 0; i < newLines.length - 1; i++) {
-				doSend(newLines[i].replace('nonce',now+i).replace('nonce',now+i));
+				lines[i]= newLines[i].replace('nonce',now+i).replace('nonce',now+i);
 				doSend(newLines[i].replace('random',Math.trunc(Math.random()*100) + Math.trunc(Math.random()*100)/10000).replace('random',Math.trunc(Math.random()*100) + Math.trunc(Math.random()*100)/10000))
 
 			}
