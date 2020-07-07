@@ -309,6 +309,8 @@
 				//console.log (lines[i]);
 				 var now = Date.now(); 
 				doSend(lines[i].replace('nonce',now+i+Math.floor(Math.random() * 1000000000)).replace('nonce',now+i+Math.floor(Math.random() * 1000000000)));
+				doSend(lines[i].replace('random',Math.trunc(Math.random()*100) + Math.trunc(Math.random()*100)/10000))
+
 			}
 		} else {
 			var newLines = "";
@@ -318,6 +320,8 @@
 			newLines = newLines.split(';')
 			for (var i = 0; i < newLines.length - 1; i++) {
 				doSend(newLines[i].replace('nonce',now+i).replace('nonce',now+i));
+				doSend(newLines[i].replace('random',Math.trunc(Math.random()*100) + Math.trunc(Math.random()*100)/10000))
+
 			}
 		}
 	}
@@ -469,7 +473,7 @@
 	 function PlaceOrdersMessage() {
 	//var now = Date.now(); 
 	 PlaceORders = 
-			'{"q": "exchange.market/placeOrder","sid": "nonce","d": {"brokerOrderId":"nonce","userId": "1A","orderType": "Limit","side": "Buy","instrument":"' + CurrentInstrument + '","quantity": 2,"price": 1200,"timeInForce": "GTC"}};' + '\n' ;
+			'{"q": "exchange.market/placeOrder","sid": "nonce","d": {"brokerOrderId":"nonce","userId": "1A","orderType": "Limit","side": "Buy","instrument":"' + CurrentInstrument + '","quantity": "random","price": "random","timeInForce": "GTC"}};' + '\n' ;
 	}
 	function PlaceOrders() {
 		PlaceOrdersMessage();
