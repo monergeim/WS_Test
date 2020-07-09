@@ -1,0 +1,296 @@
+{
+  "[custom]-new-env-5": {
+    "url": "wss://exchange-gateway-rc.dev.exchange.exberry.io",
+    "provider": "websocket",
+    "methods": [
+      {
+        "group": "Authentication API",
+        "methodName": "createSession - Broker",
+        "payload": {
+          "sample": {
+            "q": "exchange.market/createSession",
+            "sid": 1,
+            "d": {
+              "apiKey": "",
+              "timestamp": "",
+              "signature": ""
+            }
+          },
+          "metadata": {
+            "q": {
+              "type": "input",
+              "id": "q",
+              "label": "q",
+              "valueType": "text",
+              "initialValue": "exchange.market/createSession",
+              "hidden": true,
+              "required": true
+            },
+            "sid": {
+              "type": "input",
+              "id": "sid",
+              "label": "sid",
+              "valueType": "number",
+              "initialValue": 1,
+              "required": true
+            },
+            "apiKey": {
+              "type": "input",
+              "id": "apiKey",
+              "label": "apiKey",
+              "valueType": "text",
+              "initialValue": "1acd748e-26fb-4516-8c89-a69ed9c5d735",
+              "required": true
+            },
+            "secret": {
+              "type": "input",
+              "id": "secret",
+              "label": "secret",
+              "valueType": "text",
+              "initialValue": "b95584dc3fdafd89bce2a2aae1b3ef72bad50a9e63d43fec59497831ca8abfb8",
+              "required": true
+            },
+            "timestamp": {
+              "type": "input",
+              "id": "timestamp",
+              "label": "timestamp",
+              "valueType": "number",
+              "initialValue": "__TIMESTAMP__",
+              "required": true
+            },
+            "signature": {
+              "type": "input",
+              "id": "signature",
+              "label": "signature",
+              "valueType": "text",
+              "hidden": true,
+              "initialValue": "__SIGNATURE__"
+            }
+          },
+          "structure": {
+            "q": "q",
+            "sid": "sid",
+            "d": [
+              "apiKey",
+              "timestamp",
+              "signature"
+            ]
+          }
+        }
+      },
+      {
+        "group": "Trading API",
+        "methodName": "placeOrder",
+        "payload": {
+          "sample": {
+            "d": {
+              "orderType": "Limit",
+              "instrument": "HAM",
+              "side": "Buy",
+              "quantity": 1.3,
+              "price": 100.33,
+              "timeInForce": "GTC",
+              "brokerOrderId": 1564403702234,
+              "userId": "NDEXUserTest1"
+            },
+            "q": "exchange.market/placeOrder",
+            "sid": 1
+          },
+          "metadata": {
+            "q": {
+              "hidden": true,
+              "readonly": true,
+              "valueType": "text",
+              "id": "q",
+              "label": "q",
+              "type": "input",
+              "initialValue": "exchange.market/placeOrder",
+              "required": true
+            },
+            "orderType": {
+              "id": "orderType",
+              "label": "orderType",
+              "data": [
+                "Market",
+                "Limit"
+              ],
+              "type": "select",
+              "initialValue": "Limit",
+              "required": true
+            },
+            "instrument": {
+              "id": "instrument",
+              "label": "instrument",
+              "data": [
+                "ALB",
+                "GUT",
+                "HAM",
+                "LEC",
+                "NOR",
+                "RUS",
+                "VET"
+              ],
+              "type": "select",
+              "required": true
+            },
+            "side": {
+              "id": "side",
+              "label": "side",
+              "data": [
+                "Buy",
+                "Sell"
+              ],
+              "type": "select",
+              "initialValue": "Buy",
+              "required": true
+            },
+            "quantity": {
+              "id": "quantity",
+              "label": "quantity",
+              "type": "input",
+              "required": true,
+              "initialValue": 1.25,
+              "valueType": "number"
+            },
+            "price": {
+              "hidden": true,
+              "dependency": {
+                "override": {
+                  "hidden": false,
+                  "omitted": false,
+                  "required": true
+                },
+                "operator": "oneOf",
+                "values": [
+                  "Limit"
+                ],
+                "fieldId": "orderType"
+              },
+              "valueType": "number",
+              "omitted": true,
+              "id": "price",
+              "label": "price",
+              "type": "input",
+              "initialValue": 100.5,
+              "required": false
+            },
+            "timeInForce": {
+              "id": "timeInForce",
+              "label": "timeInForce",
+              "data": [
+                "GTC",
+                "GTD",
+                "IOC",
+                "FOK"
+              ],
+              "type": "select",
+              "initialValue": "GTC",
+              "required": true
+            },
+            "expiryDate": {
+              "hidden": true,
+              "dependency": {
+                "override": {
+                  "hidden": false,
+                  "omitted": false,
+                  "required": true
+                },
+                "operator": "oneOf",
+                "values": [
+                  "GTD"
+                ],
+                "fieldId": "timeInForce"
+              },
+              "valueType": "number",
+              "omitted": true,
+              "id": "expiryDate",
+              "label": "expiryDate",
+              "type": "input",
+              "initialValue": "__TIMESTAMP_SEC__",
+              "required": false
+            },
+            "brokerOrderId": {
+              "id": "brokerOrderId",
+              "label": "brokerOrderId",
+              "type": "input",
+              "initialValue": "__TIMESTAMP__",
+              "required": true,
+              "valueType": "number"
+            },
+            "userId": {
+              "id": "userId",
+              "label": "userId",
+              "type": "input",
+              "initialValue": "NDEXUserTest1",
+              "required": true,
+              "valueType": "text"
+            },
+            "sid": {
+              "id": "sid",
+              "label": "sid",
+              "type": "input",
+              "initialValue": 1,
+              "required": true,
+              "valueType": "number"
+            }
+          },
+          "structure": {
+            "d": [
+              "orderType",
+              "instrument",
+              "side",
+              "quantity",
+              "price",
+              "timeInForce",
+              "expiryDate",
+              "brokerOrderId",
+              "userId"
+            ],
+            "q": "q",
+            "sid": "sid"
+          }
+        }
+      },
+      {
+        "group": "Trading API",
+        "methodName": "cancelOrder",
+        "payload": {
+          "sample": {
+            "q": "exchange.market/cancelOrder",
+            "sid": 1,
+            "d": {
+              "orderId": "",
+              "userId": "NDEXUserTest1",
+              "instrument": "HAM"
+            }
+          }
+        }
+      },
+      {
+        "group": "Market Data API",
+        "methodName": "orderBookDepth",
+        "payload": {
+          "sample": {
+            "q": "exchange.market/orderBookDepth",
+            "sid": 10,
+            "d": {
+              "trackingNumber": 0
+            }
+          }
+        }
+      },
+      {
+        "group": "Market Data API",
+        "methodName": "orderBookState",
+        "payload": {
+          "sample": {
+            "q": "exchange.market/orderBookState",
+            "sid": 100,
+            "d": {}
+          }
+        }
+      }
+    ],
+    "order": 39
+  }
+}
