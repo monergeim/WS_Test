@@ -158,19 +158,19 @@ select.form-control:focus::-ms-value {
  
    </style>
     <script type="text/javascript">
-	var wsUri = "wss://exchange-gateway-rc.dev.exchange.exberry.io",
-		wsUriDev = "wss://exchange-gateway-master.dev.exchange.exberry.io"
+	var endpointArr= ["wss://exchange-gateway-master.dev.exchange.exberry.io",
+		"wss://exchange-gateway-rc.dev.exchange.exberry.io"],
+		InstrumentsArr = ["AMZ","LoadIns"]
+		apiKeyArr=["9239fb59-8f7a-4457-a13b-460effb349f2", "4b4888dd-6c72-48cc-bcb0-9b54133abd91"],
+		secretArr = ["f501a13b005b6ccbaaea6ed74687317ecf800cc22a2b5c73987e67a021b0da36","b7fb1bfb591e1f0713e980b40c6bd362e50c2d0147b83f743bae4cb1728018af"],
+		CurrentInstrument = InstrumentsArr[0],
+		CurrentapiKey = apiKeyArr[0],
+		CurrentSecret = secretArr[0]
+	
 	var output, outputDetails, outputDetailsOffline, data, lines, Message,
 		preHeader = document.createElement("p1"),
 		preNice = document.createElement("pN"),
-		Instrument = "LoadIns",
-		DevInstrument = "AMZ",
-		CurrentInstrument = DevInstrument,
-		apiKeyDev ="9239fb59-8f7a-4457-a13b-460effb349f2",secretDev = "f501a13b005b6ccbaaea6ed74687317ecf800cc22a2b5c73987e67a021b0da36",
-		apiKey ="4b4888dd-6c72-48cc-bcb0-9b54133abd91",secret = "b7fb1bfb591e1f0713e980b40c6bd362e50c2d0147b83f743bae4cb1728018af",
-    CurrentapiKey = apiKeyDev,
-    CurrentSecret = secretDev,
-    NeedtoReconnect = true,
+		    NeedtoReconnect = true,
     WriteResponse = false,
     book = [],
     book1 = [],
@@ -246,26 +246,16 @@ function RefreshInstrumentant() {
     StreamsMessage();
 }
 function OpenURL() {
-    if (document.getElementById("SelectEnv").value == "master") {
-        document.getElementById("dynamicinstrumentid").innerText = DevInstrument;
-        CurrentUri = wsUriDev;
-	CurrentapiKey= apiKeyDev;
-	    CurrentSecret = secretDev;
-    } else if (document.getElementById("SelectEnv").value == "Production") {
-        document.getElementById("dynamicinstrumentid").innerText = Instrument;
-        CurrentUri = wsUri;
-	CurrentapiKey= apiKey;
-	CurrentSecret = secret;
-    } else if (document.getElementById("SelectEnv").value == "Other") {
-        document.getElementById("myTextareaURL").style.visibility = "visible";
-		CurrentUri = document.getElementById("myTextareaURL").innerText;
-        document.getElementById("dynamicinstrumentid").innerText = DevInstrument;
-    }else if (document.getElementById("SelectEnv").value == "Configuration") {
-        CurrentUri = document.getElementById("myTextareaURL").innerText;
-		CurrentUri = ConfigurationUri;
-		ConfigurationFetchAllMessage();
-		document.getElementById("myTextarea").value=ConfigurationFetchAll;
-     }
+   
+	var selectedEnv = document.getElementById("SelectEnv").value;
+		document.getElementById("dynamicinstrumentid").innerText = InstrumentsArr[selectedEnv]
+		CurrentUri = endpointArr [selectedEnv];
+		CurrentapiKey = apiKeyArr[selectedEnv];
+		CurrentSecret = secretArr[selectedEnv];
+		RefreshInstrumentant()
+			  if (document.getElementById("SelectEnv").value == "100") {
+			document.getElementById("myTextareaURL").style.visibility = "visible";
+		}
     RefreshInstrumentant();
     reDrawBook();
 	//reDrawRate();
@@ -333,10 +323,10 @@ function ReConnect() {
     testWebSocket();
 }
 async function testWebSocket() {
-    if (document.getElementById("SelectEnv").value == "master") CurrentUri = wsUriDev;
-    else if (document.getElementById("SelectEnv").value == "RC") CurrentUri = wsUri;
-    else if (document.getElementById("SelectEnv").value == "Other") CurrentUri = document.getElementById("myTextareaURL").innerText;
-    writeToScreenHeader('Connecting ' + CurrentUri);
+   	var selectedEnv = document.getElementById("SelectEnv").value;
+		CurrentUri = endpointArr [selectedEnv];
+	 if (document.getElementById("SelectEnv").value == 100) CurrentUri = document.getElementById("myTextareaURL").innerText;
+  writeToScreenHeader('Connecting ' + CurrentUri);
     try {
         websocket = new WebSocket(CurrentUri);
         websocket.onopen = function(evt) {
@@ -399,12 +389,8 @@ async function onMessage(evt) {
 async function onOpen(evt) {
     writeToScreenHeader('CONNECTED!', 'LIME');
 	var now = Date.now(); 
-	//var hash = CryptoJS.HmacSHA256('"apiKey":"6ggg","timestamp":"'+now+'"', "9ijrXAt7SgAZJ5gkLbhEahlgi2R9HgL6jzXB0WcyWRWIKsMhaxl5GzIym6uPiFkkkk");
-	//createSessionOnOpen ='{"q":"/om2.exchange.auth/createSession","sid":15,"d":{"apiKey":"6ggg","timestamp":"'+now+'","signature":"'+hash+'"}}' 
-	
 	var hash = CryptoJS.HmacSHA256('"apiKey":"'+CurrentapiKey+'","timestamp":"'+now+'"', CurrentSecret);
 	createSessionOnOpen ='{"q":"/om2.exchange.auth/createSession","sid":15,"d":{"apiKey":"'+CurrentapiKey+'","timestamp":"'+now+'","signature":"'+hash+'"}}' 
-
 	
 	doSend(createSessionOnOpen);
 	if (ManageBook) {
@@ -550,7 +536,7 @@ function DrawOrderEventsTable() {
     table.draw(dataTable1, orderEventsTableOptions);
 	NeedtoDrawOrderEvents= false;
 }
-var PlaceORders,CancelOrder, createSession,  orderEvents,    ConfigurationFetchAll;
+var PlaceORders,CancelOrder, createSession,  orderEvents;
  var bookssClassNames = {
         'headerRow': 'table-background',
         'tableRow': 'table-background',
@@ -568,7 +554,6 @@ var PlaceORders,CancelOrder, createSession,  orderEvents,    ConfigurationFetchA
         sortAscending: false,
         'cssClassNames': bookssClassNames
     };
-	
 	
 		
     var orderEventsTablecssClassNames = {
@@ -589,22 +574,8 @@ var PlaceORders,CancelOrder, createSession,  orderEvents,    ConfigurationFetchA
         'cssClassNames': orderEventsTablecssClassNames
     };
 	
-	/* var control = new google.visualization.ControlWrapper({
-      'controlType': 'StringFilter',
-      'containerId': 'chart_div3',
-      'options': {
-        'filterColumnIndex': 6
-      }
-    });*/
-	
-function ConfigurationFetchAllMessage() {
- ConfigurationFetchAll = '{"q":"/configuration/entries","sid": 1,"d": {"token": "eyJraWQiOiJkOGE5MGZiOS01MDdjLTQzMmItYmU0OS00ODNkYjVlOGUwMDUiLCJhbGciOiJSUzI1NiJ9.eyJqdGkiOiJPUkctNDc1QThERUQyMjQ4RERGMUZEQTQiLCJpYXQiOjE1NTY1MzczODgsInN1YiI6Ik9SRy00NzVBOERFRDIyNDhEREYxRkRBNCIsImlzcyI6InNjYWxlY3ViZS5pbyIsImF1ZCI6Ik9SRy00NzVBOERFRDIyNDhEREYxRkRBNCIsInJvbGUiOiJPd25lciJ9.V7h9Gfq2waBwQasK9yYjw4vRzM-hYb9L0YTsClLmJ0bndFTL01WAf87KftNRuuujZABQmpkxFEUfcirlfARdcSYOR4HQb6DC9LQMPcX8XBSFX5b5QYXz62zCi3f1ZYKXNNwrPJLwDwFBED4S5-mutZrdyV16liObmXPh8BotOslfZOr7fmxG8S3tCrw1tUWOxZsJTiymengx69pGT7EvaEYxjcRGBCIEkaXXtukawziScyuEaFULjYax87jzmaSUbIASubE7ZeMLRm88f3XU1-X5BwBNvQRQQkyv4H30wwJiz7KKYs0zqoA3ijMixCJhaJvntte42tihSgCSWWQghA","repository": "DudiRepo1"  }};'+
- ' {"q":"/configuration/fetch","sid": 2,"d": {"token": "eyJraWQiOiJkOGE5MGZiOS01MDdjLTQzMmItYmU0OS00ODNkYjVlOGUwMDUiLCJhbGciOiJSUzI1NiJ9.eyJqdGkiOiJPUkctNDc1QThERUQyMjQ4RERGMUZEQTQiLCJpYXQiOjE1NTY1MzczODgsInN1YiI6Ik9SRy00NzVBOERFRDIyNDhEREYxRkRBNCIsImlzcyI6InNjYWxlY3ViZS5pbyIsImF1ZCI6Ik9SRy00NzVBOERFRDIyNDhEREYxRkRBNCIsInJvbGUiOiJPd25lciJ9.V7h9Gfq2waBwQasK9yYjw4vRzM-hYb9L0YTsClLmJ0bndFTL01WAf87KftNRuuujZABQmpkxFEUfcirlfARdcSYOR4HQb6DC9LQMPcX8XBSFX5b5QYXz62zCi3f1ZYKXNNwrPJLwDwFBED4S5-mutZrdyV16liObmXPh8BotOslfZOr7fmxG8S3tCrw1tUWOxZsJTiymengx69pGT7EvaEYxjcRGBCIEkaXXtukawziScyuEaFULjYax87jzmaSUbIASubE7ZeMLRm88f3XU1-X5BwBNvQRQQkyv4H30wwJiz7KKYs0zqoA3ijMixCJhaJvntte42tihSgCSWWQghA","repository": "DudiRepo1",        "key":"DudiKey2"  }};';
  
- }
- 
- 
- function PlaceOrdersMessage() {
+  function PlaceOrdersMessage() {
 //var now = Date.now(); 
  PlaceORders = 
 		'{"q": "/om2.exchange.orders/placeOrder","sid": "nonce","d": {"brokerOrderId":"nonce","userId": "1A","orderType": "Limit","side": "Buy","instrument":"' + CurrentInstrument + '","quantity": 2,"price": 1200,"timeInForce": "GTC"}};' + '\n' +
@@ -640,15 +611,13 @@ function Streams() {
  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/hmac-sha256.js"></script>
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     
-	
-	
-    <button type="button" id="ConnectButton" onclick="ReConnect()" class="button button1">Connect</button>
+	<button type="button" id="ConnectButton" onclick="ReConnect()" class="button button1">Connect</button>
     <button type="button" id="DisConnectButton" onclick="Disconnect()" class="button button3">Disconnect</button>
 
     <select id="SelectEnv" type="selectBox" class="button selectBox" onChange="OpenURL()" ;>
-   		<option value="master">Master</option>
-		<option value="RC">RC</option>
-        <option value="Other">Enter Manually</option>
+   		<option value=0>Master</option>
+		<option value=1>RC</option>
+        <option value=100>Enter Manually</option>
     </select>
 
     <a id="myTextareaURL" class="a"><span class="a" contenteditable="true" style="color: #9A7FD5;">place the ws endpoint here</span></a>
@@ -700,8 +669,6 @@ function Streams() {
     <button type="button" onclick="setupDownloadLink()" class="button button4">console log</button>
     <button type="button" onclick="Clear()" class="button button4">Clear</button>
 
-
-
 	  <div id="chart_div3" class="wrapTextBox" style="height: 260px;"></div>
 	 
     <div> <span style="color: #878787;" class="a">request </span>
@@ -711,7 +678,7 @@ function Streams() {
 		<span style="color: #D2C057;" class="a">signals </span>
 		<span style="color: #9A7FD5;" class="a">editable </span>
     </div>
-	 
+	
     <div id="outputDetails" class="a"> </div>
 
 </body>
