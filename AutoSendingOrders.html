@@ -180,6 +180,8 @@
 		myVar= setInterval(myTimertoSend, dynamicFrequency*1000)
 	  
 	   document.getElementById("myTextareaURL").style.visibility = "hidden";
+	   
+	   
 		document.getElementById("dynamicinstrumentid").addEventListener("input", function sett() {
 			RefreshInstrumentant();
 		}, false);
@@ -291,6 +293,10 @@
 		orderEventsTable=[];
 		NeedtoDrawOrderEvents= true;
 	}
+	function ConectDisconect(){
+	(document.getElementById("BothActions").innerText == "Disconnect") ? Disconnect() : ReConnect();
+	}
+	
 	function Disconnect() {
 		NeedtoReconnect = false;
 		book1 = [];
@@ -359,6 +365,7 @@
 		
 		switch (obj.q) {
 			case 'exchange.market/placeOrder':
+				try{
 				if (obj.d.errorCode)
 				{
 				FailedOrders  = FailedOrders +1;
@@ -371,16 +378,34 @@
 				break;
 				}
 				}
+				catch(err)
+				{}
+				}
 		
 	}
 	async function onOpen(evt) {
+		//document.getElementById("ConnectButton").style.visibility = "hidden";
+		//document.getElementById("DisConnectButton").style.visibility = "visible";
+		document.getElementById("BothActions").innerText = "Disconnect";
+		document.getElementById("BothActions").className = "button button3";
+
+
+		
 		writeToScreenHeader('CONNECTED!', 'LIME');
+		
 		var now = Date.now(); 
 		var hash = CryptoJS.HmacSHA256('"apiKey":"'+CurrentapiKey+'","timestamp":"'+now+'"', CurrentSecret);
 		createSessionOnOpen ='{"q":"exchange.market/createSession","sid":15,"d":{"apiKey":"'+CurrentapiKey+'","timestamp":"'+now+'","signature":"'+hash+'"}}' 
 		doSend(createSessionOnOpen);
 	}
 	async function onClose(evt) {
+		//document.getElementById("DisConnectButton").style.visibility = "hidden";
+		//document.getElementById("ConnectButton").style.visibility = "visible";
+		document.getElementById("BothActions").innerText = "Connect";
+		document.getElementById("BothActions").className = "button button1";
+
+
+
 		writeToScreenHeader('Disconnected', 'red');
 		console.log(evt);
 		if (NeedtoReconnect == true) {
@@ -443,8 +468,9 @@
 		<meta charset="utf-8" />
 		<title>WebSocket Test</title>
 	 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/hmac-sha256.js"></script>
-		<button type="button" id="ConnectButton" onclick="ReConnect()" class="button button1">Connect</button>
-		<button type="button" id="DisConnectButton" onclick="Disconnect()" class="button button3">Disconnect</button>
+		<!-- <button type="button" id="ConnectButton" onclick="ReConnect()" class="button button1">Connect</button>
+		<button type="button" id="DisConnectButton" onclick="Disconnect()" class="button button3">Disconnect</button> -->
+		<button type="button" id="BothActions" onclick="ConectDisconect()" class="button button3">Waiting...</button>
 
 		<select id="SelectEnv" type="selectBox" class="button selectBox" onChange="OpenURL()" ;>
 			<option value=0>Master</option>
