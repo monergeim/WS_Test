@@ -21,28 +21,7 @@
 	  left: 0;
 	  color:#878787;
 	}
-	.table-background {
-		
-	font-size: 12px;
-	font-family: monospace;
-	  color: #878787;
-	  background-color: #242424; 
-	  background-clip: padding-box;
-	  border: 1px solid #ced4da;
-		border-width: 1px 1px 1px 1px;
-	  /*border-radius: 0.25rem;*/
-	}
-	.table-backgroundHead {
-		
-	font-size: 12px;
-	font-family: monospace;
-	  color: #336BCA;
-	  background-color: #242424; 
-	 /* background-clip: padding-box;*/
-	  border: 10px solid #ced4da;
-	  border-width: 1px 1px 1px 1px;
-	  /*border-radius: 0.25rem;*/
-	}
+	
 	div.a {
 	font-size: 12px;
 	font-family: monospace;
@@ -54,14 +33,19 @@
 	font-family: monospace;
 	color: #878787;
 	}
-	div.book{
-		float: right;
+	
+	div.NumberOf {
+	font-size: 24px;
+	font-family: monospace;
+	/* height:800px; 
+	overflow-y: auto;*/
 	}
-	.book {
-	font-size: 12px;
+	.NumberOf {
+	font-size: 24px;
 	font-family: monospace;
 	color: #878787;
 	}
+	
 	div.b {
 	font-size: 9px;
 	}
@@ -80,7 +64,6 @@
 		overflow: auto; 
 	}
 	div.selectBox {
-		
 		 padding: 10px 32px;
 	}
 	.button {
@@ -101,6 +84,7 @@
 	.button4 {background-color: #e7e7e7; color: black;} /* Gray */ 
 	.button5 {background-color: #555555;  } /* Black */
 	.selectBox {background-color: #e7e7e7;padding: 1px 10px; color:black;border-style: groove; border:true} /*  */
+	
 	.form-control {
 	  /* display: block; */
 	  /* width: 100%; */
@@ -110,7 +94,7 @@
 	  font-size: 1rem;
 	  line-height: 1.5;
 	  color: #878787;
-	  background-color: #242424; 
+	  background-color: #000; 
 	  background-clip: padding-box;
 	  border: 1px solid #ced4da;
 	  border-radius: 0.25rem;
@@ -128,7 +112,7 @@
 		border: 0; }
 	  .form-control:focus {
 		/*color: #D18B40;*/
-		background-color: #242424;
+		background-color: #000;
 		border-color: #80bdff;
 		outline: 0;
 		-webkit-box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
@@ -158,18 +142,18 @@
 	 
 	   </style>
 		<script type="text/javascript">
-	var wsUri = "wss://exchange-gateway-rc.dev.exchange.exberry.io",
-		wsUriDev = "wss://exchange-gateway-master.dev.exchange.exberry.io"
+	var endpointArr= ["wss://exchange-gateway-master.dev.exchange.exberry.io",
+		"wss://exchange-gateway-rc.dev.exchange.exberry.io"],
+		InstrumentsArr = ["AMZ","LoadIns"]
+		apiKeyArr=["9239fb59-8f7a-4457-a13b-460effb349f2", "4b4888dd-6c72-48cc-bcb0-9b54133abd91"],
+		secretArr = ["f501a13b005b6ccbaaea6ed74687317ecf800cc22a2b5c73987e67a021b0da36","b7fb1bfb591e1f0713e980b40c6bd362e50c2d0147b83f743bae4cb1728018af"]
+	
 	var output, outputDetails, outputDetailsOffline, data, lines, Message,
 		preHeader = document.createElement("p1"),
 		preNice = document.createElement("pN"),
-		Instrument = "LoadIns",
-		DevInstrument = "AMZ",
-		CurrentInstrument = DevInstrument,
-		apiKeyDev ="9239fb59-8f7a-4457-a13b-460effb349f2",secretDev = "f501a13b005b6ccbaaea6ed74687317ecf800cc22a2b5c73987e67a021b0da36",
-		apiKey ="4b4888dd-6c72-48cc-bcb0-9b54133abd91",secret = "b7fb1bfb591e1f0713e980b40c6bd362e50c2d0147b83f743bae4cb1728018af",
-		CurrentapiKey = apiKeyDev,
-		CurrentSecret = secretDev,
+		CurrentInstrument = InstrumentsArr[0],
+			CurrentapiKey = apiKeyArr[0],
+		CurrentSecret = secretArr[0],
 		NeedtoReconnect = true,
 		WriteResponse = false,
 		OrderID, d = new Date(),
@@ -190,21 +174,14 @@
 		outputDetails = document.getElementById("outputDetails");
 		outputDetailsOfflinef = document.getElementById("outputDetailsOffline");
 		RefreshInstrumentant();
-	   // ManageBook = document.getElementById("ManageBook").checked;
-	   // DrawRateChart = document.getElementById("DrawRateChart").checked;
-		WriteResponse = document.getElementById("WritetoScr").checked;
-		//DrawOrderEvents = document.getElementById("DrawEventTable").checked;
+	 	WriteResponse = document.getElementById("WritetoScr").checked;
 		timestosend = document.getElementById("myTextareaMax").innerText;
-		
 		dynamicFrequency = document.getElementById("dynamicFrequency").innerText;
 		myVar= setInterval(myTimertoSend, dynamicFrequency*1000)
-	   
+	  
 	   document.getElementById("myTextareaURL").style.visibility = "hidden";
-		
 		document.getElementById("dynamicinstrumentid").addEventListener("input", function sett() {
 			RefreshInstrumentant();
-			//reDrawBook();
-			//reDrawRate();
 		}, false);
 		 document.getElementById("WritetoScr").addEventListener("input", function() {
 			WriteResponse = document.getElementById("WritetoScr").checked;
@@ -218,8 +195,6 @@
 			myVar = setInterval(myTimertoSend, (dynamicFrequency*1000))
 		}, false);
 	   
-	   
-	   
 	   testWebSocket();
 		PlaceOrders();
 	}
@@ -228,11 +203,7 @@
 		 sendOrders();
 	}
 	function myTimerToWrite() {
-		//if (NeedtoDrawBook) DrawBook();
-	   // if (NeedtoDrawRate) DrawRateChartFunc();
-		//if (NeedtoDrawOrderEvents) DrawOrderEventsDrawing();
 		
-
 		 if (WriteResponse && FileContent.length >0 ) {
 			writeToScreenNice(FileContent);
 			FileContent="";
@@ -243,9 +214,7 @@
 	}
 	function sendOrders() {
 			Send();
-			//doSend('{"sid": 30000,"sig": 3}');
-			//doSend(orderEvents);
-	  // }
+
 	}
 
 	function RefreshInstrumentant() {
@@ -254,27 +223,18 @@
 		StreamsMessage();
 	}
 	function OpenURL() {
-		if (document.getElementById("SelectEnv").value == "master") {
-			document.getElementById("dynamicinstrumentid").innerText = DevInstrument;
-			CurrentUri = wsUriDev;
-		CurrentapiKey= apiKeyDev;
-			CurrentSecret = secretDev;
-			RefreshInstrumentant()
-		} else if (document.getElementById("SelectEnv").value == "RC") {
-			document.getElementById("dynamicinstrumentid").innerText = Instrument;
-			CurrentUri = wsUri;
-		CurrentapiKey= apiKey;
-		CurrentSecret = secret;
+		
+		var selectedEnv = document.getElementById("SelectEnv").value;
+		document.getElementById("dynamicinstrumentid").innerText = InstrumentsArr[selectedEnv]
+		CurrentUri = endpointArr [selectedEnv];
+		CurrentapiKey = apiKeyArr[selectedEnv];
+		CurrentSecret = secretArr[selectedEnv];
 		RefreshInstrumentant()
-		} else if (document.getElementById("SelectEnv").value == "Other") {
+			  if (document.getElementById("SelectEnv").value == "100") {
 			document.getElementById("myTextareaURL").style.visibility = "visible";
-			CurrentUri = document.getElementById("myTextareaURL").innerText;
-			document.getElementById("dynamicinstrumentid").innerText = DevInstrument;
 		}
 		RefreshInstrumentant();
-		//reDrawBook();
-		//reDrawRate();
-	}
+		}
 	function ChangeMessage() {
 	switch (document.getElementById("SelectMessage").value) {
 			case 'Place Orders':
@@ -343,9 +303,11 @@
 		PlaceOrders();
 	}
 	async function testWebSocket() {
-		if (document.getElementById("SelectEnv").value == "master") CurrentUri = wsUriDev;
-		else if (document.getElementById("SelectEnv").value == "RC") CurrentUri = wsUri;
-		else if (document.getElementById("SelectEnv").value == "Other") CurrentUri = document.getElementById("myTextareaURL").innerText;
+		
+		
+		var selectedEnv = document.getElementById("SelectEnv").value;
+		CurrentUri = endpointArr [selectedEnv];
+	 if (document.getElementById("SelectEnv").value == 100) CurrentUri = document.getElementById("myTextareaURL").innerText;
 		writeToScreenHeader('Connecting ' + CurrentUri);
 		try {
 			websocket = new WebSocket(CurrentUri);
@@ -370,10 +332,8 @@
 	if (message.length<=1) return;
 		try {
 			JSON.parse(message);
-			
 			message=message.replace('nonce',now).replace('nonce',now);
-	   
-			websocket.send(message);
+	   		websocket.send(message);
 			if (WriteResponse) writeToScreenNice(message, "#878787");
 			else FileContent = FileContent + "    " + ":" + message + '\n';
 		} catch (err) {
@@ -403,19 +363,12 @@
 				{
 				FailedOrders  = FailedOrders +1;
 				document.getElementById("FailedOrderNum").innerText = FailedOrders;
-	
-				}
+					}
 				else{
 				OrderID = obj.d.orderId;
 				SucessOrders  = SucessOrders +1;
-				//document.getElementById("SucessOrderNum").value = SucessOrders;
 				document.getElementById("SucessOrderNum").innerText = SucessOrders;
 				break;
-			//case ("io.scalecube.services.error/500", "io.scalecube.services.error/400"):
-				//FailedOrders  = FailedOrders +1;
-				//document.getElementById("FailedOrderNum").innerText = FailedOrders;
-			
-				//break;
 				}
 				}
 		
@@ -423,19 +376,9 @@
 	async function onOpen(evt) {
 		writeToScreenHeader('CONNECTED!', 'LIME');
 		var now = Date.now(); 
-		//var hash = CryptoJS.HmacSHA256('"apiKey":"6ggg","timestamp":"'+now+'"', "9ijrXAt7SgAZJ5gkLbhEahlgi2R9HgL6jzXB0WcyWRWIKsMhaxl5GzIym6uPiFkkkk");
-		//createSessionOnOpen ='{"q":"/om2.exchange.auth/createSession","sid":15,"d":{"apiKey":"6ggg","timestamp":"'+now+'","signature":"'+hash+'"}}' 
-		
 		var hash = CryptoJS.HmacSHA256('"apiKey":"'+CurrentapiKey+'","timestamp":"'+now+'"', CurrentSecret);
 		createSessionOnOpen ='{"q":"exchange.market/createSession","sid":15,"d":{"apiKey":"'+CurrentapiKey+'","timestamp":"'+now+'","signature":"'+hash+'"}}' 
-
-		
 		doSend(createSessionOnOpen);
-	//	if (ManageBook) {
-	//		await sleep(1000);
-		//	book1 = [];
-	////		doSend(orderEvents);
-	//	}
 	}
 	async function onClose(evt) {
 		writeToScreenHeader('Disconnected', 'red');
@@ -468,8 +411,7 @@
 	}
 	window.addEventListener("load", init, false);
 		
-		
-	 
+	
 	 function PlaceOrdersMessage() {
 	//var now = Date.now(); 
 	 PlaceORders = 
@@ -497,21 +439,17 @@
 		document.getElementById("myTextarea").value =  orderEvents + ';\n' ;
 	}
 		</script>
-	<body bgcolor="#242424">
+	<body bgcolor="#000">
 		<meta charset="utf-8" />
 		<title>WebSocket Test</title>
 	 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/hmac-sha256.js"></script>
-		<!-- <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>-->
-		
-		
-		
 		<button type="button" id="ConnectButton" onclick="ReConnect()" class="button button1">Connect</button>
 		<button type="button" id="DisConnectButton" onclick="Disconnect()" class="button button3">Disconnect</button>
 
 		<select id="SelectEnv" type="selectBox" class="button selectBox" onChange="OpenURL()" ;>
-			<option value="master">Master</option>
-			<option value="RC">RC</option>
-			<option value="Other">Enter Manually</option>
+			<option value=0>Master</option>
+			<option value=1>RC</option>
+			<option value=100>Enter Manually</option>
 		</select>
 
 		<a id="myTextareaURL" class="a"><span class="a" contenteditable="true" style="color: #9A7FD5;">place the ws endpoint here</span></a>
@@ -532,7 +470,6 @@
 		<!-- <span class="a">. UserID: </span>
 		<span id="dynamicuserid" class="a" contenteditable="true" style="color: #9A7FD5;">2</span> -->
 		 <span class="a">. Write to screen? </span>
-
 		<label>
 			<input type='checkbox' id="WritetoScr" checked>
 			<span></span>
@@ -548,23 +485,10 @@
 		<button type="button" onclick="Send()" class="button button5">Send</button>
 		  <span id="myTextareaMax" class="a" contenteditable="true" style="color: #9A7FD5;">1</span>
 		<span class="a">times.</span>
-		<!-- </div> -->
-		<!--button type="button" onclick="ToFile()"style="width:100px">Download File</button>  -->
 		<button type="button" onclick="setupDownloadLink()" class="button button4">console log</button>
-		<button type="button" onclick="Clear()" class="button button4">Clear</button>
-	<span style="color: #74E680;" class="a"># Success Orders&nbsp;</span><span  id="SucessOrderNum" style="color: #74E680;" class="a">0 </span>
-	<span style="color: #C93F3B;" class="a">&nbsp;&nbsp;# Failed Orders&nbsp;</span><span  id="FailedOrderNum" style="color: #C93F3B;" class="a">0 </span>
-
-
-		  <!-- <div id="chart_div3" class="wrapTextBox" style="height: 260px;"></div>-->
-		 
-		<div> <span style="color: #878787;" class="a">request </span>
-			<span style="color: #5DB0CC;" class="a">regular responses</span>
-			<!-- <span style="color: #D18B40;" class="a">user data response </span> -->
-			<span style="color: #C93F3B;" class="a">errors response </span>
-			<span style="color: #D2C057;" class="a">signals </span>
-			<span style="color: #9A7FD5;" class="a">editable </span>
-		</div>
+		<button type="button" onclick="Clear()" class="button button4">Clear</button><br>
+	<span style="color: #74E680;" class="NumberOf"># Success Orders&nbsp;</span><span  id="SucessOrderNum" style="color: #74E680;" class="NumberOf">0 </span>
+	<span style="color: #C93F3B;" class="NumberOf"  style="font-size:30px">&nbsp;&nbsp;# Failed Orders&nbsp;</span><span  id="FailedOrderNum" style="color: #C93F3B;" class="NumberOf">0 </span>
 		 
 		<div id="outputDetails" class="a"> </div>
 
