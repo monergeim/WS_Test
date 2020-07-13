@@ -271,7 +271,7 @@
 				//console.log (lines[i]);
 				 var now = Date.now(); 
 				lines[i] = lines[i].replace('nonce',now+i+Math.floor(Math.random() * 1000000000)).replace('nonce',now+i+Math.floor(Math.random() * 1000000000));
-				doSend(lines[i].replace('random',Math.trunc(Math.random()*100) + Math.trunc(Math.random()*100)/10000).replace('random',Math.trunc(Math.random()*100) + Math.trunc(Math.random()*100)/10000))
+				doSend(lines[i].replace('random',0.01+Math.trunc(Math.random()*100) + Math.trunc(Math.random()*100)/10000).replace('random',0.01+Math.trunc(Math.random()*100) + Math.trunc(Math.random()*100)/10000))
 
 			}
 		} else {
@@ -282,7 +282,7 @@
 			newLines = newLines.split(';')
 			for (var i = 0; i < newLines.length - 1; i++) {
 				lines[i]= newLines[i].replace('nonce',now+i).replace('nonce',now+i);
-				doSend(newLines[i].replace('random',Math.trunc(Math.random()*100) + Math.trunc(Math.random()*100)/10000).replace('random',Math.trunc(Math.random()*100) + Math.trunc(Math.random()*100)/10000))
+				doSend(newLines[i].replace('random',0.01+Math.trunc(Math.random()*100) + Math.trunc(Math.random()*100)/10000).replace('random', 0.01+Math.trunc(Math.random()*100) + Math.trunc(Math.random()*100)/10000))
 
 			}
 		}
