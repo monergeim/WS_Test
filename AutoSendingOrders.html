@@ -176,6 +176,13 @@
 		RefreshInstrumentant();
 	 	WriteResponse = document.getElementById("WritetoScr").checked;
 		timestosend = document.getElementById("myTextareaMax").innerText;
+		
+		var urlParams = new URLSearchParams(window.location.search);
+		var URLFreq = urlParams.get('freq');
+		if (URLFreq) 
+{		dynamicFrequency = URLFreq;
+ document.getElementById("dynamicFrequency").innerText=dynamicFrequency;
+}		
 		dynamicFrequency = document.getElementById("dynamicFrequency").innerText;
 		myVar= setInterval(myTimertoSend, dynamicFrequency*1000)
 	  
@@ -493,7 +500,7 @@
 
 		<span class="a">Instrument: </span>
 		<span id="dynamicinstrumentid" class="a" contenteditable="true" style="color: #9A7FD5;">AMZ</span>
-		<!-- <span class="a">. UserID: </span>
+		<!-- <span aclass="a">. UserID: </span>
 		<span id="dynamicuserid" class="a" contenteditable="true" style="color: #9A7FD5;">2</span> -->
 		 <span class="a">. Write to screen? </span>
 		<label>
@@ -502,7 +509,8 @@
 		</label>
 	  <span class="a">Frequency (Sec) </span>
 		<span id="dynamicFrequency" class="a" contenteditable="true" style="color: #9A7FD5;">5</span>
-		
+			  <span class="a">(URL Param = freq) </span>
+
 		<br>
 		<div id="inputdata" class="wrapTextBox">
 			<textarea id="myTextarea" rows="6" cols="215" class="form-control"></textarea>
