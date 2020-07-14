@@ -292,7 +292,7 @@
 			}
 			newLines = newLines.split(';')
 			for (var i = 0; i < newLines.length - 1; i++) {
-				lines[i]= newLines[i].replace('nonce',now+i).replace('nonce',now+i);
+				lines[i]= newLines[i].replace('nonce',now+i+Math.floor(Math.random() * 1000000000)).replace('nonce',now+i+Math.floor(Math.random() * 1000000000));
 				doSend(newLines[i].replace('random',Math.ceil(Math.random()*100) + Math.ceil(Math.random()*100)/10000).replace('random', Math.ceil(Math.random()*100) + Math.ceil(Math.random()*100)/10000))
 
 			}
@@ -490,7 +490,7 @@
 		</script>
 	<body bgcolor="#000">
 		<meta charset="utf-8" />
-		<title>WebSocket Test V1.02</title>
+		<title>WebSocket Test V1.03</title>
 	 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/hmac-sha256.js"></script>
 		<!-- <button type="button" id="ConnectButton" onclick="ReConnect()" class="button button1">Connect</button>
 		<button type="button" id="DisConnectButton" onclick="Disconnect()" class="button button3">Disconnect</button> -->
