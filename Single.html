@@ -161,8 +161,8 @@ select.form-control:focus::-ms-value {
 	var endpointArr= ["wss://exchange-gateway-master.dev.exchange.exberry.io",
 		"wss://exchange-gateway-rc.dev.exchange.exberry.io"],
 		InstrumentsArr = ["AMZ","LoadIns"]
-		apiKeyArr=["9239fb59-8f7a-4457-a13b-460effb349f2", "4b4888dd-6c72-48cc-bcb0-9b54133abd91"],
-		secretArr = ["f501a13b005b6ccbaaea6ed74687317ecf800cc22a2b5c73987e67a021b0da36","b7fb1bfb591e1f0713e980b40c6bd362e50c2d0147b83f743bae4cb1728018af"],
+		apiKeyArr=["e3956821-7e7a-4a1d-ba8a-3f4504d3a8d7", "ffeca486-b927-4070-8ae4-2167e1ebdc11"],
+		secretArr = ["ecbb2c8c81b145c1e56b0468d57b1becd197f9c56752dd4dcb0a7e9b4ee80f05","e0523ffca0ab2c6aa255d17d10f16872ea31e4dc0e54b511c6e4a135fce0d1b6"],
 		CurrentInstrument = InstrumentsArr[0],
 		CurrentapiKey = apiKeyArr[0],
 		CurrentSecret = secretArr[0]
@@ -180,6 +180,7 @@ select.form-control:focus::-ms-value {
 	NeedtoDrawOrderEvents = false,
 	DrawOrderEvents = false,
     OrderID, d = new Date(),
+	trackingNumber=0, orderBookState="",
     timestosend,
     FileContent = "",//d.toISOString() + '\n',
     obj = "",
@@ -194,7 +195,7 @@ function init() {
     ManageBook = document.getElementById("ManageBook").checked;
    // DrawRateChart = document.getElementById("DrawRateChart").checked;
     WriteResponse = document.getElementById("WritetoScr").checked;
-	DrawOrderEvents = document.getElementById("DrawEventTable").checked;
+	<!--DrawOrderEvents = document.getElementById("DrawEventTable").checked;-->
     timestosend = document.getElementById("myTextareaMax").innerText;
     document.getElementById("myTextareaURL").style.visibility = "hidden";
 	
@@ -227,7 +228,7 @@ function myTimer() {
 		writeToScreenNice(FileContent);
 		FileContent="";
 	 }
-	//doSend('{"q": "/om2.exchange.orders/placeOrder","sid": 1,"d": {"Dummy Ping":"D"}}');	
+	//doSend('{"q": "exchange.market/placeOrder","sid": 1,"d": {"Dummy Ping":"D"}}');	
 }
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -377,10 +378,24 @@ async function onMessage(evt) {
     else FileContent = FileContent + evt.timeStamp + ":" + evt.data + '\n';
     //console.log(JSON.stringify(evt.data));
     switch (obj.q) {
-        case '/om2.exchange.orders/placeOrder':
+        case 'exchange.market/placeOrder':
             OrderID = obj.d.orderId;
             break;
-     	case "/om2.exchange.market/orderBookDepth":
+		case "exchange.market/orderBookState":
+				 try{ if (obj.d.lastTrackingNumber) {
+					trackingNumber = obj.d.lastTrackingNumber;
+					StreamsMessage();
+					doSend(orderEvents)
+				 return;
+				 }
+				 }
+				 catch(err)
+				{}
+			if (ManageBook) ManageBookFunc();
+			if (DrawOrderEvents)	DrawOrderEventsFunc();
+			
+            break;
+     	case "exchange.market/orderBookDepth":
 			if (ManageBook) ManageBookFunc();
 			if (DrawOrderEvents)	DrawOrderEventsFunc();
             break;
@@ -390,13 +405,15 @@ async function onOpen(evt) {
     writeToScreenHeader('CONNECTED!', 'LIME');
 	var now = Date.now(); 
 	var hash = CryptoJS.HmacSHA256('"apiKey":"'+CurrentapiKey+'","timestamp":"'+now+'"', CurrentSecret);
-	createSessionOnOpen ='{"q":"/om2.exchange.auth/createSession","sid":15,"d":{"apiKey":"'+CurrentapiKey+'","timestamp":"'+now+'","signature":"'+hash+'"}}' 
+	createSessionOnOpen ='{"q":"exchange.market/createSession","sid":15,"d":{"apiKey":"'+CurrentapiKey+'","timestamp":"'+now+'","signature":"'+hash+'"}}' 
 	
 	doSend(createSessionOnOpen);
 	if (ManageBook) {
 		await sleep(1000);
         book1 = [];
-        doSend(orderEvents);
+        //doSend(orderEvents);
+		doSend(orderBookState);
+		
     }
 }
 async function onClose(evt) {
@@ -431,8 +448,9 @@ async function writeToScreenNice(message, color) {
 window.addEventListener("load", init, false);
 	function ManageBookFunc() {
     var len1 = book1.length;
-	if (CurrentInstrument != obj.d.instrument) return;
-    if (obj.d.messageType == "Add") {
+	try {if (CurrentInstrument != obj.d.instrument) return } catch(err){};
+	try{
+   if (obj.d.messageType == "Add" || obj.q == "exchange.market/orderBookState") {
         var order1 = [obj.d.price, ((obj.d.side == 'Sell') ? obj.d.quantity * -1 : obj.d.quantity), ((obj.d.side == 'Buy') ? 'Buy' : 'Sell'),obj.d.orderId]
         if (len1 == 0) book1[len1] = order1;
         else book1[len1] = order1;
@@ -455,6 +473,8 @@ window.addEventListener("load", init, false);
             }
         }
     }
+	}
+	catch(err){}
     NeedtoDrawBook = true;
 }
 function DrawBook() {
@@ -483,35 +503,40 @@ function drawBookTable() {
     table.draw(dataTable1, bookOptions);
 }
 function DrawOrderEventsFunc() {
-    var len2 = orderEventsTable.length;
-    var timeStamp = new Date(obj.d.eventTimestamp);
-	var messageType=obj.d.messageType;
-    orderEventsTable[len2] = [(len2+1),
-        timeStamp.toLocaleDateString(),
-		[timeStamp.getHours(), timeStamp.getMinutes(), timeStamp.getSeconds(), timeStamp.getMilliseconds()],
-		(messageType != "Executed")  ?  obj.d.orderId.toString() : obj.d.takerOrderId.toString(),
+  /*  var len2 = orderEventsTable.length;
+    var timeStamp = (obj.q == "exchange.market/orderBookDepth") ? new Date(obj.d.eventTimestamp): Date.now();
+	var messageType= (obj.q == "exchange.market/orderBookDepth") ? obj.d.messageType: "orderBookState";
+    try {
+	orderEventsTable[len2] = [(len2+1),
+        (obj.q == "exchange.market/orderBookDepth") ?timeStamp.toLocaleDateString() : "",
+		(obj.q == "exchange.market/orderBookDepth") ?[timeStamp.getHours(), timeStamp.getMinutes(), timeStamp.getSeconds(), timeStamp.getMilliseconds()] :"",
+		(obj.q == "exchange.market/orderBookDepth")?(messageType != "Executed")  ?  obj.d.orderId.toString() : obj.d.takerOrderId.toString() : "",
 		messageType,
 		obj.d.side,
 		obj.d.instrument,
-		(messageType == "Add") ?  obj.d.quantity : ((messageType == "Cancelled") ?  obj.d.cancelledQuantity: obj.d.executedQuantity),
-		(messageType == "Add") ? obj.d.price : obj.d.executedPrice,
+		(messageType == "Add" || obj.q == "exchange.market/orderBookDepth") ?  obj.d.quantity : ((messageType == "Cancelled") ?  obj.d.cancelledQuantity: obj.d.executedQuantity),
+		(messageType == "Add" || obj.q == "exchange.market/orderBookDepth") ? obj.d.price : obj.d.executedPrice,
 		(messageType == "Executed")  ?  obj.d.makerOrderId.toString() : "",
 		(messageType == "Executed")  ?  obj.d.matchId.toString() : "",
-		obj.d.eventId.toString(),
-		(messageType == "Executed")  ? obj.d.takerBrokerId.toString(): obj.d.brokerId.toString(),
-		(messageType == "Executed") ? obj.d.takerBrokerOrderId.toString():obj.d.brokerOrderId.toString(),
+		(obj.q == "exchange.market/orderBookDepth") ? obj.d.eventId.toString() : "",
+		(obj.q == "exchange.market/orderBookDepth") ? (messageType == "Executed" )  ? obj.d.takerBrokerId.toString(): obj.d.brokerId.toString() : "",
+		(obj.q == "exchange.market/orderBookDepth") ?(messageType == "Executed") ? obj.d.takerBrokerOrderId.toString():obj.d.brokerOrderId.toString():"",
 		(messageType == "Executed")  ?obj.d.makerBrokerId.toString():"",
 		(messageType == "Executed")  ?obj.d.makerBrokerOrderId.toString():""
+		
     ];
+	}
+	catch(err) {}
 	NeedtoDrawOrderEvents= true;
+	*/
 }
 function DrawOrderEventsDrawing() {
-    google.charts.load('current', {'packages': ['table']});
-    google.charts.setOnLoadCallback(DrawOrderEventsTable);
+  /*  google.charts.load('current', {'packages': ['table']});
+    google.charts.setOnLoadCallback(DrawOrderEventsTable);*/
 }
 function DrawOrderEventsTable() {
   //  NeedtoDrawBook = false;
-    var dataTable1 = new google.visualization.DataTable();
+  /*  var dataTable1 = new google.visualization.DataTable();
     dataTable1.addColumn('number', '#');
 	dataTable1.addColumn('string', 'Date');
 	dataTable1.addColumn('timeofday', 'Timestamp');
@@ -534,7 +559,7 @@ function DrawOrderEventsTable() {
     }
     var table = new google.visualization.Table(document.getElementById('chart_div3'));
     table.draw(dataTable1, orderEventsTableOptions);
-	NeedtoDrawOrderEvents= false;
+	NeedtoDrawOrderEvents= false;*/
 }
 var PlaceORders,CancelOrder, createSession,  orderEvents;
  var bookssClassNames = {
@@ -578,10 +603,10 @@ var PlaceORders,CancelOrder, createSession,  orderEvents;
   function PlaceOrdersMessage() {
 //var now = Date.now(); 
  PlaceORders = 
-		'{"q": "/om2.exchange.orders/placeOrder","sid": "nonce","d": {"brokerOrderId":"nonce","userId": "1A","orderType": "Limit","side": "Buy","instrument":"' + CurrentInstrument + '","quantity": 2,"price": 1200,"timeInForce": "GTC"}};' + '\n' +
-        '{"q": "/om2.exchange.orders/placeOrder","sid": "nonce","d": {"brokerOrderId":"nonce","userId": "1A","orderType": "Limit","side": "Sell","instrument":"' + CurrentInstrument + '","quantity": 3,"price": 1201,"timeInForce": "GTC"}};' + '\n' +
-        '{"q": "/om2.exchange.orders/placeOrder","sid": "nonce","d": {"brokerOrderId":"nonce","userId": "1A","orderType": "Limit","side": "Buy","instrument":"' + CurrentInstrument + '","quantity": 4,"price": 1202,"timeInForce": "GTC"}};' + '\n' +
-        '{"q": "/om2.exchange.orders/placeOrder","sid": "nonce","d": {"brokerOrderId":"nonce","userId": "1A","orderType": "Limit","side": "Buy","instrument":"' + CurrentInstrument + '","quantity": 5,"price": 1203,"timeInForce": "GTC"}};';
+		'{"q": "exchange.market/placeOrder","sid": "nonce","d": {"brokerOrderId":"nonce","userId": "1A","orderType": "Limit","side": "Buy","instrument":"' + CurrentInstrument + '","quantity": 2,"price": 1200,"timeInForce": "GTC"}};' + '\n' +
+        '{"q": "exchange.market/placeOrder","sid": "nonce","d": {"brokerOrderId":"nonce","userId": "1A","orderType": "Limit","side": "Sell","instrument":"' + CurrentInstrument + '","quantity": 3,"price": 1201,"timeInForce": "GTC"}};' + '\n' +
+        '{"q": "exchange.market/placeOrder","sid": "nonce","d": {"brokerOrderId":"nonce","userId": "1A","orderType": "Limit","side": "Buy","instrument":"' + CurrentInstrument + '","quantity": 4,"price": 1202,"timeInForce": "GTC"}};' + '\n' +
+        '{"q": "exchange.market/placeOrder","sid": "nonce","d": {"brokerOrderId":"nonce","userId": "1A","orderType": "Limit","side": "Buy","instrument":"' + CurrentInstrument + '","quantity": 5,"price": 1203,"timeInForce": "GTC"}};';
 }
 function PlaceOrders() {
     PlaceOrdersMessage();
@@ -590,19 +615,20 @@ function PlaceOrders() {
 function CreateSession() {
 	var now = Date.now(); 
 	var hash = CryptoJS.HmacSHA256('"apiKey":"'+CurrentapiKey+'","timestamp":"'+now+'"', CurrentSecret);
-	createSession ='{"q":"/om2.exchange.auth/createSession","sid":15,"d":{"apiKey":"'+CurrentapiKey+'","timestamp":"'+now+'","signature":"'+hash+'"}}' 
+	createSession ='{"q":"exchange.market/createSession","sid":15,"d":{"apiKey":"'+CurrentapiKey+'","timestamp":"'+now+'","signature":"'+hash+'"}}' 
      document.getElementById("myTextarea").value = createSession;
 }
  function CancelOrdersMessage() {
-	CancelOrder = '{"q":"/om2.exchange.orders/cancelOrder","sid":75,"d":{"orderId":"' + OrderID + '","instrument":"' + CurrentInstrument +'"}}';
+	CancelOrder = '{"q":"exchange.market/cancelOrder","sid":75,"d":{"orderId":"' + OrderID + '","instrument":"' + CurrentInstrument +'"}}';
  }
  
 function StreamsMessage() {
-  	orderEvents   = '{"q": "/om2.exchange.market/orderBookDepth","sid": 30000,"d":{"trackingNumber":0}}';
-  }
+  	orderEvents   = '{"q": "exchange.market/orderBookDepth","sid": 30000,"d":{"trackingNumber":' + trackingNumber + '}}',
+	orderBookState =  '{"q": "exchange.market/orderBookState","sid": 31000,"d":{}}';
+	}
 function Streams() {
      StreamsMessage();
-	document.getElementById("myTextarea").value =  orderEvents + ';\n' ;
+	document.getElementById("myTextarea").value =  orderEvents + ';\n'+orderBookState+ ';\n';
 }
 	</script>
 <body bgcolor="#242424">
@@ -649,11 +675,11 @@ function Streams() {
         <input type='checkbox' id="WritetoScr" checked>
         <span></span>
     </label>
-	 <span class="a">. Draw orderBookDepth Table? </span>
-    <label>
-        <input type='checkbox' id="DrawEventTable" checked>
+	<!-- <span class="a">. Draw orderBookDepth Table? </span>-->
+   <!--  <label>
+       <input type='checkbox' id="DrawEventTable" checked>
         <span></span>
-    </label>
+    </label>-->
   <a href="https://docs.google.com/spreadsheets/d/1MxgtupJXyrRvSwtb-VHM8cS_0edSMd5P03c34kJ5094/edit#gid=0" target="_blank" class="a">. multi prices builder</a>
 	
     <br>
@@ -669,7 +695,7 @@ function Streams() {
     <button type="button" onclick="setupDownloadLink()" class="button button4">console log</button>
     <button type="button" onclick="Clear()" class="button button4">Clear</button>
 
-	  <div id="chart_div3" class="wrapTextBox" style="height: 260px;"></div>
+	  <!-- <div id="chart_div3" class="wrapTextBox" style="height: 260px;"></div>-->
 	 
     <div> <span style="color: #878787;" class="a">request </span>
         <span style="color: #5DB0CC;" class="a">regular responses</span>
