@@ -44,6 +44,7 @@
 	font-size: 24px;
 	font-family: monospace;
 	color: #878787;
+	align: right;
 	}
 	
 	div.b {
@@ -139,6 +140,16 @@
 	.form-control-range {
 	  display: block;
 	  width: 100%; }
+	 
+	 
+	 div.summ{
+	float: right;
+}
+.book {
+font-size: 12px;
+font-family: monospace;
+color: #878787;
+}
 	 
 	   </style>
 		<script type="text/javascript">
@@ -490,7 +501,8 @@
 		</script>
 	<body bgcolor="#000">
 		<meta charset="utf-8" />
-		<title>WebSocket Test V1.03</title>
+		<title>WebSocket Test V1.04</title>
+		
 	 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/hmac-sha256.js"></script>
 		<!-- <button type="button" id="ConnectButton" onclick="ReConnect()" class="button button1">Connect</button>
 		<button type="button" id="DisConnectButton" onclick="Disconnect()" class="button button3">Disconnect</button> -->
@@ -504,7 +516,11 @@
 
 		<a id="myTextareaURL" class="a"><span class="a" contenteditable="true" style="color: #9A7FD5;">place the ws endpoint here</span></a>
 	 
-		<div id="chart_div1" class="book"></div>
+		<div id="sum_div" class="summ">
+	<span style="color: #74E680;" class="NumberOf"># Success Orders:</span><span  id="SucessOrderNum" style="color: #74E680;" class="NumberOf">0 </span>
+	<br>
+	<span style="color: #C93F3B;" class="NumberOf"># Failed Orders:</span><span  id="FailedOrderNum" style="color: #C93F3B;" class="NumberOf">0 </span>
+	</div>
 		<div id="output" class="wrap"></div>
 		 <select id="SelectMessage" type="selectBox" class="button selectBox" onChange="ChangeMessage()" ;>
 					<option value="" selected >Select Message</option>
@@ -538,9 +554,6 @@
 		<span class="a">times.</span>
 		<button type="button" onclick="setupDownloadLink()" class="button button4">console log</button>
 		<button type="button" onclick="Clear()" class="button button4">Clear</button><br>
-	<span style="color: #74E680;" class="NumberOf"># Success Orders&nbsp;</span><span  id="SucessOrderNum" style="color: #74E680;" class="NumberOf">0 </span>
-	<span style="color: #C93F3B;" class="NumberOf"  style="font-size:30px">&nbsp;&nbsp;# Failed Orders&nbsp;</span><span  id="FailedOrderNum" style="color: #C93F3B;" class="NumberOf">0 </span>
-		 
 		<div id="outputDetails" class="a"> </div>
 
 	</body>
