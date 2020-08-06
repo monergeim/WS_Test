@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<style type="text/css">
+	label input {
+  display: none; /* hide the default checkbox */
+}
+div.Regular {
+  line-height: 1.6;
+
+font-family: monospace;
+margin-left:100px;
+margin-top:100px;
+color: #878787;
+/* height:800px; 
+overflow-y: auto;*/
+}
+.Success {
+font-size: 14px;
+margin-bottom:14px;
+font-family: monospace;
+color: #74E680;
+align: right;
+}
+
+.error {
+font-size: 14px;
+font-family: monospace;
+color: #C93F3B;
+align: right;
+}
+
+   </style>
+	<script type="text/javascript">
+
+//env,endpoint,instrument,apikey,secret
+var parameters = [["Master","RC","UAT"],
+	["wss://exchange-gateway-master.dev.exchange.exberry.io","wss://exchange-gateway-rc.dev.exchange.exberry.io","wss://exchange-gateway-uat.uat.exchange.exberry.io"], 
+	["AMZ","LoadIns","INS1"],
+	["2688e25c-10ca-480a-a31c-a0eb7eaaf1eb", "4b4888dd-6c72-48cc-bcb0-9b54133abd91","d4fdfdd5-2d2f-4263-8965-3a2c568af59a"],
+	["a2f3b133b59d1660cd4dcb1b366b75c89657a0fac62fab818a3abbe0813570e5","b7fb1bfb591e1f0713e980b40c6bd362e50c2d0147b83f743bae4cb1728018af","0a374a2184d2a63de3356bb51cc5bc26fbbf0e450cf9c462868e90791a9b43e3"]],
+	Env ="",envIndex=0,
+	CurrentInstrument = "",
+	CurrentapiKey = "",
+	CurrentSecret = "",
+	OrderID, d = new Date(),
+	obj = "",
+	createSessionOnOpen="",
+	IsConnected = false,
+	IsActiveSession = false;
+				
+function findEnvironment( Environmnet) {
+			return Environmnet ==Env;
+}
+
+function init() {
+	var urlParams = new URLSearchParams(window.location.search);
+	Env = urlParams.get('env');
+	if (Env) {
+	 envIndex= parameters[0].findIndex(findEnvironment);
+	 if (envIndex== -1) {alert("Env not found"); return};
+	}
+	
+	document.getElementById("EnviromentElement").innerText=Env;
+	CurrentInstrument = parameters[2][envIndex];
+	document.getElementById("InstrumentElement").innerText=CurrentInstrument;
+
+	CurrentUri = parameters[1][envIndex];
+	document.getElementById("endpointElement").innerText=CurrentUri;
+
+	CurrentapiKey = parameters[3][envIndex];
+	document.getElementById("apiKeyElement").innerText=CurrentapiKey;
+
+	CurrentSecret =  parameters[4][envIndex];
+	testWebSocket();
+	//PlaceOrders();
+	PlaceOrdersMessage();
+}
+	function sendOrders() {
+		Send();
+}
+
+function Send() {
+	if	(IsConnected == false || IsActiveSession == false ) return;
+
+	var now = Date.now(); 
+	//data = document.getElementById("myTextarea").value;
+	data = PlaceORders;
+	lines = data.split(';');
+//	if (timestosend == 1) {
+		for (var i = 0; i < lines.length; i++) {
+			//console.log (lines[i]);
+			 var now = Date.now(); 
+			lines[i] = lines[i].replace('nonce',now+i+Math.floor(Math.random() * 1000000000)).replace('nonce',now+i+Math.floor(Math.random() * 1000000000));
+			doSend(lines[i].replace('random',Math.ceil(Math.random()*100) + Math.ceil(Math.random()*100)/10000).replace('random',Math.ceil(Math.random()*100) + Math.ceil(Math.random()*100)/10000))
+		}
+}
+
+async function testWebSocket() {
+			try {
+		websocket = new WebSocket(CurrentUri);
+		websocket.onopen = function(evt) {
+			onOpen(evt)
+		};
+		websocket.onclose = function(evt) {
+			onClose(evt)
+		};
+		websocket.onmessage = function(evt) {
+			onMessage(evt)
+		};
+		websocket.onerror = function(evt) {
+			onError(evt)
+		};
+	} catch (err) {
+		console.log(err.message);
+	}
+}
+async function doSend(message) { //d=new Date();
+ var now = Date.now(); 
+if (message.length<=1) return;
+	try {
+		JSON.parse(message);
+		//message=message.replace('nonce',now).replace('nonce',now);
+		websocket.send(message);
+		console.log("SENT: " + message)
+		} catch (err) {}
+}
+async function onMessage(evt) {
+	dt = new Date(evt.timeStamp + d.getTime());
+	obj = JSON.parse(evt.data);
+	//console.log(JSON.stringify(evt.data));
+	console.log("RECIEVED: " + evt.data);
+
+	switch (obj.q) {
+		case 'exchange.market/placeOrder':
+			try{
+			if (obj.d.errorCode)
+			{
+			document.getElementById("OrdersElement").className = "Regular error";
+			document.getElementById("OrdersElement").innerText = "Failed: " + obj.d.errorMessage;
+			console.log(obj.d.errorMessage);
+			}
+			else{
+			OrderID = obj.d.orderId;
+			document.getElementById("OrdersElement").className = "Regular Success";
+			document.getElementById("OrdersElement").innerText = "OK" ;
+			break;
+			}
+			}
+			catch(err)
+			{}
+			break;
+		case 'exchange.market/createSession':
+			try{
+			if (obj.sig==1)	{
+			IsActiveSession = true;
+			document.getElementById("SessionElement").className = "Regular Success";
+			document.getElementById("SessionElement").innerText = "OK";
+			sendOrders();
+			}
+			else if (obj.sig==2){
+			document.getElementById("SessionElement").className = "Regular error";
+			document.getElementById("SessionElement").innerText = "Failed";
+			}
+			}
+			catch(err){}
+		}
+}
+async function onOpen(evt) {
+	document.getElementById("ConnectionElement").className = "Regular Success";
+	document.getElementById("ConnectionElement").innerText = "OK";
+	
+	var now = Date.now(); 
+	var hash = CryptoJS.HmacSHA256('"apiKey":"'+CurrentapiKey+'","timestamp":"'+now+'"', CurrentSecret);
+	createSessionOnOpen ='{"q":"exchange.market/createSession","sid":15,"d":{"apiKey":"'+CurrentapiKey+'","timestamp":"'+now+'","signature":"'+hash+'"}}' 
+	doSend(createSessionOnOpen);
+	IsConnected = true;
+}
+async function onClose(evt) {
+	IsConnected = false;
+	IsActiveSession = false;
+
+	document.getElementById("ConnectionElement").className = "Regular error";
+	document.getElementById("ConnectionElement").innerText = "Failed";
+	console.log(evt);
+}
+function onError(evt) {
+	//	d = new Date();
+	document.getElementById("ConnectionElement").className = "Regular error";
+	document.getElementById("ConnectionElement").innerText = "Failed";
+
+	console.log(evt);
+}
+window.addEventListener("load", init, false);
+	
+function PlaceOrdersMessage() {
+	 PlaceORders = 
+		'{"q": "exchange.market/placeOrder","sid": "nonce","d": {"brokerOrderId":"nonce","userId": "1A","orderType": "Limit","side": "Buy","instrument":"' + CurrentInstrument + '","quantity": "random","price": "random","timeInForce": "GTC"}};' + '\n' ;
+}
+
+function CreateSession() {
+	var now = Date.now(); 
+	var hash = CryptoJS.HmacSHA256('"apiKey":"'+CurrentapiKey+'","timestamp":"'+now+'"', CurrentSecret);
+	createSession ='{"q":"exchange.market/createSession","sid":15,"d":{"apiKey":"'+CurrentapiKey+'","timestamp":"'+now+'","signature":"'+hash+'"}}' 
+	 document.getElementById("myTextarea").value = createSession;
+}
+ function CancelOrdersMessage() {
+	CancelOrder = '{"q":"exchange.market/cancelOrder","sid":75,"d":{"orderId":"' + OrderID + '","instrument":"' + CurrentInstrument +'"}}';
+ }
+ 
+function StreamsMessage() {
+	orderEvents   = '{"q": "exchange.market/orderBookDepth","sid": 30000,"d":{}}';
+  }
+		</script>
+<body bgcolor="#000">
+	<meta charset="utf-8" />
+	<title>Exberry Test V1.00</title>
+ <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/hmac-sha256.js"></script>
+
+<div id="params" class="Regular">
+<span class="Regular">Enviroment:</span><span  id="EnviromentElement" class="regular"> </span>
+<br>
+<span>Instrument:</span><span  id="InstrumentElement" class="regular"> </span>
+<br>
+<span>endpoint:</span><span  id="endpointElement" class="regular"> </span>
+<br>
+<span>apiKey:</span><span  id="apiKeyElement"  class="regular"> </span>
+<br>
+<span>Connection:</span><span  id="ConnectionElement"  class="regular">... </span>
+<br>
+<span>Session:</span><span  id="SessionElement"  class="regular">... </span>
+<br>
+<span>Place Order:</span><span  id="OrdersElement"  class="regular">... </span>
+
+</div>
+</body>
+</html>
