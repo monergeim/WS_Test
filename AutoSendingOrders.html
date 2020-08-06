@@ -1,561 +1,327 @@
-	<!DOCTYPE html>
-	<html>
-	<head>
-		<style type="text/css">
-		label input {
-	  display: none; /* hide the default checkbox */
-	}
-	/* style the artificial checkbox */
-	label span {
-	  height: 10px;
-	  width: 10px;
-	  border: 1px solid grey;
-	  display: inline-block;
-	  position: relative;
-	}
-	/* style its checked state..with a ticked icon */
-	[type=checkbox]:checked + span:before {
-	   content: '\2714'; 
-	  position: absolute;
-	   top: -7px; 
-	  left: 0;
-	  color:#878787;
-	}
-	
-	div.a {
-	font-size: 12px;
-	font-family: monospace;
-	/* height:800px; 
-	overflow-y: auto;*/
-	}
-	.a {
-	font-size: 12px;
-	font-family: monospace;
-	color: #878787;
-	}
-	
-	div.NumberOf {
-	font-size: 24px;
-	font-family: monospace;
-	/* height:800px; 
-	overflow-y: auto;*/
-	}
-	.NumberOf {
-	font-size: 24px;
-	font-family: monospace;
-	color: #878787;
-	align: right;
-	}
-	
-	div.b {
-	font-size: 9px;
-	}
-	div.wrap {
-		height:80px;
-		width:760px;
-		align:left;
-		overflow-y: auto;
-		border-style: solid;
-		border-width: thin;
-		border-color: #a9a9a9;  
-		font-family: monospace;
-		color:#878787;
-	}
-	div.wrapTextBox {
-		overflow: auto; 
-	}
-	div.selectBox {
-		 padding: 10px 32px;
-	}
-	.button {
-	  background-color: #4CAF50; /* Green */
-	  border: none;
-	  color: white;
-	  padding: 10px 32px;
-	  text-align: center;
-	  text-decoration: none;
-	  display: inline-block;
-	  font-size: 16px;
-	  margin: 4px 2px;
-	  cursor: pointer;
-	}
-	.button1 {background-color: #4CAF50; padding: 5px 32px;} /* Green */
-	.button2 {background-color: #008CBA;} /* Blue */
-	.button3 {background-color: #f44336; padding: 5px 32px;} /* Red */ 
-	.button4 {background-color: #e7e7e7; color: black;} /* Gray */ 
-	.button5 {background-color: #555555;  } /* Black */
-	.selectBox {background-color: #e7e7e7;padding: 1px 10px; color:black;border-style: groove; border:true} /*  */
-	
-	.form-control {
-	  /* display: block; */
-	  /* width: 100%; */
-	  /* height: calc(2.25rem + 2px); */
-	  /* padding: 0.375rem 0.75rem; */
-	  margin: 4px ;
-	  font-size: 1rem;
-	  line-height: 1.5;
-	  color: #878787;
-	  background-color: #000; 
-	  background-clip: padding-box;
-	  border: 1px solid #ced4da;
-	  border-radius: 0.25rem;
-	  -webkit-transition: border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
-	  transition: border-color 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out;
-	  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-	  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out, -webkit-box-shadow 0.15s ease-in-out; 
-	  }
-	  @media screen and (prefers-reduced-motion: reduce) {
-		.form-control {
-		  -webkit-transition: none;
-		  transition: none; } }
-	  .form-control::-ms-expand {
-		background-color: transparent;
-		border: 0; }
-	  .form-control:focus {
-		/*color: #D18B40;*/
-		background-color: #000;
-		border-color: #80bdff;
-		outline: 0;
-		-webkit-box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-				box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); }
-	  .form-control::-webkit-input-placeholder {
-		color: #6c757d;
-		opacity: 1; }
-	  .form-control:-ms-input-placeholder {
-		color: #6c757d;
-		opacity: 1; }
-	  .form-control::-ms-input-placeholder {
-	   /* color: #6c757d;*/
-		opacity: 1; }
-	  .form-control::placeholder {
-	   /* color: #6c757d;*/
-		opacity: 1; }
-	  .form-control:disabled, .form-control[readonly] {
-	  /*  background-color: #e9ecef;*/
-		opacity: 1; }
-	select.form-control:focus::-ms-value {
-	  color: #495057;
-	  background-color: #fff; }
-	.form-control-file,
-	.form-control-range {
-	  display: block;
-	  width: 100%; }
-	 
-	 
-	 div.summ{
-	float: right;
+<!DOCTYPE html>
+<html>
+<head>
+	<style type="text/css">
+	label input {
+  display: none; /* hide the default checkbox */
 }
-.book {
-font-size: 12px;
+div.Regular {
+  line-height: 1.6;
+
 font-family: monospace;
+margin-left:100px;
+margin-top:100px;
 color: #878787;
+/* height:800px; 
+overflow-y: auto;*/
 }
-	 
-	   </style>
-		<script type="text/javascript">
-	var endpointArr= ["wss://exchange-gateway-master.dev.exchange.exberry.io",
-		"wss://exchange-gateway-rc.dev.exchange.exberry.io"],
-		InstrumentsArr = ["AMZ","LoadIns"]
-		apiKeyArr=["2688e25c-10ca-480a-a31c-a0eb7eaaf1eb", "4b4888dd-6c72-48cc-bcb0-9b54133abd91"],
-		secretArr = ["a2f3b133b59d1660cd4dcb1b366b75c89657a0fac62fab818a3abbe0813570e5","b7fb1bfb591e1f0713e980b40c6bd362e50c2d0147b83f743bae4cb1728018af"]
+.Success {
+font-size: 14px;
+margin-bottom:14px;
+font-family: monospace;
+color: #74E680;
+align: right;
+}
+
+.error {
+font-size: 14px;
+font-family: monospace;
+color: #C93F3B;
+align: right;
+}
+
+   </style>
+	<script type="text/javascript">
+
+
+
+//env,endpoint,instrument,apikey,secret
+var parameters = [["Master","RC","UAT"],
+	["wss://exchange-gateway-master.dev.exchange.exberry.io","wss://exchange-gateway-rc.dev.exchange.exberry.io","wss://exchange-gateway-uat.uat.exchange.exberry.io"], 
+	["AMZ","LoadIns","INS1"],
+	["2688e25c-10ca-480a-a31c-a0eb7eaaf1eb", "4b4888dd-6c72-48cc-bcb0-9b54133abd91","d4fdfdd5-2d2f-4263-8965-3a2c568af59a"],
+	["a2f3b133b59d1660cd4dcb1b366b75c89657a0fac62fab818a3abbe0813570e5","b7fb1bfb591e1f0713e980b40c6bd362e50c2d0147b83f743bae4cb1728018af","0a374a2184d2a63de3356bb51cc5bc26fbbf0e450cf9c462868e90791a9b43e3"]],
+	Env ="",envIndex=0,accessToken="",
+	CurrentInstrument = "",
+	CurrentapiKey = "",
+	CurrentSecret = "",
+	OrderID, d = new Date(),
+	obj = "",
+	createSessionOnOpen="",
+	IsConnected = false,
+	IsActiveSession = false;
+				
+				var BOLoginUrl = "https://staging-admin-exchange-om2.eu.auth0.com/oauth/token";
+var BOuser="dudi@master2.com";
+var BOPassword="12345678qA";
+var BOClientID="AxKLZArHW8AOhjO391YECLK1vEbzNl89";
+var BOBUrl = " https://admin-api-rc.dev.ops.exberry.io/api/instruments";
+
+
+function findEnvironment( Environmnet) {
+			return Environmnet ==Env;
+}
+
+
+
+function init() {
+	var urlParams = new URLSearchParams(window.location.search);
+	Env = urlParams.get('env');
+	if (Env) {
+	 envIndex= parameters[0].findIndex(findEnvironment);
+	 if (envIndex== -1) {alert("Env not found"); return};
+	}
 	
-	var output, outputDetails, outputDetailsOffline, data, lines, Message,
-		preHeader = document.createElement("p1"),
-		preNice = document.createElement("pN"),
-		CurrentInstrument = InstrumentsArr[0],
-			CurrentapiKey = apiKeyArr[0],
-		CurrentSecret = secretArr[0],
-		NeedtoReconnect = true,
-		WriteResponse = false,
-		OrderID, d = new Date(),
-		timestosend,
-		FileContent = "",//d.toISOString() + '\n',
-		obj = "",
-	  //  myVar = setInterval(myTimer, 5000),
-		myVar,
-		createSessionOnOpen="",
-		dynamicFrequency=5,
-		myVartoWrite= setInterval(myTimerToWrite, 1000),
-		SucessOrders =0,
-		FailedOrders =0,
-		IsConnected = false,
-		IsActiveSession = false
-	;
-		
-	function init() {
-		output = document.getElementById("output");
-		outputDetails = document.getElementById("outputDetails");
-		outputDetailsOfflinef = document.getElementById("outputDetailsOffline");
-		RefreshInstrumentant();
-	 	WriteResponse = document.getElementById("WritetoScr").checked;
-		timestosend = document.getElementById("myTextareaMax").innerText;
-		
-		var urlParams = new URLSearchParams(window.location.search);
-		var URLFreq = urlParams.get('freq');
-		if (URLFreq) 
-{		dynamicFrequency = URLFreq;
- document.getElementById("dynamicFrequency").innerText=dynamicFrequency;
-}		
-		dynamicFrequency = document.getElementById("dynamicFrequency").innerText;
-		myVar= setInterval(myTimertoSend, dynamicFrequency*1000)
-	  
-	   document.getElementById("myTextareaURL").style.visibility = "hidden";
-	   
-	   
-		document.getElementById("dynamicinstrumentid").addEventListener("input", function sett() {
-			RefreshInstrumentant();
-		}, false);
-		 document.getElementById("WritetoScr").addEventListener("input", function() {
-			WriteResponse = document.getElementById("WritetoScr").checked;
-		}, false);
-		document.getElementById("myTextareaMax").addEventListener("input", function() {
-			timestosend = document.getElementById("myTextareaMax").innerText;
-		}, false);
-		document.getElementById("dynamicFrequency").addEventListener("input", function() {
-			dynamicFrequency = document.getElementById("dynamicFrequency").innerText;
-			clearInterval(myVar);
-			myVar = setInterval(myTimertoSend, (dynamicFrequency*1000))
-		}, false);
-	   
-	   testWebSocket();
-		PlaceOrders();
-	}
-	function myTimertoSend() {
-	   
-		 sendOrders();
-	}
-	function myTimerToWrite() {
-		
-		 if (WriteResponse && FileContent.length >0 ) {
-			writeToScreenNice(FileContent);
-			FileContent="";
-		 }
-	}
-	function sleep(ms) {
-		return new Promise(resolve => setTimeout(resolve, ms));
-	}
+	document.getElementById("EnviromentElement").innerText=Env;
+	CurrentInstrument = parameters[2][envIndex];
+	document.getElementById("InstrumentElement").innerText=CurrentInstrument;
+
+	CurrentUri = parameters[1][envIndex];
+	document.getElementById("endpointElement").innerText=CurrentUri;
+
+	CurrentapiKey = parameters[3][envIndex];
+	document.getElementById("apiKeyElement").innerText=CurrentapiKey;
+
+	CurrentSecret =  parameters[4][envIndex];
+	testWebSocket();
+	//PlaceOrders();
+	PlaceOrdersMessage();
+	BOLogin();
+}
 	function sendOrders() {
-			Send();
+		Send();
+}
 
-	}
+function Send() {
+	if	(IsConnected == false || IsActiveSession == false ) return;
 
-	function RefreshInstrumentant() {
-		CurrentInstrument = document.getElementById("dynamicinstrumentid").innerText;
-		PlaceOrdersMessage();
-		StreamsMessage();
-	}
-	function OpenURL() {
-		
-		var selectedEnv = document.getElementById("SelectEnv").value;
-		document.getElementById("dynamicinstrumentid").innerText = InstrumentsArr[selectedEnv]
-		CurrentUri = endpointArr [selectedEnv];
-		CurrentapiKey = apiKeyArr[selectedEnv];
-		CurrentSecret = secretArr[selectedEnv];
-		RefreshInstrumentant()
-			  if (document.getElementById("SelectEnv").value == "100") {
-			document.getElementById("myTextareaURL").style.visibility = "visible";
+	var now = Date.now(); 
+	//data = document.getElementById("myTextarea").value;
+	data = PlaceORders;
+	lines = data.split(';');
+//	if (timestosend == 1) {
+		for (var i = 0; i < lines.length; i++) {
+			//console.log (lines[i]);
+			 var now = Date.now(); 
+			lines[i] = lines[i].replace('nonce',now+i+Math.floor(Math.random() * 1000000000)).replace('nonce',now+i+Math.floor(Math.random() * 1000000000));
+			doSend(lines[i].replace('random',Math.ceil(Math.random()*100) + Math.ceil(Math.random()*100)/10000).replace('random',Math.ceil(Math.random()*100) + Math.ceil(Math.random()*100)/10000))
 		}
-		RefreshInstrumentant();
-		}
-	function ChangeMessage() {
-	switch (document.getElementById("SelectMessage").value) {
-			case 'Place Orders':
-				PlaceOrders();
-				break;
-			case "Streams":
-			   Streams();
-				break;
-			case "Session":
-				CreateSession();
-				break;
-			case "Send Cancellation":
-				CancelFlow();
-				break;
-		}
-	}
-	async function CancelFlow() {
-		WriteResponse = true;
-		data = PlaceORders; //document.getElementById("myTextarea").value;
-		lines = data.split(';');
-		doSend(lines[0]);
-		 await sleep(1000);
-		CancelOrdersMessage();
-		doSend(CancelOrder);
-	}
-	function Send() {
-			if	(IsConnected == false || IsActiveSession == false ) return;
+}
 
-		var now = Date.now(); 
-		data = document.getElementById("myTextarea").value;
-		lines = data.split(';');
-		if (timestosend == 1) {
-			for (var i = 0; i < lines.length; i++) {
-				//console.log (lines[i]);
-				 var now = Date.now(); 
-				lines[i] = lines[i].replace('nonce',now+i+Math.floor(Math.random() * 1000000000)).replace('nonce',now+i+Math.floor(Math.random() * 1000000000));
-				doSend(lines[i].replace('random',Math.ceil(Math.random()*100) + Math.ceil(Math.random()*100)/10000).replace('random',Math.ceil(Math.random()*100) + Math.ceil(Math.random()*100)/10000))
+function BOLogin(){
 
-			}
-		} else {
-			var newLines = "";
-			for (var j = 0; j < timestosend; j++) {
-				newLines = newLines + data + ';';
-			}
-			newLines = newLines.split(';')
-			for (var i = 0; i < newLines.length - 1; i++) {
-				lines[i]= newLines[i].replace('nonce',now+i+Math.floor(Math.random() * 1000000000)).replace('nonce',now+i+Math.floor(Math.random() * 1000000000));
-				doSend(newLines[i].replace('random',Math.ceil(Math.random()*100) + Math.ceil(Math.random()*100)/10000).replace('random', Math.ceil(Math.random()*100) + Math.ceil(Math.random()*100)/10000))
 
-			}
-		}
-	}
-	function Clear() {
-		preNice.innerHTML = "";
-		FileContent = "";
-		orderEventsTable=[];
-		NeedtoDrawOrderEvents= true;
-	}
-	function ConectDisconect(){
-	(document.getElementById("BothActions").innerText == "Disconnect") ? Disconnect() : ReConnect();
-	}
-	
-	function Disconnect() {
-		NeedtoReconnect = false;
-		book1 = [];
-		writeToScreenHeader('Disconnecting ' + CurrentUri);
-		websocket.close();
-	}
-	function ReConnect() {
-		NeedtoReconnect = true;
-		testWebSocket();
-		PlaceOrders();
-	}
-	async function testWebSocket() {
-		
-		
-		var selectedEnv = document.getElementById("SelectEnv").value;
-		CurrentUri = endpointArr [selectedEnv];
-	 if (document.getElementById("SelectEnv").value == 100) CurrentUri = document.getElementById("myTextareaURL").innerText;
-		writeToScreenHeader('Connecting ' + CurrentUri);
-		try {
-			websocket = new WebSocket(CurrentUri);
-			websocket.onopen = function(evt) {
-				onOpen(evt)
-			};
-			websocket.onclose = function(evt) {
-				onClose(evt)
-			};
-			websocket.onmessage = function(evt) {
-				onMessage(evt)
-			};
-			websocket.onerror = function(evt) {
-				onError(evt)
-			};
-		} catch (err) {
-			console.log(err.message);
-		}
-	}
-	async function doSend(message) { //d=new Date();
-	 var now = Date.now(); 
-	if (message.length<=1) return;
-		try {
-			JSON.parse(message);
-			message=message.replace('nonce',now).replace('nonce',now);
-	   		websocket.send(message);
-			if (WriteResponse) writeToScreenNice(message, "#878787");
-			else FileContent = FileContent + "    " + ":" + message + '\n';
-		} catch (err) {
+var loginMessage="grant_type=password&username="+BOuser+"&password="+BOPassword+"&audience=bo-gateway&scope=Instrument/create Instrument/update Instrument/get Instrument/list HaltResume/halt HaltResume/resume HaltResume/haltAll HaltResume/resumeAll&client_id="+BOClientID;
+var xhr = new XMLHttpRequest();
+try{
+xhr.open("POST", BOLoginUrl, true);
+xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
+/*xhr.send(JSON.stringify({
+    value: 'value'
+}));*/
+
+console.log("Sent: " + loginMessage);
+xhr.send(loginMessage);
+console.log("After Send")
+xhr.onload = function() {
+  console.log("in onload")
+  console.log("Recieved" + this.responseText);
+  var data = JSON.parse(this.responseText);
+  accessToken= data.access_token;
+  BOInsList();
+  document.getElementById("BOLoginElement").className = "Regular Success";
+	document.getElementById("BOLoginElement").innerText = "OK";
+
+}
+xhr.onerror = function() {
+  console.log("in onerror")
+  console.log("Recieved" + this.responseText);
+
+  document.getElementById("BOLoginElement").className = "Regular error";
+	document.getElementById("BOLoginElement").innerText = "Failed";
+	return;
+}
+
 			
-		d = new Date();
-		writeToScreenNice(d.toISOString() + ' ' +err.message, "#C93F3B");
-		}
-	}
-	async function onMessage(evt) {
-		dt = new Date(evt.timeStamp + d.getTime());
-		obj = JSON.parse(evt.data);
-		if (WriteResponse) {
-				if (evt.data.includes("error") == true) color = "#C93F3B"
-				else if (evt.data.includes("sig") == true) color = "#D2C057"
-				else color = "#5DB0CC"
-			
-		d = new Date();
-		FileContent =   '<span style="color: ' + color + ';">' + d.toISOString() + ' ' + evt.data + '</span>' + '<br>' +FileContent;
-				
-		}
-		else FileContent = FileContent + evt.timeStamp + ":" + evt.data + '\n';
-		//console.log(JSON.stringify(evt.data));
-		
-		switch (obj.q) {
-			case 'exchange.market/placeOrder':
-				try{
-				if (obj.d.errorCode)
-				{
-				FailedOrders  = FailedOrders +1;
-				document.getElementById("FailedOrderNum").innerText = FailedOrders;
-					}
-				else{
-				OrderID = obj.d.orderId;
-				SucessOrders  = SucessOrders +1;
-				document.getElementById("SucessOrderNum").innerText = SucessOrders;
-				break;
-				}
-				}
-				catch(err)
-				{}
-				break;
-			case 'exchange.market/createSession':
-				try{
-				if (obj.sig) IsActiveSession = true;
-				}
-				catch(err)
-				{}
-				
-		}
-	}
-	async function onOpen(evt) {
-		//document.getElementById("ConnectButton").style.visibility = "hidden";
-		//document.getElementById("DisConnectButton").style.visibility = "visible";
-		document.getElementById("BothActions").innerText = "Disconnect";
-		document.getElementById("BothActions").className = "button button3";
+}
+catch(err){
 
+}
+}
+function BOInsList(){
+try{
+var xhrGet = new XMLHttpRequest();
+// we defined the xhr
+xhrGet.setRequestHeader("Authorization", "Bearer "+accessToken);
+
+xhrGet.onreadystatechange = function () {
+    if (this.readyState != 4) return;
+
+    if (this.status == 200) {
+        var data = JSON.parse(this.responseText);
+		concol.log("RECIEVED: "+ this.responseText);
+	document.getElementById("BOInsElement").className = "Regular Success";
+	document.getElementById("BOInsElement").innerText = "OK";		
+xhrGet.open('GET', BOBUrl, true);
+
+    }
+else {
+	document.getElementById("BOInsElement").className = "Regular error";
+			document.getElementById("BOInsElement").innerText = "Failed"
+			return;}
+    // end of state change: it can be after some time (async)
+};
+
+xhrGet.send();
 
 		
-		writeToScreenHeader('CONNECTED!', 'LIME');
-		
-		var now = Date.now(); 
-		var hash = CryptoJS.HmacSHA256('"apiKey":"'+CurrentapiKey+'","timestamp":"'+now+'"', CurrentSecret);
-		createSessionOnOpen ='{"q":"exchange.market/createSession","sid":15,"d":{"apiKey":"'+CurrentapiKey+'","timestamp":"'+now+'","signature":"'+hash+'"}}' 
-		doSend(createSessionOnOpen);
-		IsConnected = true;
+}
+catch(err){
+
+			}
+}
+
+
+async function testWebSocket() {
+			try {
+		websocket = new WebSocket(CurrentUri);
+		websocket.onopen = function(evt) {
+			onOpen(evt)
+		};
+		websocket.onclose = function(evt) {
+			onClose(evt)
+		};
+		websocket.onmessage = function(evt) {
+			onMessage(evt)
+		};
+		websocket.onerror = function(evt) {
+			onError(evt)
+		};
+	} catch (err) {
+		console.log(err.message);
 	}
-	async function onClose(evt) {
-		//document.getElementById("DisConnectButton").style.visibility = "hidden";
-		//document.getElementById("ConnectButton").style.visibility = "visible";
-		IsConnected = false;
-		IsActiveSession = false;
+}
+async function doSend(message) { //d=new Date();
+ var now = Date.now(); 
+if (message.length<=1) return;
+	try {
+		JSON.parse(message);
+		//message=message.replace('nonce',now).replace('nonce',now);
+		websocket.send(message);
+		console.log("SENT: " + message)
+		} catch (err) {}
+}
+async function onMessage(evt) {
+	dt = new Date(evt.timeStamp + d.getTime());
+	obj = JSON.parse(evt.data);
+	//console.log(JSON.stringify(evt.data));
+	console.log("RECIEVED: " + evt.data);
 
-		document.getElementById("BothActions").innerText = "Connect";
-		document.getElementById("BothActions").className = "button button1";
-
-
-
-		writeToScreenHeader('Disconnected', 'red');
-		console.log(evt);
-		if (NeedtoReconnect == true) {
-			testWebSocket();
+	switch (obj.q) {
+		case 'exchange.market/placeOrder':
+			try{
+			if (obj.d.errorCode)
+			{
+			document.getElementById("OrdersElement").className = "Regular error";
+			document.getElementById("OrdersElement").innerText = "Failed: " + obj.d.errorMessage;
+			console.log(obj.d.errorMessage);
+			}
+			else{
+			OrderID = obj.d.orderId;
+			document.getElementById("OrdersElement").className = "Regular Success";
+			document.getElementById("OrdersElement").innerText = "OK" ;
+			break;
+			}
+			}
+			catch(err)
+			{}
+			break;
+		case 'exchange.market/createSession':
+			try{
+			if (obj.sig==1)	{
+			IsActiveSession = true;
+			document.getElementById("SessionElement").className = "Regular Success";
+			document.getElementById("SessionElement").innerText = "OK";
+			sendOrders();
+			}
+			else if (obj.sig==2){
+			document.getElementById("SessionElement").className = "Regular error";
+			document.getElementById("SessionElement").innerText = "Failed";
+			}
+			}
+			catch(err){}
 		}
-		
-
-	}
-	function onError(evt) {
-			d = new Date();
-			writeToScreenNice(d.toISOString() + ' ' +evt.data, "red");
-		console.log(evt);
-	}
-	function setupDownloadLink() {
-		console.log(FileContent)
-	}
-	async function writeToScreenHeader(message, color) {
-		var da = new Date();
-		preHeader.style.wordWrap = "break-word";
-		preHeader.innerHTML = da.toISOString() + ': ' + '<span style="color: ' + color + ';">' + message + '</span>' + '<BR>' + preHeader.innerHTML;
-		output.appendChild(preHeader);
-	}
-	async function writeToScreenNice(message, color) {
-		if (color == null)  preNice.innerHTML =  message + preNice.innerHTML;
-		else    {
-			d = new Date();
-			preNice.innerHTML = '<span style="color: ' + color + ';">'  + d.toISOString() + ' ' + message + '</span>' + '<br>'+ preNice.innerHTML;	
-		}
-		outputDetails.appendChild(preNice);
-	}
-	window.addEventListener("load", init, false);
-		
+}
+async function onOpen(evt) {
+	document.getElementById("ConnectionElement").className = "Regular Success";
+	document.getElementById("ConnectionElement").innerText = "OK";
 	
-	 function PlaceOrdersMessage() {
-	//var now = Date.now(); 
+	var now = Date.now(); 
+	var hash = CryptoJS.HmacSHA256('"apiKey":"'+CurrentapiKey+'","timestamp":"'+now+'"', CurrentSecret);
+	createSessionOnOpen ='{"q":"exchange.market/createSession","sid":15,"d":{"apiKey":"'+CurrentapiKey+'","timestamp":"'+now+'","signature":"'+hash+'"}}' 
+	doSend(createSessionOnOpen);
+	IsConnected = true;
+}
+async function onClose(evt) {
+	IsConnected = false;
+	IsActiveSession = false;
+
+	document.getElementById("ConnectionElement").className = "Regular error";
+	document.getElementById("ConnectionElement").innerText = "Failed";
+	console.log(evt);
+}
+function onError(evt) {
+	//	d = new Date();
+	document.getElementById("ConnectionElement").className = "Regular error";
+	document.getElementById("ConnectionElement").innerText = "Failed";
+
+	console.log(evt);
+}
+window.addEventListener("load", init, false);
+	
+function PlaceOrdersMessage() {
 	 PlaceORders = 
-			'{"q": "exchange.market/placeOrder","sid": "nonce","d": {"brokerOrderId":"nonce","userId": "1A","orderType": "Limit","side": "Buy","instrument":"' + CurrentInstrument + '","quantity": "random","price": "random","timeInForce": "GTC"}};' + '\n' ;
-	}
-	function PlaceOrders() {
-		PlaceOrdersMessage();
-		 document.getElementById("myTextarea").value = PlaceORders;
-	}
-	function CreateSession() {
-		var now = Date.now(); 
-		var hash = CryptoJS.HmacSHA256('"apiKey":"'+CurrentapiKey+'","timestamp":"'+now+'"', CurrentSecret);
-		createSession ='{"q":"exchange.market/createSession","sid":15,"d":{"apiKey":"'+CurrentapiKey+'","timestamp":"'+now+'","signature":"'+hash+'"}}' 
-		 document.getElementById("myTextarea").value = createSession;
-	}
-	 function CancelOrdersMessage() {
-		CancelOrder = '{"q":"exchange.market/cancelOrder","sid":75,"d":{"orderId":"' + OrderID + '","instrument":"' + CurrentInstrument +'"}}';
-	 }
-	 
-	function StreamsMessage() {
-		orderEvents   = '{"q": "exchange.market/orderBookDepth","sid": 30000,"d":{}}';
-	  }
-	function Streams() {
-		 StreamsMessage();
-		document.getElementById("myTextarea").value =  orderEvents + ';\n' ;
-	}
+		'{"q": "exchange.market/placeOrder","sid": "nonce","d": {"brokerOrderId":"nonce","userId": "1A","orderType": "Limit","side": "Buy","instrument":"' + CurrentInstrument + '","quantity": "random","price": "random","timeInForce": "GTC"}};' + '\n' ;
+}
+
+function CreateSession() {
+	var now = Date.now(); 
+	var hash = CryptoJS.HmacSHA256('"apiKey":"'+CurrentapiKey+'","timestamp":"'+now+'"', CurrentSecret);
+	createSession ='{"q":"exchange.market/createSession","sid":15,"d":{"apiKey":"'+CurrentapiKey+'","timestamp":"'+now+'","signature":"'+hash+'"}}' 
+	 document.getElementById("myTextarea").value = createSession;
+}
+ function CancelOrdersMessage() {
+	CancelOrder = '{"q":"exchange.market/cancelOrder","sid":75,"d":{"orderId":"' + OrderID + '","instrument":"' + CurrentInstrument +'"}}';
+ }
+ 
+function StreamsMessage() {
+	orderEvents   = '{"q": "exchange.market/orderBookDepth","sid": 30000,"d":{}}';
+  }
 		</script>
-	<body bgcolor="#000">
-		<meta charset="utf-8" />
-		<title>WebSocket Test V1.05</title>
-		
-	 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/hmac-sha256.js"></script>
-		<!-- <button type="button" id="ConnectButton" onclick="ReConnect()" class="button button1">Connect</button>
-		<button type="button" id="DisConnectButton" onclick="Disconnect()" class="button button3">Disconnect</button> -->
-		<button type="button" id="BothActions" onclick="ConectDisconect()" class="button button3">Waiting...</button>
+<body bgcolor="#000">
+	<meta charset="utf-8" />
+	<title>Exberry Test V1.00</title>
+ <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/hmac-sha256.js"></script>
 
-		<select id="SelectEnv" type="selectBox" class="button selectBox" onChange="OpenURL()" ;>
-			<option value=0>Master</option>
-			<option value=1>RC</option>
-			<option value=100>Enter Manually</option>
-		</select>
+<div id="params" class="Regular">
+<span class="Regular">Enviroment:</span><span  id="EnviromentElement" class="regular"> </span>
+<br>
+<span>Instrument:</span><span  id="InstrumentElement" class="regular"> </span>
+<br>
+<span>endpoint:</span><span  id="endpointElement" class="regular"> </span>
+<br>
+<span>apiKey:</span><span  id="apiKeyElement"  class="regular"> </span>
+<br>
+<span>Connection:</span><span  id="ConnectionElement"  class="regular">... </span>
+<br>
+<span>Session:</span><span  id="SessionElement"  class="regular">... </span>
+<br>
+<span>Place Order:</span><span  id="OrdersElement"  class="regular">... </span>
+<br>
+<span>BO Login:</span><span  id="BOLoginElement"  class="regular">... </span>
+<br>
+<span>BO Instruments list:</span><span  id="BOInsElement"  class="regular">... </span>
 
-		<a id="myTextareaURL" class="a"><span class="a" contenteditable="true" style="color: #9A7FD5;">place the ws endpoint here</span></a>
-	 
-		<div id="sum_div" class="summ">
-	<span style="color: #74E680;" class="NumberOf"># Success Orders:</span><span  id="SucessOrderNum" style="color: #74E680;" class="NumberOf">0 </span>
-	<br>
-	<span style="color: #C93F3B;" class="NumberOf"># Failed Orders:</span><span  id="FailedOrderNum" style="color: #C93F3B;" class="NumberOf">0 </span>
-	</div>
-		<div id="output" class="wrap"></div>
-		 <select id="SelectMessage" type="selectBox" class="button selectBox" onChange="ChangeMessage()" ;>
-					<option value="" selected >Select Message</option>
-
-			<option value="Place Orders">Place Orders</option>
-			<option value="Streams">Streams</option>
-			<option value="Session">Create Session</option>
-			<option value="Send Cancellation">Send Cancellation</option>
-		</select>
-
-		<span class="a">Instrument: </span>
-		<span id="dynamicinstrumentid" class="a" contenteditable="true" style="color: #9A7FD5;">AMZ</span>
-		<!-- <span aclass="a">. UserID: </span>
-		<span id="dynamicuserid" class="a" contenteditable="true" style="color: #9A7FD5;">2</span> -->
-		 <span class="a">. Write to screen? </span>
-		<label>
-			<input type='checkbox' id="WritetoScr" checked>
-			<span></span>
-		</label>
-	  <span class="a">Frequency (Sec) </span>
-		<span id="dynamicFrequency" class="a" contenteditable="true" style="color: #9A7FD5;">5</span>
-			  <span class="a">(URL Param = freq) </span>
-
-		<br>
-		<div id="inputdata" class="wrapTextBox">
-			<textarea id="myTextarea" rows="6" cols="215" class="form-control"></textarea>
-		</div>
-		
-		<button type="button" onclick="Send()" class="button button5">Send</button>
-		  <span id="myTextareaMax" class="a" contenteditable="true" style="color: #9A7FD5;">1</span>
-		<span class="a">times.</span>
-		<button type="button" onclick="setupDownloadLink()" class="button button4">console log</button>
-		<button type="button" onclick="Clear()" class="button button4">Clear</button><br>
-		<div id="outputDetails" class="a"> </div>
-
-	</body>
-
-	</html>
+</div>
+</body>
+</html>
