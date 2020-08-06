@@ -33,13 +33,15 @@ align: right;
    </style>
 	<script type="text/javascript">
 
+
+
 //env,endpoint,instrument,apikey,secret
 var parameters = [["Master","RC","UAT"],
 	["wss://exchange-gateway-master.dev.exchange.exberry.io","wss://exchange-gateway-rc.dev.exchange.exberry.io","wss://exchange-gateway-uat.uat.exchange.exberry.io"], 
 	["AMZ","LoadIns","INS1"],
 	["2688e25c-10ca-480a-a31c-a0eb7eaaf1eb", "4b4888dd-6c72-48cc-bcb0-9b54133abd91","d4fdfdd5-2d2f-4263-8965-3a2c568af59a"],
 	["a2f3b133b59d1660cd4dcb1b366b75c89657a0fac62fab818a3abbe0813570e5","b7fb1bfb591e1f0713e980b40c6bd362e50c2d0147b83f743bae4cb1728018af","0a374a2184d2a63de3356bb51cc5bc26fbbf0e450cf9c462868e90791a9b43e3"]],
-	Env ="",envIndex=0,
+	Env ="",envIndex=0,accessToken="",
 	CurrentInstrument = "",
 	CurrentapiKey = "",
 	CurrentSecret = "",
@@ -49,9 +51,18 @@ var parameters = [["Master","RC","UAT"],
 	IsConnected = false,
 	IsActiveSession = false;
 				
+				var BOLoginUrl = "https://staging-admin-exchange-om2.eu.auth0.com/oauth/token";
+var BOuser="dudi@master2.com";
+var BOPassword="12345678qA";
+var BOClientID="AxKLZArHW8AOhjO391YECLK1vEbzNl89";
+var BOBUrl = " https://admin-api-rc.dev.ops.exberry.io/api/instruments";
+
+
 function findEnvironment( Environmnet) {
 			return Environmnet ==Env;
 }
+
+
 
 function init() {
 	var urlParams = new URLSearchParams(window.location.search);
@@ -75,6 +86,7 @@ function init() {
 	testWebSocket();
 	//PlaceOrders();
 	PlaceOrdersMessage();
+	BOLogin();
 }
 	function sendOrders() {
 		Send();
@@ -99,28 +111,74 @@ function Send() {
 function BOLogin(){
 
 
-var BOLoginUrl = "https://staging-admin-exchange-om2.eu.auth0.com/oauth/token";
+var loginMessage="grant_type=password&username="+BOuser+"&password="+BOPassword+"&audience=bo-gateway&scope=Instrument/create Instrument/update Instrument/get Instrument/list HaltResume/halt HaltResume/resume HaltResume/haltAll HaltResume/resumeAll&client_id="+BOClientID;
 var xhr = new XMLHttpRequest();
-var BOuser="dudi@master2.com";
-var BOPassword="12345678qA";
-var BOClientID="AxKLZArHW8AOhjO391YECLK1vEbzNl89";
+try{
 xhr.open("POST", BOLoginUrl, true);
-//xhr.setRequestHeader('Content-Type', 'application/json');
-//xhr.setRequestHeader("Origin","github.com");
-
+xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
 /*xhr.send(JSON.stringify({
     value: 'value'
 }));*/
 
-var loginMessage="grant_type=password&username="+BOuser+"&password="+BOPassword+"&audience=bo-gateway&scope=Instrument/create Instrument/update Instrument/get Instrument/list HaltResume/halt HaltResume/resume HaltResume/haltAll HaltResume/resumeAll&client_id="+BOClientID;
 console.log("Sent: " + loginMessage);
 xhr.send(loginMessage);
+console.log("After Send")
 xhr.onload = function() {
-  console.log("HELLO")
-  console.log(this.responseText);
+  console.log("in onload")
+  console.log("Recieved" + this.responseText);
   var data = JSON.parse(this.responseText);
-  console.log(data);
+  accessToken= data.access_token;
+  BOInsList();
+  document.getElementById("BOLoginElement").className = "Regular Success";
+	document.getElementById("BOLoginElement").innerText = "OK";
+
 }
+xhr.onerror = function() {
+  console.log("in onerror")
+  console.log("Recieved" + this.responseText);
+
+  document.getElementById("BOLoginElement").className = "Regular error";
+	document.getElementById("BOLoginElement").innerText = "Failed";
+	return;
+}
+
+			
+}
+catch(err){
+
+}
+}
+function BOInsList(){
+try{
+var xhrGet = new XMLHttpRequest();
+// we defined the xhr
+
+xhrGet.onreadystatechange = function () {
+    if (this.readyState != 4) return;
+
+    if (this.status == 200) {
+        var data = JSON.parse(this.responseText);
+		concol.log("RECIEVED: "+ this.responseText);
+	document.getElementById("BOInsElement").className = "Regular Success";
+	document.getElementById("BOInsElement").innerText = "OK";		
+xhrGet.open('GET', BOBUrl, true);
+xhr.setRequestHeader("Authorization", "Bearer "+accessToken);
+
+    }
+else {
+	document.getElementById("BOInsElement").className = "Regular error";
+			document.getElementById("BOInsElement").innerText = "Failed"
+			return;}
+    // end of state change: it can be after some time (async)
+};
+
+xhrGet.send();
+
+		
+}
+catch(err){
+
+			}
 }
 
 
@@ -259,6 +317,10 @@ function StreamsMessage() {
 <span>Session:</span><span  id="SessionElement"  class="regular">... </span>
 <br>
 <span>Place Order:</span><span  id="OrdersElement"  class="regular">... </span>
+<br>
+<span>BO Login:</span><span  id="BOLoginElement"  class="regular">... </span>
+<br>
+<span>BO Instruments list:</span><span  id="BOInsElement"  class="regular">... </span>
 
 </div>
 </body>
