@@ -162,7 +162,7 @@ xhrGet.onreadystatechange = function () {
 	document.getElementById("BOInsElement").className = "Regular Success";
 	document.getElementById("BOInsElement").innerText = "OK";		
 xhrGet.open('GET', BOBUrl, true);
-xhr.setRequestHeader("Authorization", "Bearer "+accessToken);
+xhrGet.setRequestHeader("Authorization", "Bearer "+accessToken);
 
     }
 else {
