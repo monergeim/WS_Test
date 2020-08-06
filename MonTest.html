@@ -62,8 +62,6 @@ function findEnvironment( Environmnet) {
 			return Environmnet ==Env;
 }
 
-
-
 function init() {
 	var urlParams = new URLSearchParams(window.location.search);
 	Env = urlParams.get('env');
@@ -84,9 +82,8 @@ function init() {
 
 	CurrentSecret =  parameters[4][envIndex];
 	testWebSocket();
-	//PlaceOrders();
 	PlaceOrdersMessage();
-	BOLogin();
+	//BOLogin();
 }
 	function sendOrders() {
 		Send();
@@ -94,7 +91,6 @@ function init() {
 
 function Send() {
 	if	(IsConnected == false || IsActiveSession == false ) return;
-
 	var now = Date.now(); 
 	//data = document.getElementById("myTextarea").value;
 	data = PlaceORders;
@@ -107,7 +103,7 @@ function Send() {
 			doSend(lines[i].replace('random',Math.ceil(Math.random()*100) + Math.ceil(Math.random()*100)/10000).replace('random',Math.ceil(Math.random()*100) + Math.ceil(Math.random()*100)/10000))
 		}
 }
-
+/*
 function BOLogin(){
 
 
@@ -116,9 +112,7 @@ var xhr = new XMLHttpRequest();
 try{
 xhr.open("POST", BOLoginUrl, true);
 xhr.setRequestHeader('content-type', 'application/x-www-form-urlencoded');
-/*xhr.send(JSON.stringify({
-    value: 'value'
-}));*/
+
 
 console.log("Sent: " + loginMessage);
 xhr.send(loginMessage);
@@ -149,20 +143,18 @@ catch(err){
 }
 }
 function BOInsList(){
-try{
 var xhrGet = new XMLHttpRequest();
 // we defined the xhr
-
+xhrGet.open('GET', BOBUrl, true);
+xhrGet.setRequestHeader("Authorization", "Bearer "+accessToken);
+xhrGet.send();
 xhrGet.onreadystatechange = function () {
-    if (this.readyState != 4) return;
-
-    if (this.status == 200) {
+ if ( xhrGet.readyState == 4 && xhrGet.status == 200 ) 
+    {
         var data = JSON.parse(this.responseText);
 		concol.log("RECIEVED: "+ this.responseText);
 	document.getElementById("BOInsElement").className = "Regular Success";
 	document.getElementById("BOInsElement").innerText = "OK";		
-xhrGet.open('GET', BOBUrl, true);
-xhrGet.setRequestHeader("Authorization", "Bearer "+accessToken);
 
     }
 else {
@@ -170,18 +162,14 @@ else {
 			document.getElementById("BOInsElement").innerText = "Failed"
 			return;}
     // end of state change: it can be after some time (async)
-};
-
-xhrGet.send();
-
-		
+};	
+}
 }
 catch(err){
-
 			}
 }
 
-
+*/
 async function testWebSocket() {
 			try {
 		websocket = new WebSocket(CurrentUri);
@@ -300,7 +288,7 @@ function StreamsMessage() {
 		</script>
 <body bgcolor="#000">
 	<meta charset="utf-8" />
-	<title>Exberry Test V1.00</title>
+	<title>Exberry Test V1.01</title>
  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/hmac-sha256.js"></script>
 
 <div id="params" class="Regular">
@@ -317,11 +305,11 @@ function StreamsMessage() {
 <span>Session:</span><span  id="SessionElement"  class="regular">... </span>
 <br>
 <span>Place Order:</span><span  id="OrdersElement"  class="regular">... </span>
-<br>
+<!-- <br>
 <span>BO Login:</span><span  id="BOLoginElement"  class="regular">... </span>
 <br>
 <span>BO Instruments list:</span><span  id="BOInsElement"  class="regular">... </span>
-
+ -->
 </div>
 </body>
 </html>
