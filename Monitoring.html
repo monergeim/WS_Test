@@ -45,7 +45,7 @@ var parameters = [["Master","RC","UAT"],
 	CurrentSecret = "",
 	OrderID, d = new Date(),
 	obj = "",
-	createSessionOnOpen="",
+	createSessionOnOpen="",OBS="",
 	IsConnected = false,
 	IsActiveSession = false;
 				
@@ -80,6 +80,11 @@ function init() {
 		Send();
 }
 
+	function sendOBS() {
+if	(IsConnected == false || IsActiveSession == false ) return;
+OBSMessage();
+doSend(OBS);
+}
 function Send() {
 	if	(IsConnected == false || IsActiveSession == false ) return;
 
@@ -157,10 +162,25 @@ async function onMessage(evt) {
 			document.getElementById("SessionElement").className = "Regular Success";
 			document.getElementById("SessionElement").innerText = "OK";
 			sendOrders();
+			sendOBS();
 			}
 			else if (obj.sig==2){
 			document.getElementById("SessionElement").className = "Regular error";
 			document.getElementById("SessionElement").innerText = "Failed";
+			}
+			}
+			catch(err){}
+			break;
+
+		case 'exchange.market/orderBookState':
+			try{
+			if (obj.sig==1)	{
+			document.getElementById("OBSElement").className = "Regular Success";
+			document.getElementById("OBSElement").innerText = "OK";
+			}
+			else if (obj.sig==2){
+			document.getElementById("OBSElement").className = "Regular error";
+			document.getElementById("OBSElement").innerText = "Failed";
 			}
 			}
 			catch(err){}
@@ -208,13 +228,13 @@ function CreateSession() {
 	CancelOrder = '{"q":"exchange.market/cancelOrder","sid":75,"d":{"orderId":"' + OrderID + '","instrument":"' + CurrentInstrument +'"}}';
  }
  
-function StreamsMessage() {
-	orderEvents   = '{"q": "exchange.market/orderBookDepth","sid": 30000,"d":{}}';
+function OBSMessage() {
+	OBS   = '{"q": "exchange.market/orderBookState","sid": 30000,"d":{}}';
   }
 		</script>
 <body bgcolor="#000">
 	<meta charset="utf-8" />
-	<title>Exberry Test V1.00</title>
+	<title>Exberry Test V1.01</title>
  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/hmac-sha256.js"></script>
 
 <div id="params" class="Regular">
@@ -231,6 +251,8 @@ function StreamsMessage() {
 <span>Session:</span><span  id="SessionElement"  class="regular">... </span>
 <br>
 <span>Place Order:</span><span  id="OrdersElement"  class="regular">... </span>
+<br>
+<span>orderBookState:</span><span  id="OBSElement"  class="regular">... </span>
 
 </div>
 </body>
