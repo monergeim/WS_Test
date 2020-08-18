@@ -36,7 +36,7 @@ align: right;
 //env,endpoint,instrument,apikey,secret
 var parameters = [["Master","RC","UAT"],
 	["wss://exchange-gateway-master.dev.exchange.exberry.io","wss://exchange-gateway-rc.dev.exchange.exberry.io","wss://exchange-gateway-uat.gw.uat.exchange.exberry.io"], 
-	["AMZ","LoadIns","INS1"],
+	["AMZ","LoadIns","MonitoringINS"],
 	["2688e25c-10ca-480a-a31c-a0eb7eaaf1eb", "4b4888dd-6c72-48cc-bcb0-9b54133abd91","d4fdfdd5-2d2f-4263-8965-3a2c568af59a"],
 	["a2f3b133b59d1660cd4dcb1b366b75c89657a0fac62fab818a3abbe0813570e5","b7fb1bfb591e1f0713e980b40c6bd362e50c2d0147b83f743bae4cb1728018af","0a374a2184d2a63de3356bb51cc5bc26fbbf0e450cf9c462868e90791a9b43e3"]],
 	Env ="",envIndex=0,
@@ -149,6 +149,26 @@ async function onMessage(evt) {
 			OrderID = obj.d.orderId;
 			document.getElementById("OrdersElement").className = "Regular Success";
 			document.getElementById("OrdersElement").innerText = "OK" ;
+			CancelOrdersMessage();
+			doSend(CancelOrder);
+
+			break;
+			}
+			}
+			catch(err)
+			{}
+			break;
+		case 'exchange.market/cancelOrder':
+			try{
+			if (obj.d.errorCode)
+			{
+			document.getElementById("CancelOrderElement").className = "Regular error";
+			document.getElementById("CancelOrderElement").innerText = "Failed: " + obj.d.errorMessage;
+			console.log(obj.d.errorMessage);
+			}
+			else{
+			document.getElementById("CancelOrderElement").className = "Regular Success";
+			document.getElementById("CancelOrderElement").innerText = "OK" ;
 			break;
 			}
 			}
@@ -251,6 +271,8 @@ function OBSMessage() {
 <span>Session:</span><span  id="SessionElement"  class="regular">... </span>
 <br>
 <span>Place Order:</span><span  id="OrdersElement"  class="regular">... </span>
+<br>
+<span>Cancel Order:</span><span  id="CancelOrderElement"  class="regular">... </span>
 <br>
 <span>orderBookState:</span><span  id="OBSElement"  class="regular">... </span>
 
